@@ -17,13 +17,13 @@ public class Checkers {
         board = new CheckersBoard();
         int white = 0;
         // spawn white pieces
-        for(int row = 0; row < 8; row++)
+        for(int row = 0; row < 3; row++)
         {
-            for(int col = 0; col < 3; col++)
+            for(int col = 0; col < 8; col++)
             {
                 if(board.getBoard()[col][row].isDarkBrown() == true)
                 {
-                    board.getBoard()[col][row].setPiece(playerwhite.getPlayerPieces().get(white));
+                    board.getBoard()[row][col].setPiece(playerwhite.getPlayerPieces().get(white));
                     white++;
 
                 }
