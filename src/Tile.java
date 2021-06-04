@@ -6,10 +6,6 @@ public class Tile {
     {
         this.usable = usable;
     }
-    public Tile()
-    {
-
-    }
 
     public boolean isUsable() {
         return usable;

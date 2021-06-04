@@ -1,7 +1,7 @@
 public class CheckersBoard {
 
-    private Player playerBlack;
-    private Player playerwhite;
+    private final Player playerBlack= new Player("black");
+    private final Player playerwhite= new Player("white");
     private Tile[][] board;
     final int rows = 8;
     final int cols = 8;
@@ -9,7 +9,7 @@ public class CheckersBoard {
     // creates an 8x8 board, every other tile is usable (dark brown)
     public CheckersBoard()
     {
-        boolean usable = false;
+
         board = new Tile[rows][cols];
         for(int row = 0; row < rows; row++)
         {
@@ -27,23 +27,18 @@ public class CheckersBoard {
                 }
             }
         }
+
     }
 
     public Player getPlayerBlack() {
         return playerBlack;
     }
 
-    public void setPlayerBlack(Player playerBlack) {
-        this.playerBlack = playerBlack;
-    }
 
     public Player getPlayerwhite() {
         return playerwhite;
     }
 
-    public void setPlayerwhite(Player playerwhite) {
-        this.playerwhite = playerwhite;
-    }
 
     public Tile[][] getBoard() {
         return board;
