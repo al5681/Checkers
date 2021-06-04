@@ -21,7 +21,7 @@ public class Checkers {
         {
             for(int col = 0; col < 8; col++)
             {
-                if(board.getBoard()[col][row].isDarkBrown() == true)
+                if(board.getBoard()[row][col].isDarkBrown() == true)
                 {
                     board.getBoard()[row][col].setPiece(playerwhite.getPlayerPieces().get(white));
                     white++;
