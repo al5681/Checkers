@@ -8,7 +8,6 @@ public class CheckersBoard {
     final int rows = 8;
     final int cols = 8;
 
-    // creates an 8x8 board, every other tile is usable (dark brown)
 
     /**
      * Creates an 8x8 board, tiles are usable according to the original

@@ -6,7 +6,7 @@ public class Checkers {
 
     private CheckersBoard board;
     private final Player playerBlack= new Player("black");
-    private final Player playerwhite= new Player("white");
+    private final Player playerWhite= new Player("white");
 
     /**
      * Creates an instance of the boards and loads the pieces for the players,
@@ -14,17 +14,32 @@ public class Checkers {
      */
     public Checkers()
     {
+        // create board
         board = new CheckersBoard();
-        int white = 0;
         // spawn white pieces
+        int white = 0;
         for(int row = 0; row < 3; row++)
         {
             for(int col = 0; col < 8; col++)
             {
                 if(board.getBoard()[row][col].isDarkBrown() == true)
                 {
-                    board.getBoard()[row][col].setPiece(playerwhite.getPlayerPieces().get(white));
+                    board.getBoard()[row][col].setPiece(playerWhite.getPlayerPieces().get(white));
                     white++;
+
+                }
+            }
+        }
+        // spawn black pieces
+        int black = 0;
+        for(int row = 5; row <8; row++)
+        {
+            for(int col = 0; col <8; col++)
+            {
+                if(board.getBoard()[row][col].isDarkBrown() == true)
+                {
+                    board.getBoard()[row][col].setPiece(playerBlack.getPlayerPieces().get(black));
+                    black++;
 
                 }
             }
@@ -44,7 +59,7 @@ public class Checkers {
     }
 
     public Player getPlayerwhite() {
-        return playerwhite;
+        return playerWhite;
     }
 
 }
