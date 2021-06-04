@@ -6,4 +6,6 @@ public class Tile {
     {
         this.usable = usable;
     }
+
+
 }
