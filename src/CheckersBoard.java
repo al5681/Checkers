@@ -1,7 +1,6 @@
 public class CheckersBoard {
 
-    private final Player playerBlack= new Player("black");
-    private final Player playerwhite= new Player("white");
+
     private Tile[][] board;
     final int rows = 8;
     final int cols = 8;
@@ -30,15 +29,13 @@ public class CheckersBoard {
 
     }
 
-    public Player getPlayerBlack() {
-        return playerBlack;
+    public int getRows() {
+        return rows;
     }
 
-
-    public Player getPlayerwhite() {
-        return playerwhite;
+    public int getCols() {
+        return cols;
     }
-
 
     public Tile[][] getBoard() {
         return board;

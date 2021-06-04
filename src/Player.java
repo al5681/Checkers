@@ -11,4 +11,12 @@ public class Player {
             playerPieces.add(new PlayerPiece(playerColour));
         }
     }
+
+    public ArrayList<PlayerPiece> getPlayerPieces() {
+        return playerPieces;
+    }
+
+    public void setPlayerPieces(ArrayList<PlayerPiece> playerPieces) {
+        this.playerPieces = playerPieces;
+    }
 }

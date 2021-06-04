@@ -1,6 +1,7 @@
 public class Tile {
 
     private boolean usable;
+    private PlayerPiece piece;
 
     public Tile(boolean usable)
     {
@@ -15,8 +16,20 @@ public class Tile {
         this.usable = usable;
     }
 
+    public PlayerPiece getPiece() {
+        return piece;
+    }
+
+    public void setPiece(PlayerPiece piece) {
+        this.piece = piece;
+    }
+
     @Override
     public String toString() {
-        return " | " + usable + " | ";
+        if(this.piece != null)
+        {
+            return " | " + usable + " , " + piece  + " | ";
+        }
+        return " | " + usable  + " | ";
     }
 }
