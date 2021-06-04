@@ -15,7 +15,7 @@ public class CheckersBoardTest {
             for(int col = 0; col < boardGetters[row].length; col++)
             {
                 if(row % 2 == 0 && col % 2 == 0) {
-                    assertEquals(false, board.getBoard()[row][col].isUsable());
+                    assertEquals(false, board.getBoard()[row][col].isDarkBrown());
                 }
 
             }

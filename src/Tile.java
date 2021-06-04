@@ -1,19 +1,25 @@
+/**
+ * Represents a tile on the board,
+ * darkBrown indicates it is one of the usable tiles on the board
+ * piece indicates if there is currently one of the players pieces
+ * on the tile
+ */
 public class Tile {
 
-    private boolean usable;
+    private boolean darkBrown;
     private PlayerPiece piece;
 
     public Tile(boolean usable)
     {
-        this.usable = usable;
+        this.darkBrown = usable;
     }
 
-    public boolean isUsable() {
-        return usable;
+    public boolean isDarkBrown() {
+        return darkBrown;
     }
 
-    public void setUsable(boolean usable) {
-        this.usable = usable;
+    public void setDarkBrown(boolean darkBrown) {
+        this.darkBrown = darkBrown;
     }
 
     public PlayerPiece getPiece() {
@@ -28,8 +34,8 @@ public class Tile {
     public String toString() {
         if(this.piece != null)
         {
-            return " | " + usable + " , " + piece  + " | ";
+            return " | " + darkBrown + " , " + piece  + " | ";
         }
-        return " | " + usable  + " | ";
+        return " | " + darkBrown + " | ";
     }
 }

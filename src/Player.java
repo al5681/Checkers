@@ -1,5 +1,9 @@
 import java.util.ArrayList;
 
+/**
+ * Represents a player who has a collection of pieces they move
+ * around the board
+ */
 public class Player {
 
     private ArrayList<PlayerPiece> playerPieces = new ArrayList<>();

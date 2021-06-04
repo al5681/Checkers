@@ -1,3 +1,6 @@
+/**
+ * Represents a Piece a player has
+ */
 public class PlayerPiece {
 
     private String playerColour;

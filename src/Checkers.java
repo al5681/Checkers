@@ -1,10 +1,17 @@
+/**
+ * Represents the model for the game
+ */
 public class Checkers {
 
-    // create instance of the board load the player pieces onto the board
+
     private CheckersBoard board;
     private final Player playerBlack= new Player("black");
     private final Player playerwhite= new Player("white");
 
+    /**
+     * Creates an instance of the boards and loads the pieces for the players,
+     * for now only loads the white pieces
+     */
     public Checkers()
     {
         board = new CheckersBoard();
@@ -14,7 +21,7 @@ public class Checkers {
         {
             for(int col = 0; col < 3; col++)
             {
-                if(board.getBoard()[col][row].isUsable() == true)
+                if(board.getBoard()[col][row].isDarkBrown() == true)
                 {
                     board.getBoard()[col][row].setPiece(playerwhite.getPlayerPieces().get(white));
                     white++;

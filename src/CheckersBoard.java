@@ -1,3 +1,6 @@
+/**
+ * Represents the board for the game
+ */
 public class CheckersBoard {
 
 
@@ -6,6 +9,11 @@ public class CheckersBoard {
     final int cols = 8;
 
     // creates an 8x8 board, every other tile is usable (dark brown)
+
+    /**
+     * Creates an 8x8 board, tiles are usable according to the original
+     * board layout (false - true... for odd rows, true-false... for even rows)
+     */
     public CheckersBoard()
     {
 
