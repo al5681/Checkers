@@ -38,11 +38,11 @@ public class CheckersGUI extends Application {
     {
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
-                Circle circle = new Circle();
-                circle.setRadius(40.0f);
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
                 if(currTile.getPiece() != null)
                 {
+                    Circle circle = new Circle();
+                    circle.setRadius(40.0f);
                     if(currTile.getPiece().getPlayerColour() == "black") {
                         circle.setFill(javafx.scene.paint.Color.BLACK);
                     }
