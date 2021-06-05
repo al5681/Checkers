@@ -7,6 +7,10 @@ public class PlayerPiece {
     int rowPos;
     int colPos;
 
+    /**
+     * Creates a piece for the player to use of the right colour
+     * @param playerColour
+     */
     public PlayerPiece(String playerColour) {
         this.playerColour = playerColour;
     }
