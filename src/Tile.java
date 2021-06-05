@@ -9,16 +9,12 @@ public class Tile {
     private boolean darkBrown;
     private PlayerPiece piece;
 
-    public Tile(boolean usable) {
-        this.darkBrown = usable;
+    public Tile(boolean darkBrown) {
+        this.darkBrown = darkBrown;
     }
 
     public boolean isDarkBrown() {
         return darkBrown;
-    }
-
-    public void setDarkBrown(boolean darkBrown) {
-        this.darkBrown = darkBrown;
     }
 
     public PlayerPiece getPiece() {

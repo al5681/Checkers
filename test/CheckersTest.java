@@ -9,6 +9,6 @@ public class CheckersTest {
 
     @Test
     public void printBoard() {
-        checkers.getBoard().printBoard();
+        checkers.getCheckersBoard().printBoard();
     }
 }

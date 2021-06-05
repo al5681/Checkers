@@ -33,7 +33,6 @@ public class PlayerPiece {
 
     @Override
     public String toString() {
-        return
-                "" + playerColour;
+        return playerColour;
     }
 }

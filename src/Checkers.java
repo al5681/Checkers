@@ -4,24 +4,26 @@
 public class Checkers {
 
 
-    private CheckersBoard board;
-    private final Player playerBlack = new Player("black");
-    private final Player playerWhite = new Player("white");
+    private CheckersBoard checkersBoard;
+    private Player playerBlack = new Player("black");
+    private Player playerWhite = new Player("white");
 
     /**
      * Creates an instance of the board and loads the pieces in their initial spawns for the players
      */
     public Checkers() {
         // create board
-        board = new CheckersBoard();
+        checkersBoard = new CheckersBoard();
         // spawn white pieces
         int white = 0;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 8; col++) {
-                if (board.getBoard()[row][col].isDarkBrown()) {
+                if (checkersBoard.getBoard()[row][col].isDarkBrown()) {
+                    // set the initial co-ordinates
                     playerWhite.getPlayerPieces().get(white).setRowPos(row);
                     playerWhite.getPlayerPieces().get(white).setColPos(col);
-                    board.getBoard()[row][col].setPiece(playerWhite.getPlayerPieces().get(white));
+                    // place on board
+                    checkersBoard.getBoard()[row][col].setPiece(playerWhite.getPlayerPieces().get(white));
                     white++;
                 }
             }
@@ -30,10 +32,12 @@ public class Checkers {
         int black = 0;
         for (int row = 5; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                if (board.getBoard()[row][col].isDarkBrown()) {
+                if (checkersBoard.getBoard()[row][col].isDarkBrown()) {
+                    // set the initial co-ordinates
                     playerBlack.getPlayerPieces().get(black).setRowPos(row);
                     playerBlack.getPlayerPieces().get(black).setColPos(col);
-                    board.getBoard()[row][col].setPiece(playerBlack.getPlayerPieces().get(black));
+                    // place on board
+                    checkersBoard.getBoard()[row][col].setPiece(playerBlack.getPlayerPieces().get(black));
                     black++;
 
                 }
@@ -41,12 +45,12 @@ public class Checkers {
         }
     }
 
-    public CheckersBoard getBoard() {
-        return board;
+    public CheckersBoard getCheckersBoard() {
+        return checkersBoard;
     }
 
-    public void setBoard(CheckersBoard board) {
-        this.board = board;
+    public void setCheckersBoard(CheckersBoard checkersBoard) {
+        this.checkersBoard = checkersBoard;
     }
 
     public Player getPlayerBlack() {
