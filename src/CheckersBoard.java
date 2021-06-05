@@ -13,22 +13,16 @@ public class CheckersBoard {
      * Creates an 8x8 board, tiles are usable according to the original
      * board layout (false - true... for odd rows, true-false... for even rows)
      */
-    public CheckersBoard()
-    {
+    public CheckersBoard() {
 
         board = new Tile[rows][cols];
-        for(int row = 0; row < rows; row++)
-        {
-            for(int col = 0; col < cols; col++)
-            {
-                if(row % 2 == 0 && col % 2 == 0) {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (row % 2 == 0 && col % 2 == 0) {
                     board[row][col] = new Tile(false);
-                }
-                else if(row % 2 != 0 && col % 2 != 0)
-                {
+                } else if (row % 2 != 0 && col % 2 != 0) {
                     board[row][col] = new Tile(false);
-                }
-                else {
+                } else {
                     board[row][col] = new Tile(true);
                 }
             }

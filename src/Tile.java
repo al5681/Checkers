@@ -9,8 +9,7 @@ public class Tile {
     private boolean darkBrown;
     private PlayerPiece piece;
 
-    public Tile(boolean usable)
-    {
+    public Tile(boolean usable) {
         this.darkBrown = usable;
     }
 
@@ -32,9 +31,8 @@ public class Tile {
 
     @Override
     public String toString() {
-        if(this.piece != null)
-        {
-            return " | " + darkBrown + " , " + piece  + " | ";
+        if (this.piece != null) {
+            return " | " + darkBrown + " , " + piece + " | ";
         }
         return " | " + darkBrown + " | ";
     }

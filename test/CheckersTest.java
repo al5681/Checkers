@@ -8,8 +8,7 @@ public class CheckersTest {
 
 
     @Test
-    public void printBoard()
-    {
+    public void printBoard() {
         checkers.getBoard().printBoard();
     }
 }

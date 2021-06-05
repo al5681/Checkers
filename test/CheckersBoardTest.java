@@ -7,14 +7,11 @@ public class CheckersBoardTest {
     private CheckersBoard board = new CheckersBoard();
 
     @Test
-    public void constructorTest()
-    {
+    public void constructorTest() {
         Tile[][] boardGetters = board.getBoard();
-        for(int row = 0; row < boardGetters.length; row++)
-        {
-            for(int col = 0; col < boardGetters[row].length; col++)
-            {
-                if(row % 2 == 0 && col % 2 == 0) {
+        for (int row = 0; row < boardGetters.length; row++) {
+            for (int col = 0; col < boardGetters[row].length; col++) {
+                if (row % 2 == 0 && col % 2 == 0) {
                     assertEquals(false, board.getBoard()[row][col].isDarkBrown());
                 }
 
@@ -23,8 +20,7 @@ public class CheckersBoardTest {
     }
 
     @Test
-    public void printBoard()
-    {
+    public void printBoard() {
         board.printBoard();
     }
 }
