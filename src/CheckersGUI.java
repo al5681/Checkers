@@ -57,7 +57,7 @@ public class CheckersGUI extends Application {
                 if (currTile.getPiece() != null) {
                     Circle circle = new Circle();
                     circle.setRadius(35.0f);
-                    if (currTile.getPiece().getPlayerColour() == "black") {
+                    if (currTile.getPiece().getPlayerColour().equals("black")) {
                         circle.setFill(javafx.scene.paint.Color.BLACK);
                     } else {
                         circle.setFill(javafx.scene.paint.Color.WHITE);
