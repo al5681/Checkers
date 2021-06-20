@@ -45,6 +45,11 @@ public class Checkers {
         }
     }
 
+    public void turn()
+    {
+
+    }
+
     public CheckersBoard getCheckersBoard() {
         return checkersBoard;
     }
