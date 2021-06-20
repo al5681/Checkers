@@ -7,6 +7,7 @@ public class Checkers {
     private CheckersBoard checkersBoard;
     private Player playerBlack = new Player("black");
     private Player playerWhite = new Player("white");
+    private String currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour(); // black goes first
 
     /**
      * Creates an instance of the board and loads the pieces in their initial spawns for the players
@@ -47,7 +48,13 @@ public class Checkers {
 
     public void turn()
     {
-
+        if(currentTurn.equals("black")) {
+            currentTurn = playerWhite.getPlayerPieces().get(0).getPlayerColour();
+        }
+        else {
+            currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
+        }
+        System.out.println(currentTurn); // DELETE LATER
     }
 
     public CheckersBoard getCheckersBoard() {

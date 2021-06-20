@@ -12,10 +12,11 @@ public class CheckersGUI extends Application {
 
     private Checkers checkers = new Checkers();
     private GridPane grid = new GridPane();
-    private Button[][] buttonsInGrid  = new Button[checkers.getCheckersBoard().getRows()][ checkers.getCheckersBoard().getCols()];
+    private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
 
     /**
      * renders each of the tiles of the board as items of a grid pane
+     *
      * @return grid
      */
     public GridPane renderBoard() {
@@ -42,19 +43,16 @@ public class CheckersGUI extends Application {
     /**
      * Renders the pieces onto the board for the tiles that currently have pieces on them
      */
-    public void renderPieces()
-    {
+    public void renderPieces() {
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
-                if(currTile.getPiece() != null)
-                {
+                if (currTile.getPiece() != null) {
                     Circle circle = new Circle();
                     circle.setRadius(35.0f);
-                    if(currTile.getPiece().getPlayerColour() == "black") {
+                    if (currTile.getPiece().getPlayerColour() == "black") {
                         circle.setFill(javafx.scene.paint.Color.BLACK);
-                    }
-                    else {
+                    } else {
                         circle.setFill(javafx.scene.paint.Color.WHITE);
                     }
                     buttonsInGrid[i][j].setGraphic(circle);
@@ -72,6 +70,12 @@ public class CheckersGUI extends Application {
         primaryStage.setTitle("Checkers");
         renderBoard();
         renderPieces();
+        // game loop
+        for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
+            for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
+                buttonsInGrid[i][j].setOnMouseClicked(e -> {checkers.turn();});
+            }
+        }
         primaryStage.setScene(new Scene(grid));
         primaryStage.show();
     }
