@@ -46,7 +46,7 @@ public class Checkers {
         }
     }
 
-    public void turn()
+    public void changeCurrentPlayersTurn()
     {
         if(currentTurn.equals("black")) {
             currentTurn = playerWhite.getPlayerPieces().get(0).getPlayerColour();
@@ -73,4 +73,8 @@ public class Checkers {
         return playerWhite;
     }
 
+    public String getCurrentTurn()
+    {
+        return currentTurn;
+    }
 }

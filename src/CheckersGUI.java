@@ -1,8 +1,10 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -11,6 +13,7 @@ import javafx.stage.Stage;
 public class CheckersGUI extends Application {
 
     private Checkers checkers = new Checkers();
+    private BorderPane boarderPane = new BorderPane();
     private GridPane grid = new GridPane();
     private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
 
@@ -37,6 +40,7 @@ public class CheckersGUI extends Application {
                 buttonsInGrid[i][j] = currButton;
             }
         }
+        boarderPane.setCenter(grid);
         return grid;
     }
 
@@ -61,6 +65,12 @@ public class CheckersGUI extends Application {
         }
     }
 
+    public void refreshPlayerTurnDisplay() {
+        Text playerTurnText = new Text();
+        playerTurnText.setText("Current players turn: " + checkers.getCurrentTurn());
+        boarderPane.setTop(playerTurnText);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -70,13 +80,17 @@ public class CheckersGUI extends Application {
         primaryStage.setTitle("Checkers");
         renderBoard();
         renderPieces();
+        refreshPlayerTurnDisplay();
         // game loop
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
-                buttonsInGrid[i][j].setOnMouseClicked(e -> {checkers.turn();});
+                buttonsInGrid[i][j].setOnMouseClicked(e -> {
+                    checkers.changeCurrentPlayersTurn();
+                    refreshPlayerTurnDisplay();
+                });
             }
         }
-        primaryStage.setScene(new Scene(grid));
+        primaryStage.setScene(new Scene(boarderPane));
         primaryStage.show();
     }
 }
