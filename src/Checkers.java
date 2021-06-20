@@ -54,7 +54,6 @@ public class Checkers {
         else {
             currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
         }
-        System.out.println(currentTurn); // DELETE LATER
     }
 
     public CheckersBoard getCheckersBoard() {

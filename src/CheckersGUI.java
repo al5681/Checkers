@@ -1,9 +1,11 @@
+import com.sun.xml.internal.ws.util.StringUtils;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -67,7 +69,8 @@ public class CheckersGUI extends Application {
 
     public void refreshPlayerTurnDisplay() {
         Text playerTurnText = new Text();
-        playerTurnText.setText("Current players turn: " + checkers.getCurrentTurn());
+        playerTurnText.setFont(Font.font ("Verdana", 20));
+        playerTurnText.setText("Current players turn: " + StringUtils.capitalize(checkers.getCurrentTurn()));
         boarderPane.setTop(playerTurnText);
     }
 
