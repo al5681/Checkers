@@ -67,9 +67,12 @@ public class CheckersGUI extends Application {
         }
     }
 
+    /**
+     * Display the current players turn at the top of the GUI
+     */
     public void refreshPlayerTurnDisplay() {
         Text playerTurnText = new Text();
-        playerTurnText.setFont(Font.font ("Verdana", 20));
+        playerTurnText.setFont(Font.font("Verdana", 20));
         playerTurnText.setText("Current players turn: " + StringUtils.capitalize(checkers.getCurrentTurn()));
         boarderPane.setTop(playerTurnText);
     }
@@ -83,7 +86,7 @@ public class CheckersGUI extends Application {
         primaryStage.setTitle("Checkers");
         renderBoard();
         renderPieces();
-        refreshPlayerTurnDisplay();
+        refreshPlayerTurnDisplay(); // initialise the current player turn display
         // game loop
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {

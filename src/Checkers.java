@@ -46,12 +46,13 @@ public class Checkers {
         }
     }
 
-    public void changeCurrentPlayersTurn()
-    {
-        if(currentTurn.equals("black")) {
+    /**
+     * Changes the turn to the other player
+     */
+    public void changeCurrentPlayersTurn() {
+        if (currentTurn.equals("black")) {
             currentTurn = playerWhite.getPlayerPieces().get(0).getPlayerColour();
-        }
-        else {
+        } else {
             currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
         }
     }
@@ -72,8 +73,7 @@ public class Checkers {
         return playerWhite;
     }
 
-    public String getCurrentTurn()
-    {
+    public String getCurrentTurn() {
         return currentTurn;
     }
 }

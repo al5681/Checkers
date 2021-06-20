@@ -10,6 +10,7 @@ public class Player {
 
     /**
      * Adds 12 pieces for the player to start with, of the right colour
+     *
      * @param playerColour
      */
     public Player(String playerColour) {

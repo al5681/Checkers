@@ -9,6 +9,7 @@ public class PlayerPiece {
 
     /**
      * Creates a piece for the player to use of the right colour
+     *
      * @param playerColour
      */
     public PlayerPiece(String playerColour) {

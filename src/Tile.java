@@ -12,6 +12,7 @@ public class Tile {
     /**
      * Creates a tile that is either dark brown (usable)
      * or light brown (unusable)
+     *
      * @param darkBrown
      */
     public Tile(boolean darkBrown) {

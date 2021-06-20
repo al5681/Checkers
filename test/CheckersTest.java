@@ -8,8 +8,7 @@ public class CheckersTest {
 
 
     @Test
-    public void testWhiteSpawnLocations()
-    {
+    public void testWhiteSpawnLocations() {
         // piece 1
         assertEquals(0, checkers.getPlayerWhite().getPlayerPieces().get(0).getRowPos());
         assertEquals(1, checkers.getPlayerWhite().getPlayerPieces().get(0).getColPos());

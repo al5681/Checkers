@@ -7,14 +7,12 @@ public class PlayerTest {
     private Player player = new Player("orange");
 
     @Test
-    public void testAmountOfPlayerPieces()
-    {
+    public void testAmountOfPlayerPieces() {
         assertEquals(12, player.getPlayerPieces().size());
     }
 
     @Test
-    public void testCorrectName()
-    {
+    public void testCorrectName() {
         assertEquals("orange", player.getPlayerPieces().get(0).getPlayerColour());
     }
 
