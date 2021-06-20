@@ -1,9 +1,10 @@
 import com.sun.xml.internal.ws.util.StringUtils;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -84,6 +85,7 @@ public class CheckersGUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Checkers");
+        boarderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
         renderBoard();
         renderPieces();
         refreshPlayerTurnDisplay(); // initialise the current player turn display
