@@ -1,5 +1,8 @@
 import org.junit.Test;
 
+import java.awt.*;
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 
 public class CheckersTest {
@@ -61,5 +64,13 @@ public class CheckersTest {
     @Test
     public void printBoard() {
         checkers.getCheckersBoard().printBoard();
+    }
+
+    @Test
+    public void neighbourTiles() {
+        ArrayList<Point> neighbourCoOrdinates = new ArrayList<>();
+        neighbourCoOrdinates = checkers.getNeighbours(checkers.getPlayerBlack().getPlayerPieces().get(0));
+        System.out.println(neighbourCoOrdinates);
+        // note to self: might be a good idea to use expected number of neighbours as test
     }
 }

@@ -1,3 +1,8 @@
+import javafx.util.Pair;
+
+import java.awt.*;
+import java.util.ArrayList;
+
 /**
  * Represents the model for the game
  */
@@ -55,6 +60,35 @@ public class Checkers {
         } else {
             currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
         }
+    }
+
+    /**
+     * Takes a playerpiece and finds the co-ordinates of its neighbouring tiles
+     *
+     * @param playerPiece
+     * @return the co-ordinates of each neighbour tile
+     */
+    public ArrayList<Point> getNeighbours(PlayerPiece playerPiece) {
+        ArrayList<Point> neighbourCoOrdinates = new ArrayList<>();
+        int rowNbr[] = new int[]{-1, -1, -1, 0, 0, 1, 1, 1};
+        int colNbr[] = new int[]{-1, 0, 1, -1, 1, -1, 0, 1};
+        for (int k = 0; k < 8; ++k) {
+            if (inBounds(playerPiece.getRowPos() + rowNbr[k], playerPiece.getColPos() + colNbr[k])) {
+                int row = playerPiece.getRowPos() + rowNbr[k];
+                int col = playerPiece.getColPos() + colNbr[k];
+                neighbourCoOrdinates.add(new Point(row, col));
+            }
+        }
+        return neighbourCoOrdinates;
+    }
+
+    // helper method to check if a tile index is in bounds
+    private boolean inBounds(int row, int col) {
+        if (row >= 0 && row < checkersBoard.getRows() &&
+                col >= 0 && col < checkersBoard.getCols()) {
+            return true;
+        }
+        return false;
     }
 
     public CheckersBoard getCheckersBoard() {

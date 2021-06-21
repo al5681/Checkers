@@ -6,6 +6,7 @@ public class PlayerPiece {
     private String playerColour;
     int rowPos;
     int colPos;
+    private boolean canMakeLegalMove;
 
     /**
      * Creates a piece for the player to use of the right colour
@@ -34,6 +35,14 @@ public class PlayerPiece {
 
     public void setColPos(int colPos) {
         this.colPos = colPos;
+    }
+
+    public boolean getCanMakeLegalMove() {
+        return canMakeLegalMove;
+    }
+
+    public void setCanMakeLegalMove(boolean canMakeLegalMove) {
+        this.canMakeLegalMove = canMakeLegalMove;
     }
 
     @Override
