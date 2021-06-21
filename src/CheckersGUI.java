@@ -21,7 +21,7 @@ public class CheckersGUI extends Application {
     private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
 
     /**
-     * renders each of the tiles of the board as items of a grid pane
+     * renders each of the tiles of the board as buttons of a grid pane
      *
      * @return grid
      */
