@@ -23,7 +23,4 @@ public class Player {
         return playerPieces;
     }
 
-    public void setPlayerPieces(ArrayList<PlayerPiece> playerPieces) {
-        this.playerPieces = playerPieces;
-    }
 }

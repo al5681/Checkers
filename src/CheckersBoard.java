@@ -41,10 +41,6 @@ public class CheckersBoard {
         return board;
     }
 
-    public void setBoard(Tile[][] board) {
-        this.board = board;
-    }
-
     // convenience method for printing the board
     public void printBoard() {
         for (int i = 0; i < rows; i++) {

@@ -60,14 +60,29 @@ public class Checkers {
         }
     }
 
+    /**
+     * Takes a player piece and sets its 'canMakeLegalMove' attribute to the right value
+     * for the current state of the game
+     *
+     * @param playerPiece
+     */
     public void canMakeLegalMoves(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
-        if(tilesThatCanBeMovedTo.size() != 0) {
+        if (tilesThatCanBeMovedTo.size() != 0) {
             playerPiece.setCanMakeLegalMove(true);
+        } else {
+            playerPiece.setCanMakeLegalMove(false); // take into account that once a piece has been moved this may no longer be true
         }
     }
 
-
+    /**
+     * Checks the states of the neighbour tiles of a player piece, if the tile
+     * is dark brown, has no current player piece on it (is not occupied),
+     * and is not behind the player piece, it is added to a list of tiles that piece can move to
+     *
+     * @param playerPiece
+     * @return an array list of the tiles that the player piece can move to
+     */
     public ArrayList<Tile> findTilesThatCanBeMovedTo(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
@@ -88,7 +103,7 @@ public class Checkers {
 
 
     /**
-     * Takes a playerpiece and finds the co-ordinates of its neighbouring tiles
+     * Takes a player piece and finds the co-ordinates of its neighbouring tiles
      *
      * @param playerPiece
      * @return the co-ordinates of each neighbour tile
@@ -111,10 +126,6 @@ public class Checkers {
                 col >= 0 && col < checkersBoard.getCols()) {
             return true;
         }
-        return false;
-    }
-
-    public boolean legalMovePossible(PlayerPiece playerPiece) {
         return false;
     }
 

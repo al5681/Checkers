@@ -55,7 +55,7 @@ public class CheckersGUI extends Application {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
                 if (currTile.getPiece() != null) {
-                    checkers.canMakeLegalMoves(currTile.getPiece());
+                    checkers.canMakeLegalMoves(currTile.getPiece()); // if the piece can make a legal move change its state accordingly
                     Circle circle = new Circle();
                     circle.setRadius(35.0f);
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
@@ -87,12 +87,6 @@ public class CheckersGUI extends Application {
         boarderPane.setTop(playerTurnText);
     }
 
-    public void renderPiecesThatCanMakeLegalMoves() {
-        if (checkers.getCurrentTurn() == "black") {
-
-        }
-    }
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -109,7 +103,7 @@ public class CheckersGUI extends Application {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
                     checkers.changeCurrentPlayersTurn();
-                    renderPieces();
+                    renderPieces(); // render the pieces in their new position
                     refreshPlayerTurnDisplay();
                 });
             }
