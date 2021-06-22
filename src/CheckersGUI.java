@@ -55,12 +55,21 @@ public class CheckersGUI extends Application {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
                 if (currTile.getPiece() != null) {
+                    checkers.canMakeLegalMoves(currTile.getPiece());
                     Circle circle = new Circle();
                     circle.setRadius(35.0f);
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
                         circle.setFill(javafx.scene.paint.Color.BLACK);
+                        if (currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black")) {
+                            circle.setStroke(Color.GOLD);
+                            circle.setStrokeWidth(5.00);
+                        }
                     } else {
                         circle.setFill(javafx.scene.paint.Color.WHITE);
+                        if (currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white")) {
+                            circle.setStroke(Color.GOLD);
+                            circle.setStrokeWidth(5.00);
+                        }
                     }
                     buttonsInGrid[i][j].setGraphic(circle);
                 }
@@ -76,6 +85,12 @@ public class CheckersGUI extends Application {
         playerTurnText.setFont(Font.font("Verdana", 20));
         playerTurnText.setText("Current players turn: " + StringUtils.capitalize(checkers.getCurrentTurn()));
         boarderPane.setTop(playerTurnText);
+    }
+
+    public void renderPiecesThatCanMakeLegalMoves() {
+        if (checkers.getCurrentTurn() == "black") {
+
+        }
     }
 
     public static void main(String[] args) {
@@ -94,6 +109,7 @@ public class CheckersGUI extends Application {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
                     checkers.changeCurrentPlayersTurn();
+                    renderPieces();
                     refreshPlayerTurnDisplay();
                 });
             }
