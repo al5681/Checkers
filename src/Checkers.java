@@ -47,6 +47,10 @@ public class Checkers {
                 }
             }
         }
+        // check the initial black players that can make a move
+        for(int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+            canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
+        }
     }
 
     /**
@@ -55,9 +59,16 @@ public class Checkers {
     public void changeCurrentPlayersTurn() {
         if (currentTurn.equals("black")) {
             currentTurn = playerWhite.getPlayerPieces().get(0).getPlayerColour();
+            for(int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                canMakeLegalMoves(playerWhite.getPlayerPieces().get(i));
+            }
         } else {
             currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
+            for(int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
+            }
         }
+        // update the pieces that can make a legal move
     }
 
     /**

@@ -55,7 +55,6 @@ public class CheckersGUI extends Application {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
                 if (currTile.getPiece() != null) {
-                    checkers.canMakeLegalMoves(currTile.getPiece()); // if the piece can make a legal move change its state accordingly
                     Circle circle = new Circle();
                     circle.setRadius(35.0f);
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
