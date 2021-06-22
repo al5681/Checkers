@@ -60,6 +60,28 @@ public class Checkers {
         }
     }
 
+    
+
+
+    public ArrayList<Tile> findTilesThatCanBeMovedTo(PlayerPiece playerPiece) {
+        ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
+        ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
+        for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
+            for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
+                if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y].isDarkBrown()
+                        && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y].getPiece() == null
+                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]))
+                    if (playerPiece.getPlayerColour().equals("black") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
+                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]);
+                    } else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
+                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]);
+                    }
+            }
+        }
+        return tilesThatCanBeMovedTo;
+    }
+
+
     /**
      * Takes a playerpiece and finds the co-ordinates of its neighbouring tiles
      *
@@ -72,9 +94,7 @@ public class Checkers {
         int colNbr[] = new int[]{-1, 0, 1, -1, 1, -1, 0, 1};
         for (int k = 0; k < 8; ++k) {
             if (inBounds(playerPiece.getRowPos() + rowNbr[k], playerPiece.getColPos() + colNbr[k])) {
-                int row = playerPiece.getRowPos() + rowNbr[k];
-                int col = playerPiece.getColPos() + colNbr[k];
-                neighbourCoOrdinates.add(new Point(row, col));
+                neighbourCoOrdinates.add(new Point(playerPiece.getRowPos() + rowNbr[k], playerPiece.getColPos() + colNbr[k]));
             }
         }
         return neighbourCoOrdinates;
@@ -86,6 +106,10 @@ public class Checkers {
                 col >= 0 && col < checkersBoard.getCols()) {
             return true;
         }
+        return false;
+    }
+
+    public boolean legalMovePossible(PlayerPiece playerPiece) {
         return false;
     }
 

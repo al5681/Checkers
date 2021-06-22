@@ -67,10 +67,30 @@ public class CheckersTest {
     }
 
     @Test
-    public void neighbourTiles() {
+    public void neighbourTilesTestBlack() {
         ArrayList<Point> neighbourCoOrdinates = new ArrayList<>();
-        neighbourCoOrdinates = checkers.getNeighbours(checkers.getPlayerBlack().getPlayerPieces().get(0));
-        System.out.println(neighbourCoOrdinates);
-        // note to self: might be a good idea to use expected number of neighbours as test
+        for (int i = 0; i < checkers.getPlayerBlack().getPlayerPieces().size(); i++) {
+            neighbourCoOrdinates = checkers.getNeighbours(checkers.getPlayerWhite().getPlayerPieces().get(i));
+            System.out.println(neighbourCoOrdinates);
+        }
+    }
+
+    @Test
+    public void tilesToMoveToTestBlack() {
+        ArrayList<Tile> legalTiles = new ArrayList<>();
+        for (int i = 0; i < checkers.getPlayerBlack().getPlayerPieces().size(); i++) {
+            legalTiles = checkers.findTilesThatCanBeMovedTo(checkers.getPlayerBlack().getPlayerPieces().get(i));
+            System.out.println(legalTiles);
+        }
+    }
+
+    @Test
+    public void tilesToMoveToTestWhite() {
+        ArrayList<Tile> legalTiles = new ArrayList<>();
+        for (int i = 0; i < checkers.getPlayerWhite().getPlayerPieces().size(); i++) {
+            legalTiles = checkers.findTilesThatCanBeMovedTo(checkers.getPlayerWhite().getPlayerPieces().get(i));
+            System.out.println(legalTiles);
+        }
+
     }
 }
