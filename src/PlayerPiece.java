@@ -4,8 +4,8 @@
 public class PlayerPiece {
 
     private String playerColour;
-    int rowPos;
-    int colPos;
+    private int rowPos;
+    private int colPos;
     private boolean canMakeLegalMove;
 
     /**
