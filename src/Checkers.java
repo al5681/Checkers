@@ -60,13 +60,11 @@ public class Checkers {
         }
     }
 
-    public boolean canMakeLegalMoves(PlayerPiece playerPiece) {
+    public void canMakeLegalMoves(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
         if(tilesThatCanBeMovedTo.size() != 0) {
             playerPiece.setCanMakeLegalMove(true);
-            return true;
         }
-        return false;
     }
 
 
