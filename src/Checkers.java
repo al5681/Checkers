@@ -68,7 +68,6 @@ public class Checkers {
                 canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
             }
         }
-        // update the pieces that can make a legal move
     }
 
     /**
