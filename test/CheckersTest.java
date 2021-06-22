@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CheckersTest {
 
@@ -66,31 +67,72 @@ public class CheckersTest {
         checkers.getCheckersBoard().printBoard();
     }
 
+    // based on the initial spawn points of the tiles
     @Test
     public void neighbourTilesTestBlack() {
         ArrayList<Point> neighbourCoOrdinates = new ArrayList<>();
         for (int i = 0; i < checkers.getPlayerBlack().getPlayerPieces().size(); i++) {
-            neighbourCoOrdinates = checkers.getNeighbours(checkers.getPlayerWhite().getPlayerPieces().get(i));
-            System.out.println(neighbourCoOrdinates);
+            neighbourCoOrdinates = checkers.getNeighbours(checkers.getPlayerBlack().getPlayerPieces().get(i));
+            System.out.println(neighbourCoOrdinates); // print the co-ordinates out for inspection
         }
+        ArrayList<Point> lastPieceNeighbours = new ArrayList<>();
+        lastPieceNeighbours.add(new Point(6, 5));
+        lastPieceNeighbours.add(new Point(6, 6));
+        lastPieceNeighbours.add(new Point(6, 7));
+        lastPieceNeighbours.add(new Point(7, 5));
+        lastPieceNeighbours.add(new Point(7, 7));
+
+        assertEquals(lastPieceNeighbours, neighbourCoOrdinates); // explicitly checks the coordinates of the neighbours for the last piece,
+        // if this fails something has broken with spawns
+    }
+
+    @Test
+    public void neighbourTilesTestWhite() {
+        ArrayList<Point> neighbourCoOrdinates = new ArrayList<>();
+        for (int i = 0; i < checkers.getPlayerBlack().getPlayerPieces().size(); i++) {
+            neighbourCoOrdinates = checkers.getNeighbours(checkers.getPlayerWhite().getPlayerPieces().get(i));
+            System.out.println(neighbourCoOrdinates); // print the co-ordinates out for inspection
+        }
+        ArrayList<Point> lastPieceNeighbours = new ArrayList<>();
+        lastPieceNeighbours.add(new Point(1, 6));
+        lastPieceNeighbours.add(new Point(1, 7));
+        lastPieceNeighbours.add(new Point(2, 6));
+        lastPieceNeighbours.add(new Point(3, 6));
+        lastPieceNeighbours.add(new Point(3, 7));
+
+        assertEquals(lastPieceNeighbours, neighbourCoOrdinates); // explicitly checks the coordinates of the neighbours for the last piece,
+        // if this fails something has broken with spawns
     }
 
     @Test
     public void tilesToMoveToTestBlack() {
-        ArrayList<Tile> legalTiles = new ArrayList<>();
+        ArrayList<ArrayList<Tile>> legalTiles = new ArrayList<>();
         for (int i = 0; i < checkers.getPlayerBlack().getPlayerPieces().size(); i++) {
-            legalTiles = checkers.findTilesThatCanBeMovedTo(checkers.getPlayerBlack().getPlayerPieces().get(i));
-            System.out.println(legalTiles);
+            legalTiles.add(checkers.findTilesThatCanBeMovedTo(checkers.getPlayerBlack().getPlayerPieces().get(i)));
+        }
+        // the first four pieces should have tiles to move to
+        for (int i = 0; i < 4; i++) {
+            assertEquals(true, legalTiles.get(i).size() != 0);
+        }
+        // the remaining pieces should have no tiles to move to
+        for (int i = 4; i < 12; i++) {
+            assertEquals(false, legalTiles.get(i).size() != 0);
         }
     }
 
     @Test
     public void tilesToMoveToTestWhite() {
-        ArrayList<Tile> legalTiles = new ArrayList<>();
+        ArrayList<ArrayList<Tile>> legalTiles = new ArrayList<>();
         for (int i = 0; i < checkers.getPlayerWhite().getPlayerPieces().size(); i++) {
-            legalTiles = checkers.findTilesThatCanBeMovedTo(checkers.getPlayerWhite().getPlayerPieces().get(i));
-            System.out.println(legalTiles);
+            legalTiles.add(checkers.findTilesThatCanBeMovedTo(checkers.getPlayerWhite().getPlayerPieces().get(i)));
         }
-
+        // the first 8 pieces should have no moves to make
+        for (int i = 0; i < 8; i++) {
+            assertEquals(false, legalTiles.get(i).size() != 0);
+        }
+        // the remaining pieces should be able to move
+        for (int i = 8; i < 12; i++) {
+            assertEquals(true, legalTiles.get(i).size() != 0);
+        }
     }
 }
