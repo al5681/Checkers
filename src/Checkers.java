@@ -68,10 +68,10 @@ public class Checkers {
     }
 
     public Tile takeTurn(Tile tileToMoveTo, ArrayList<Tile> highLightedTiles) {
-        if(highLightedTiles.contains(tileToMoveTo)) {
-            if(currentTurn.equals("black")) {
-                for(int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
-                    if(playerBlack.getPlayerPieces().get(i).isSelected()) {
+        if (highLightedTiles.contains(tileToMoveTo)) {
+            if (currentTurn.equals("black")) {
+                for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                    if (playerBlack.getPlayerPieces().get(i).isSelected()) {
                         checkersBoard.getBoard()[playerBlack.getPlayerPieces().get(i).getRowPos()][playerBlack.getPlayerPieces().get(i).getColPos()].setPiece(null);
                         playerBlack.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerBlack.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
@@ -81,9 +81,9 @@ public class Checkers {
                     }
                 }
             }
-            if(currentTurn.equals("white")) {
-                for(int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
-                    if(playerWhite.getPlayerPieces().get(i).isSelected()) {
+            if (currentTurn.equals("white")) {
+                for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                    if (playerWhite.getPlayerPieces().get(i).isSelected()) {
                         checkersBoard.getBoard()[playerWhite.getPlayerPieces().get(i).getRowPos()][playerWhite.getPlayerPieces().get(i).getColPos()].setPiece(null);
                         playerWhite.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerWhite.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());

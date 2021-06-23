@@ -52,6 +52,35 @@ public class CheckersGUI extends Application {
         return grid;
     }
 
+public void updateBoardRender() {
+        for(int i = 0; i < buttonsInGrid.length; i++) {
+            for(int j = 0; j < buttonsInGrid.length; j++) {
+                Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
+                if (tilesToCurrentlyHighlight.contains(currTile)) {
+                    buttonsInGrid[i][j].setStyle("-fx-background-color:#009900; -fx-background-radius: 0");
+                } else if (currTile.isDarkBrown()) {
+                    buttonsInGrid[i][j].setStyle("-fx-background-color:#96652c; -fx-background-radius: 0");
+                } else {
+                    buttonsInGrid[i][j].setStyle("-fx-background-color:#e6c9aa; -fx-background-radius: 0");
+                }
+            }
+        }
+}
+
+    public void updateBoardRenderNoHightLights() {
+        for(int i = 0; i < buttonsInGrid.length; i++) {
+            for(int j = 0; j < buttonsInGrid.length; j++) {
+                Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
+                if (currTile.isDarkBrown()) {
+                    buttonsInGrid[i][j].setStyle("-fx-background-color:#96652c; -fx-background-radius: 0");
+                } else {
+                    buttonsInGrid[i][j].setStyle("-fx-background-color:#e6c9aa; -fx-background-radius: 0");
+                }
+            }
+        }
+    }
+
+
     /**
      * Renders the pieces onto the board for the tiles that currently have pieces on them
      */
@@ -117,11 +146,12 @@ public class CheckersGUI extends Application {
                     Tile currTile = checkers.getCheckersBoard().getBoard()[currenti][currentj];
                     if (currTile.getPiece() != null && checkers.getGameState() == GameState.SelectingPiece) {
                         tilesToCurrentlyHighlight = checkers.takeTurn(currTile.getPiece());
+                        updateBoardRender();
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
+                        updateBoardRenderNoHightLights();
                         checkers.takeTurn(currTile, tilesToCurrentlyHighlight);
                         tilesToCurrentlyHighlight = null;
                     }
-                    //renderBoard();
                     renderPieces(); // render the pieces in their new position
                     refreshPlayerTurnDisplay();
                 });
