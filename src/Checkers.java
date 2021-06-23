@@ -11,6 +11,7 @@ public class Checkers {
     private Player playerBlack = new Player("black");
     private Player playerWhite = new Player("white");
     private String currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour(); // black goes first
+    private GameState gameState;
 
     /**
      * Creates an instance of the board and loads the pieces in their initial spawns for the players
@@ -51,6 +52,10 @@ public class Checkers {
         for(int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
             canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
         }
+    }
+
+    public void takeTurn() {
+
     }
 
     /**
