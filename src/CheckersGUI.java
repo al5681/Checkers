@@ -10,6 +10,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 /**
  * Represents the GUI for the game, which displays the current state of the Checkers class
  */
@@ -19,6 +21,7 @@ public class CheckersGUI extends Application {
     private BorderPane boarderPane = new BorderPane();
     private GridPane grid = new GridPane();
     private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
+    private ArrayList<Tile> tilesToCurrentlyHighlight = new ArrayList<>(); // this should be in checkers needs to be refactored
 
     /**
      * renders each of the tiles of the board as buttons of a grid pane
@@ -30,7 +33,9 @@ public class CheckersGUI extends Application {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
                 Button currButton = new Button();
-                if (currTile.isDarkBrown()) {
+                if (tilesToCurrentlyHighlight.contains(currTile)) {
+                    currButton.setStyle("-fx-background-color:#009900; -fx-background-radius: 0");
+                } else if (currTile.isDarkBrown()) {
                     currButton.setStyle("-fx-background-color:#96652c; -fx-background-radius: 0");
                 } else {
                     currButton.setStyle("-fx-background-color:#e6c9aa; -fx-background-radius: 0");
@@ -59,18 +64,24 @@ public class CheckersGUI extends Application {
                     circle.setRadius(35.0f);
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
                         circle.setFill(javafx.scene.paint.Color.BLACK);
-                        if (currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black")) {
+                        if (currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == GameState.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
                     } else {
                         circle.setFill(javafx.scene.paint.Color.WHITE);
-                        if (currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white")) {
+                        if (currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == GameState.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
                     }
+                    if (currTile.getPiece().isSelected() && checkers.getGameState() == GameState.SelectingTileToMoveTo) {
+                        circle.setStroke(Color.GOLD);
+                        circle.setStrokeWidth(5.00);
+                    }
                     buttonsInGrid[i][j].setGraphic(circle);
+                } else if (currTile.getPiece() == null) {
+                    buttonsInGrid[i][j].setGraphic(null);
                 }
             }
         }
@@ -100,8 +111,17 @@ public class CheckersGUI extends Application {
         // game loop
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
+                int currenti = i;
+                int currentj = j;
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
-                    checkers.changeCurrentPlayersTurn();
+                    Tile currTile = checkers.getCheckersBoard().getBoard()[currenti][currentj];
+                    if (currTile.getPiece() != null && checkers.getGameState() == GameState.SelectingPiece) {
+                        tilesToCurrentlyHighlight = checkers.takeTurn(currTile.getPiece());
+                    } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
+                        checkers.takeTurn(currTile, tilesToCurrentlyHighlight);
+                        tilesToCurrentlyHighlight = null;
+                    }
+                    //renderBoard();
                     renderPieces(); // render the pieces in their new position
                     refreshPlayerTurnDisplay();
                 });
@@ -110,4 +130,5 @@ public class CheckersGUI extends Application {
         primaryStage.setScene(new Scene(boarderPane));
         primaryStage.show();
     }
+
 }

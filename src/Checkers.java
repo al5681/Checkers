@@ -49,13 +49,54 @@ public class Checkers {
             }
         }
         // check the initial black players that can make a move
-        for(int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+        for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
             canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
         }
+        gameState = GameState.SelectingPiece;
     }
 
-    public void takeTurn() {
+    public ArrayList<Tile> takeTurn(PlayerPiece playerPiece) {
+        ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
+        if (gameState == GameState.SelectingPiece) {
+            if (playerPiece.getCanMakeLegalMove()) {
+                playerPiece.setSelected(true);
+                gameState = GameState.SelectingTileToMoveTo;
+                return tiles;
+            }
+        }
+        return null;
+    }
 
+    public Tile takeTurn(Tile tileToMoveTo, ArrayList<Tile> highLightedTiles) {
+        if(highLightedTiles.contains(tileToMoveTo)) {
+            if(currentTurn.equals("black")) {
+                for(int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                    if(playerBlack.getPlayerPieces().get(i).isSelected()) {
+                        checkersBoard.getBoard()[playerBlack.getPlayerPieces().get(i).getRowPos()][playerBlack.getPlayerPieces().get(i).getColPos()].setPiece(null);
+                        playerBlack.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
+                        playerBlack.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
+                        checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
+                        playerBlack.getPlayerPieces().get(i).setSelected(false);
+
+                    }
+                }
+            }
+            if(currentTurn.equals("white")) {
+                for(int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                    if(playerWhite.getPlayerPieces().get(i).isSelected()) {
+                        checkersBoard.getBoard()[playerWhite.getPlayerPieces().get(i).getRowPos()][playerWhite.getPlayerPieces().get(i).getColPos()].setPiece(null);
+                        playerWhite.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
+                        playerWhite.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
+                        checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerWhite.getPlayerPieces().get(i));
+                        playerWhite.getPlayerPieces().get(i).setSelected(false);
+
+                    }
+                }
+            }
+            gameState = GameState.SelectingPiece;
+            changeCurrentPlayersTurn();
+        }
+        return tileToMoveTo;
     }
 
     /**
@@ -64,12 +105,12 @@ public class Checkers {
     public void changeCurrentPlayersTurn() {
         if (currentTurn.equals("black")) {
             currentTurn = playerWhite.getPlayerPieces().get(0).getPlayerColour();
-            for(int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+            for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
                 canMakeLegalMoves(playerWhite.getPlayerPieces().get(i));
             }
         } else {
             currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
-            for(int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+            for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                 canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
             }
         }
@@ -162,5 +203,13 @@ public class Checkers {
 
     public String getCurrentTurn() {
         return currentTurn;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }

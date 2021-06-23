@@ -18,11 +18,11 @@ public class CheckersBoard {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (row % 2 == 0 && col % 2 == 0) {
-                    board[row][col] = new Tile(false);
+                    board[row][col] = new Tile(false, row, col);
                 } else if (row % 2 != 0 && col % 2 != 0) {
-                    board[row][col] = new Tile(false);
+                    board[row][col] = new Tile(false, row, col);
                 } else {
-                    board[row][col] = new Tile(true);
+                    board[row][col] = new Tile(true, row, col);
                 }
             }
         }
