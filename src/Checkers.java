@@ -92,7 +92,7 @@ public class Checkers {
                     if (playerBlack.getPlayerPieces().get(i).isSelected()) {
                         // remove from current tile
                         checkersBoard.getBoard()[playerBlack.getPlayerPieces().get(i).getRowPos()][playerBlack.getPlayerPieces().get(i).getColPos()].setPiece(null);
-                        // get and set new positions for tile
+                        // get and set new positions for piece
                         playerBlack.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerBlack.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         // update the state of the tile
