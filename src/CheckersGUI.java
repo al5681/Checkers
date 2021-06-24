@@ -10,8 +10,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-
 /**
  * Represents the GUI for the game, which displays the current state of the Checkers class
  */
@@ -49,6 +47,9 @@ public class CheckersGUI extends Application {
         return grid;
     }
 
+    /**
+     * Updates the board to show the current state of the game
+     */
     public void updateBoardRender() {
         for (int i = 0; i < buttonsInGrid.length; i++) {
             for (int j = 0; j < buttonsInGrid.length; j++) {
@@ -63,20 +64,6 @@ public class CheckersGUI extends Application {
             }
         }
     }
-
-    public void updateBoardRenderNoHighLights() {
-        for (int i = 0; i < buttonsInGrid.length; i++) {
-            for (int j = 0; j < buttonsInGrid.length; j++) {
-                Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
-                if (currTile.isDarkBrown()) {
-                    buttonsInGrid[i][j].setStyle("-fx-background-color:#96652c; -fx-background-radius: 0");
-                } else {
-                    buttonsInGrid[i][j].setStyle("-fx-background-color:#e6c9aa; -fx-background-radius: 0");
-                }
-            }
-        }
-    }
-
 
     /**
      * Renders the pieces onto the board for the tiles that currently have pieces on them
@@ -131,36 +118,42 @@ public class CheckersGUI extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Checkers");
         boarderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
+        // // initialise the displays
         renderBoard();
         renderPieces();
-        refreshPlayerTurnDisplay(); // initialise the current player turn display
-        // game loop
+        refreshPlayerTurnDisplay();
+        // call the game loop
+        gameLoop();
+        primaryStage.setScene(new Scene(boarderPane));
+        primaryStage.show();
+    }
+
+    /**
+     * Gets button clicks from the players and updates the state of the game accordingly each time
+     */
+    public void gameLoop() {
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
-                int currenti = i;
-                int currentj = j;
+                int currentI = i;
+                int currentJ = j;
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
-                    Tile currTile = checkers.getCheckersBoard().getBoard()[currenti][currentj];
+                    Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
                     if (currTile.getPiece() != null && checkers.getGameState() == GameState.SelectingPiece) {
                         checkers.selectPiece(currTile.getPiece());
-                        System.out.println(checkers.getGameState());
                         updateBoardRender();
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
-                        boolean valid = checkers.movePiece(currTile, checkers.getHighlightedTiles());
+                        boolean valid = checkers.movePiece(currTile, checkers.getHighlightedTiles()); // check if they clicked on a tile they can move to
                         if (valid) {
-                            updateBoardRenderNoHighLights();
-                            System.out.println(checkers.getGameState());
+                            updateBoardRender();
                             checkers.movePiece(currTile, checkers.getHighlightedTiles());
                         }
-                        else {System.out.println(checkers.getGameState());}
+                        else {} // do nothing and wait for a valid tile to be selected
                     }
                     renderPieces(); // render the pieces in their new position
                     refreshPlayerTurnDisplay();
                 });
             }
         }
-        primaryStage.setScene(new Scene(boarderPane));
-        primaryStage.show();
     }
 
 }

@@ -67,9 +67,9 @@ public class Checkers {
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
-                // highlight all the tiles
+                // highlight all the tiles the piece can move to
                 for (int i = 0; i < tiles.size(); i++) {
-                    tiles.get(i).setHighlghted(true);
+                    tiles.get(i).setHighlighted(true);
                 }
                 return tiles;
             }
@@ -79,7 +79,7 @@ public class Checkers {
 
     /**
      * Takes a tile for a player piece to move to, and if that tile is available for that player piece they are
-     * able to move there
+     *  moved there
      *
      * @param tileToMoveTo
      * @param highLightedTiles
@@ -90,10 +90,13 @@ public class Checkers {
             if (currentTurn.equals("black")) {
                 for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                     if (playerBlack.getPlayerPieces().get(i).isSelected()) {
-                        checkersBoard.getBoard()[playerBlack.getPlayerPieces().get(i).getRowPos()][playerBlack.getPlayerPieces().get(i).getColPos()].setPiece(null);
+                        checkersBoard.getBoard()[playerBlack.getPlayerPieces().get(i).getRowPos()][playerBlack.getPlayerPieces().get(i).getColPos()].setPiece(null); // remove from current tile
+                        // get and set new positions for tile
                         playerBlack.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerBlack.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
+                        // update the state of the tile
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
+                        // the player piece is no longer selected
                         playerBlack.getPlayerPieces().get(i).setSelected(false);
 
                     }
@@ -114,10 +117,10 @@ public class Checkers {
             // unhighlight tiles
             ArrayList<Tile> currentlyHighlighted = getHighlightedTiles();
             for (int i = 0; i < currentlyHighlighted.size(); i++) {
-                currentlyHighlighted.get(i).setHighlghted(false);
+                currentlyHighlighted.get(i).setHighlighted(false);
             }
-            gameState = GameState.SelectingPiece;
-            changeCurrentPlayersTurn();
+            gameState = GameState.SelectingPiece; // reset the game state
+            changeCurrentPlayersTurn(); // end the turn
             return true;
         }
         return false;
@@ -181,7 +184,6 @@ public class Checkers {
         return tilesThatCanBeMovedTo;
     }
 
-
     /**
      * Takes a player piece and finds the co-ordinates of its neighbouring tiles
      *
@@ -213,10 +215,6 @@ public class Checkers {
         return checkersBoard;
     }
 
-    public void setCheckersBoard(CheckersBoard checkersBoard) {
-        this.checkersBoard = checkersBoard;
-    }
-
     public Player getPlayerBlack() {
         return playerBlack;
     }
@@ -233,20 +231,21 @@ public class Checkers {
         return gameState;
     }
 
+    /**
+     * Returns the tiles for which the highlighted attribute == true
+     *
+     * @return the currently highlighted tiles
+     */
     public ArrayList<Tile> getHighlightedTiles() {
         ArrayList<Tile> highlightedTiles = new ArrayList<>();
         for (int row = 0; row < checkersBoard.getRows(); row++) {
             for (int col = 0; col < checkersBoard.getCols(); col++) {
-                if (checkersBoard.getBoard()[row][col].isHighlghted()) {
+                if (checkersBoard.getBoard()[row][col].isHighlighted()) {
                     highlightedTiles.add(checkersBoard.getBoard()[row][col]);
                 }
 
             }
         }
         return highlightedTiles;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
     }
 }

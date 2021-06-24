@@ -10,11 +10,11 @@ public class Tile {
     private PlayerPiece piece;
     private final int row;
     private final int col;
-    private boolean highlghted;
+    private boolean highlighted;
 
     /**
      * Creates a tile that is either dark brown (usable)
-     * or light brown (unusable)
+     * or light brown (unusable), and initialises its row and col value
      *
      * @param darkBrown
      * @param row
@@ -46,12 +46,12 @@ public class Tile {
         return col;
     }
 
-    public boolean isHighlghted() {
-        return highlghted;
+    public boolean isHighlighted() {
+        return highlighted;
     }
 
-    public void setHighlghted(boolean highlghted) {
-        this.highlghted = highlghted;
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
     }
 
     @Override

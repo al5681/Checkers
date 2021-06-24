@@ -5,8 +5,8 @@ public class CheckersBoard {
 
 
     private Tile[][] board;
-    final int rows = 8;
-    final int cols = 8;
+    private final int rows = 8;
+    private final int cols = 8;
 
 
     /**
