@@ -90,7 +90,8 @@ public class Checkers {
             if (currentTurn.equals("black")) {
                 for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                     if (playerBlack.getPlayerPieces().get(i).isSelected()) {
-                        checkersBoard.getBoard()[playerBlack.getPlayerPieces().get(i).getRowPos()][playerBlack.getPlayerPieces().get(i).getColPos()].setPiece(null); // remove from current tile
+                        // remove from current tile
+                        checkersBoard.getBoard()[playerBlack.getPlayerPieces().get(i).getRowPos()][playerBlack.getPlayerPieces().get(i).getColPos()].setPiece(null);
                         // get and set new positions for tile
                         playerBlack.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerBlack.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
