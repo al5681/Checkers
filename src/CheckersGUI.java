@@ -143,10 +143,16 @@ public class CheckersGUI extends Application {
                     Tile currTile = checkers.getCheckersBoard().getBoard()[currenti][currentj];
                     if (currTile.getPiece() != null && checkers.getGameState() == GameState.SelectingPiece) {
                         checkers.selectPiece(currTile.getPiece());
+                        System.out.println(checkers.getGameState());
                         updateBoardRender();
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
-                        updateBoardRenderNoHighLights();
-                        checkers.movePiece(currTile, checkers.getHighlightedTiles());
+                        boolean valid = checkers.movePiece(currTile, checkers.getHighlightedTiles());
+                        if (valid) {
+                            updateBoardRenderNoHighLights();
+                            System.out.println(checkers.getGameState());
+                            checkers.movePiece(currTile, checkers.getHighlightedTiles());
+                        }
+                        else {System.out.println(checkers.getGameState());}
                     }
                     renderPieces(); // render the pieces in their new position
                     refreshPlayerTurnDisplay();

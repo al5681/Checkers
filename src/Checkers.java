@@ -64,7 +64,7 @@ public class Checkers {
     public ArrayList<Tile> selectPiece(PlayerPiece playerPiece) {
         ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
         if (gameState == GameState.SelectingPiece) {
-            if (playerPiece.getCanMakeLegalMove()) {
+            if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
                 // highlight all the tiles
@@ -83,8 +83,9 @@ public class Checkers {
      *
      * @param tileToMoveTo
      * @param highLightedTiles
+     * @return true if move was successful false otherwise
      */
-    public void movePiece(Tile tileToMoveTo, ArrayList<Tile> highLightedTiles) {
+    public boolean movePiece(Tile tileToMoveTo, ArrayList<Tile> highLightedTiles) {
         if (highLightedTiles.contains(tileToMoveTo)) {
             if (currentTurn.equals("black")) {
                 for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
@@ -117,7 +118,9 @@ public class Checkers {
             }
             gameState = GameState.SelectingPiece;
             changeCurrentPlayersTurn();
+            return true;
         }
+        return false;
     }
 
     /**
