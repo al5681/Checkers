@@ -79,7 +79,7 @@ public class Checkers {
 
     /**
      * Takes a tile for a player piece to move to, and if that tile is available for that player piece they are
-     *  moved there
+     * moved there
      *
      * @param tileToMoveTo
      * @param highLightedTiles
