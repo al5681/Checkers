@@ -23,9 +23,8 @@ public class CheckersGUI extends Application {
     /**
      * renders each of the tiles of the board as buttons of a grid pane
      *
-     * @return grid
      */
-    public GridPane renderBoard() {
+    public void renderBoard() {
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
@@ -44,7 +43,6 @@ public class CheckersGUI extends Application {
             }
         }
         boarderPane.setCenter(grid);
-        return grid;
     }
 
     /**
@@ -93,7 +91,7 @@ public class CheckersGUI extends Application {
                         circle.setStrokeWidth(5.00);
                     }
                     buttonsInGrid[i][j].setGraphic(circle);
-                } else if (currTile.getPiece() == null) {
+                } else {
                     buttonsInGrid[i][j].setGraphic(null);
                 }
             }

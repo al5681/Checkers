@@ -59,22 +59,19 @@ public class Checkers {
      * Takes a player piece and returns the tiles it can move to, updating the game state accordingly
      *
      * @param playerPiece
-     * @return the tiles the player piece can move to or null if they can't move to any tiles
      */
-    public ArrayList<Tile> selectPiece(PlayerPiece playerPiece) {
+    public void selectPiece(PlayerPiece playerPiece) {
         ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
         if (gameState == GameState.SelectingPiece) {
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
                 // highlight all the tiles the piece can move to
-                for (int i = 0; i < tiles.size(); i++) {
-                    tiles.get(i).setHighlighted(true);
+                for (Tile tile : tiles) {
+                    tile.setHighlighted(true);
                 }
-                return tiles;
             }
         }
-        return null;
     }
 
     /**
@@ -117,8 +114,8 @@ public class Checkers {
             }
             // unhighlight tiles
             ArrayList<Tile> currentlyHighlighted = getHighlightedTiles();
-            for (int i = 0; i < currentlyHighlighted.size(); i++) {
-                currentlyHighlighted.get(i).setHighlighted(false);
+            for (Tile tile : currentlyHighlighted) {
+                tile.setHighlighted(false);
             }
             gameState = GameState.SelectingPiece; // reset the game state
             changeCurrentPlayersTurn(); // end the turn
@@ -152,11 +149,8 @@ public class Checkers {
      */
     public void canMakeLegalMoves(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
-        if (tilesThatCanBeMovedTo.size() != 0) {
-            playerPiece.setCanMakeLegalMove(true);
-        } else {
-            playerPiece.setCanMakeLegalMove(false); // take into account that once a piece has been moved this may no longer be true
-        }
+        // take into account that once a piece has been moved this may no longer be true
+        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0);
     }
 
     /**
@@ -193,8 +187,8 @@ public class Checkers {
      */
     public ArrayList<Point> getNeighbours(PlayerPiece playerPiece) {
         ArrayList<Point> neighbourCoOrdinates = new ArrayList<>();
-        int rowNbr[] = new int[]{-1, -1, -1, 0, 0, 1, 1, 1};
-        int colNbr[] = new int[]{-1, 0, 1, -1, 1, -1, 0, 1};
+        int[] rowNbr = new int[]{-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] colNbr = new int[]{-1, 0, 1, -1, 1, -1, 0, 1};
         for (int k = 0; k < 8; ++k) {
             if (inBounds(playerPiece.getRowPos() + rowNbr[k], playerPiece.getColPos() + colNbr[k])) {
                 neighbourCoOrdinates.add(new Point(playerPiece.getRowPos() + rowNbr[k], playerPiece.getColPos() + colNbr[k]));
@@ -205,11 +199,8 @@ public class Checkers {
 
     // helper method to check if a tile index is in bounds
     private boolean inBounds(int row, int col) {
-        if (row >= 0 && row < checkersBoard.getRows() &&
-                col >= 0 && col < checkersBoard.getCols()) {
-            return true;
-        }
-        return false;
+        return row >= 0 && row < checkersBoard.getRows() &&
+                col >= 0 && col < checkersBoard.getCols();
     }
 
     public CheckersBoard getCheckersBoard() {
