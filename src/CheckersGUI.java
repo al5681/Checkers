@@ -21,7 +21,6 @@ public class CheckersGUI extends Application {
     private BorderPane boarderPane = new BorderPane();
     private GridPane grid = new GridPane();
     private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
-    private ArrayList<Tile> tilesToCurrentlyHighlight = new ArrayList<>(); // this should be in checkers needs to be refactored
 
     /**
      * renders each of the tiles of the board as buttons of a grid pane
@@ -33,9 +32,7 @@ public class CheckersGUI extends Application {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
                 Button currButton = new Button();
-                if (tilesToCurrentlyHighlight.contains(currTile)) {
-                    currButton.setStyle("-fx-background-color:#009900; -fx-background-radius: 0");
-                } else if (currTile.isDarkBrown()) {
+                if (currTile.isDarkBrown()) {
                     currButton.setStyle("-fx-background-color:#96652c; -fx-background-radius: 0");
                 } else {
                     currButton.setStyle("-fx-background-color:#e6c9aa; -fx-background-radius: 0");
@@ -52,11 +49,11 @@ public class CheckersGUI extends Application {
         return grid;
     }
 
-public void updateBoardRender() {
-        for(int i = 0; i < buttonsInGrid.length; i++) {
-            for(int j = 0; j < buttonsInGrid.length; j++) {
+    public void updateBoardRender() {
+        for (int i = 0; i < buttonsInGrid.length; i++) {
+            for (int j = 0; j < buttonsInGrid.length; j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
-                if (tilesToCurrentlyHighlight.contains(currTile)) {
+                if (checkers.getHighlightedTiles().contains(currTile)) {
                     buttonsInGrid[i][j].setStyle("-fx-background-color:#009900; -fx-background-radius: 0");
                 } else if (currTile.isDarkBrown()) {
                     buttonsInGrid[i][j].setStyle("-fx-background-color:#96652c; -fx-background-radius: 0");
@@ -65,11 +62,11 @@ public void updateBoardRender() {
                 }
             }
         }
-}
+    }
 
     public void updateBoardRenderNoHighLights() {
-        for(int i = 0; i < buttonsInGrid.length; i++) {
-            for(int j = 0; j < buttonsInGrid.length; j++) {
+        for (int i = 0; i < buttonsInGrid.length; i++) {
+            for (int j = 0; j < buttonsInGrid.length; j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
                 if (currTile.isDarkBrown()) {
                     buttonsInGrid[i][j].setStyle("-fx-background-color:#96652c; -fx-background-radius: 0");
@@ -145,12 +142,11 @@ public void updateBoardRender() {
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
                     Tile currTile = checkers.getCheckersBoard().getBoard()[currenti][currentj];
                     if (currTile.getPiece() != null && checkers.getGameState() == GameState.SelectingPiece) {
-                        tilesToCurrentlyHighlight = checkers.selectPiece(currTile.getPiece());
+                        checkers.selectPiece(currTile.getPiece());
                         updateBoardRender();
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
                         updateBoardRenderNoHighLights();
-                        checkers.movePiece(currTile, tilesToCurrentlyHighlight);
-                        tilesToCurrentlyHighlight = null;
+                        checkers.movePiece(currTile, checkers.getHighlightedTiles());
                     }
                     renderPieces(); // render the pieces in their new position
                     refreshPlayerTurnDisplay();

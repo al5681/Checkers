@@ -57,6 +57,7 @@ public class Checkers {
 
     /**
      * Takes a player piece and returns the tiles it can move to, updating the game state accordingly
+     *
      * @param playerPiece
      * @return the tiles the player piece can move to or null if they can't move to any tiles
      */
@@ -66,6 +67,10 @@ public class Checkers {
             if (playerPiece.getCanMakeLegalMove()) {
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
+                // highlight all the tiles
+                for (int i = 0; i < tiles.size(); i++) {
+                    tiles.get(i).setHighlghted(true);
+                }
                 return tiles;
             }
         }
@@ -104,6 +109,11 @@ public class Checkers {
 
                     }
                 }
+            }
+            // unhighlight tiles
+            ArrayList<Tile> currentlyHighlighted = getHighlightedTiles();
+            for (int i = 0; i < currentlyHighlighted.size(); i++) {
+                currentlyHighlighted.get(i).setHighlghted(false);
             }
             gameState = GameState.SelectingPiece;
             changeCurrentPlayersTurn();
@@ -218,6 +228,19 @@ public class Checkers {
 
     public GameState getGameState() {
         return gameState;
+    }
+
+    public ArrayList<Tile> getHighlightedTiles() {
+        ArrayList<Tile> highlightedTiles = new ArrayList<>();
+        for (int row = 0; row < checkersBoard.getRows(); row++) {
+            for (int col = 0; col < checkersBoard.getCols(); col++) {
+                if (checkersBoard.getBoard()[row][col].isHighlghted()) {
+                    highlightedTiles.add(checkersBoard.getBoard()[row][col]);
+                }
+
+            }
+        }
+        return highlightedTiles;
     }
 
     public void setGameState(GameState gameState) {

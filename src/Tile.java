@@ -10,6 +10,7 @@ public class Tile {
     private PlayerPiece piece;
     private final int row;
     private final int col;
+    private boolean highlghted;
 
     /**
      * Creates a tile that is either dark brown (usable)
@@ -43,6 +44,14 @@ public class Tile {
 
     public int getCol() {
         return col;
+    }
+
+    public boolean isHighlghted() {
+        return highlghted;
+    }
+
+    public void setHighlghted(boolean highlghted) {
+        this.highlghted = highlghted;
     }
 
     @Override
