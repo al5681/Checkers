@@ -55,7 +55,12 @@ public class Checkers {
         gameState = GameState.SelectingPiece;
     }
 
-    public ArrayList<Tile> takeTurn(PlayerPiece playerPiece) {
+    /**
+     * Takes a player piece and returns the tiles it can move to, updating the game state accordingly
+     * @param playerPiece
+     * @return the tiles the player piece can move to or null if they can't move to any tiles
+     */
+    public ArrayList<Tile> selectPiece(PlayerPiece playerPiece) {
         ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
         if (gameState == GameState.SelectingPiece) {
             if (playerPiece.getCanMakeLegalMove()) {
@@ -67,7 +72,14 @@ public class Checkers {
         return null;
     }
 
-    public Tile takeTurn(Tile tileToMoveTo, ArrayList<Tile> highLightedTiles) {
+    /**
+     * Takes a tile for a player piece to move to, and if that tile is available for that player piece they are
+     * able to move there
+     *
+     * @param tileToMoveTo
+     * @param highLightedTiles
+     */
+    public void movePiece(Tile tileToMoveTo, ArrayList<Tile> highLightedTiles) {
         if (highLightedTiles.contains(tileToMoveTo)) {
             if (currentTurn.equals("black")) {
                 for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
@@ -96,7 +108,6 @@ public class Checkers {
             gameState = GameState.SelectingPiece;
             changeCurrentPlayersTurn();
         }
-        return tileToMoveTo;
     }
 
     /**

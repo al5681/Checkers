@@ -67,7 +67,7 @@ public void updateBoardRender() {
         }
 }
 
-    public void updateBoardRenderNoHightLights() {
+    public void updateBoardRenderNoHighLights() {
         for(int i = 0; i < buttonsInGrid.length; i++) {
             for(int j = 0; j < buttonsInGrid.length; j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
@@ -145,11 +145,11 @@ public void updateBoardRender() {
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
                     Tile currTile = checkers.getCheckersBoard().getBoard()[currenti][currentj];
                     if (currTile.getPiece() != null && checkers.getGameState() == GameState.SelectingPiece) {
-                        tilesToCurrentlyHighlight = checkers.takeTurn(currTile.getPiece());
+                        tilesToCurrentlyHighlight = checkers.selectPiece(currTile.getPiece());
                         updateBoardRender();
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
-                        updateBoardRenderNoHightLights();
-                        checkers.takeTurn(currTile, tilesToCurrentlyHighlight);
+                        updateBoardRenderNoHighLights();
+                        checkers.movePiece(currTile, tilesToCurrentlyHighlight);
                         tilesToCurrentlyHighlight = null;
                     }
                     renderPieces(); // render the pieces in their new position
