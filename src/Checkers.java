@@ -58,10 +58,12 @@ public class Checkers {
     /**
      * Takes a player piece and returns the tiles it can move to, updating the game state accordingly
      *
-     * @param playerPiece
+     * @param tileOfPiece
      */
-    public void selectPiece(PlayerPiece playerPiece) {
-        ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
+    public void selectPiece(Tile tileOfPiece) {
+        if (tileOfPiece.getPiece() != null) {
+            PlayerPiece playerPiece = tileOfPiece.getPiece();
+            ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
@@ -69,6 +71,7 @@ public class Checkers {
                 for (Tile tile : tiles) {
                     tile.setHighlighted(true);
                 }
+            }
         }
     }
 

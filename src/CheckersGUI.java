@@ -136,17 +136,12 @@ public class CheckersGUI extends Application {
                 int currentJ = j;
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
                     Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
-                    if (currTile.getPiece() != null && checkers.getGameState() == GameState.SelectingPiece) {
-                        checkers.selectPiece(currTile.getPiece());
-                        updateBoardRender();
+                    if (checkers.getGameState() == GameState.SelectingPiece) {
+                        checkers.selectPiece(currTile);
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
-                        boolean valid = checkers.movePiece(currTile, checkers.getHighlightedTiles()); // check if they clicked on a tile they can move to
-                        if (valid) {
-                            updateBoardRender();
                             checkers.movePiece(currTile, checkers.getHighlightedTiles());
-                        }
-                        else {} // do nothing and wait for a valid tile to be selected
                     }
+                    updateBoardRender();
                     renderPieces(); // render the pieces in their new position
                     refreshPlayerTurnDisplay();
                 });
