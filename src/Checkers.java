@@ -62,7 +62,6 @@ public class Checkers {
      */
     public void selectPiece(PlayerPiece playerPiece) {
         ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
-        if (gameState == GameState.SelectingPiece) {
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
@@ -70,7 +69,6 @@ public class Checkers {
                 for (Tile tile : tiles) {
                     tile.setHighlighted(true);
                 }
-            }
         }
     }
 
@@ -149,7 +147,6 @@ public class Checkers {
      */
     public void canMakeLegalMoves(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
-        // take into account that once a piece has been moved this may no longer be true
         playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0);
     }
 
