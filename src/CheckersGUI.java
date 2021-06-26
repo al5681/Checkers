@@ -22,7 +22,6 @@ public class CheckersGUI extends Application {
 
     /**
      * renders each of the tiles of the board as buttons of a grid pane
-     *
      */
     public void renderBoard() {
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
@@ -139,7 +138,7 @@ public class CheckersGUI extends Application {
                     if (checkers.getGameState() == GameState.SelectingPiece) {
                         checkers.selectPiece(currTile);
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
-                            checkers.movePiece(currTile, checkers.getHighlightedTiles());
+                        checkers.movePiece(currTile, checkers.getHighlightedTiles());
                     }
                     updateBoardRender();
                     renderPieces(); // render the pieces in their new position
@@ -148,5 +147,4 @@ public class CheckersGUI extends Application {
             }
         }
     }
-
 }
