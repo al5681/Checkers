@@ -80,11 +80,9 @@ public class Checkers {
      * moved there
      *
      * @param tileToMoveTo
-     * @param highLightedTiles
-     * @return true if move was successful false otherwise
      */
-    public boolean movePiece(Tile tileToMoveTo, ArrayList<Tile> highLightedTiles) {
-        if (highLightedTiles.contains(tileToMoveTo)) {
+    public void movePiece(Tile tileToMoveTo) {
+        if(getHighlightedTiles().contains(tileToMoveTo)) {
             if (currentTurn.equals("black")) {
                 for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                     if (playerBlack.getPlayerPieces().get(i).isSelected()) {
@@ -120,9 +118,7 @@ public class Checkers {
             }
             gameState = GameState.SelectingPiece; // reset the game state
             changeCurrentPlayersTurn(); // end the turn
-            return true;
         }
-        return false;
     }
 
     /**

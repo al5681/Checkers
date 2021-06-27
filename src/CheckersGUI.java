@@ -138,7 +138,7 @@ public class CheckersGUI extends Application {
                     if (checkers.getGameState() == GameState.SelectingPiece) {
                         checkers.selectPiece(currTile);
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
-                        checkers.movePiece(currTile, checkers.getHighlightedTiles());
+                        checkers.movePiece(currTile);
                     }
                     updateBoardRender();
                     renderPieces(); // render the pieces in their new position
