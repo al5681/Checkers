@@ -52,11 +52,11 @@ public class Checkers {
         for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
             canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
         }
-        gameState = GameState.SelectingPiece;
+        gameState = GameState.SelectingPiece; // initialise game state
     }
 
     /**
-     * Takes a player piece and returns the tiles it can move to, updating the game state accordingly
+     * Takes a tile, a if it contains a piece, sets that piece to selected and highlights the tiles it can moves to
      *
      * @param tileOfPiece
      */
