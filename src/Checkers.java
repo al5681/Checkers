@@ -68,13 +68,24 @@ public class Checkers {
             ArrayList<Tile> tiles = validMoves(playerPiece);
             if(gameState == GameState.MakingJump && playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn()) && currentTurn.equals("white")){
                 tileToDeleteForJump = tiles.get(0);
+                // the row and column to move to depends on the row col of Tile tileOfPiece so change it accordingly!!!
                 int tileToJumpToRow = tiles.get(0).getRow()+1;
                 int tileToJumpToCol = tiles.get(0).getCol()+1;
                 Tile tileToJumpTO = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
                 if(tileToJumpTO.getPiece() != null) {
-                    tileToDeleteForJump = null;
+                    playerPiece.setCanMakeLegalMove(false);
                     gameState = GameState.SelectingPiece;
+                    tileToDeleteForJump = null;
+                    currentTurn = playerWhite.getPlayerPieces().get(0).getPlayerColour();
+                    for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                        if(playerWhite.getPlayerPieces().get(i).equals(playerPiece)){
 
+                        }
+                        else {
+                            canMakeLegalMovesNoJumps(playerWhite.getPlayerPieces().get(i));
+                        }
+                    }
+                    return;
                 }
                 else {
                     tiles.remove(0);
@@ -83,20 +94,37 @@ public class Checkers {
             }
             else if(gameState == GameState.MakingJump && playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn()) && currentTurn.equals("black")){
                 tileToDeleteForJump = tiles.get(0);
+                Tile tileToJumpTO;
                 int tileToJumpToRow = tiles.get(0).getRow()-1;
-                int tileToJumpToCol = tiles.get(0).getCol()-1;
-                Tile tileToJumpTO = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                if(tileOfPiece.getCol() < tileToDeleteForJump.getCol()) {
+                    int tileToJumpToCol = tiles.get(0).getCol()+1;
+                    tileToJumpTO = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                }
+                else {
+                    int tileToJumpToCol = tiles.get(0).getCol() - 1;
+                    tileToJumpTO = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                }
                 if(tileToJumpTO.getPiece() != null) {
-                    tileToDeleteForJump = null;
+                    playerPiece.setCanMakeLegalMove(false);
                     gameState = GameState.SelectingPiece;
+                    tileToDeleteForJump = null;
+                    currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
+                    for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                        if(playerBlack.getPlayerPieces().get(i).equals(playerPiece)){
 
+                        }
+                        else {
+                            canMakeLegalMovesNoJumps(playerBlack.getPlayerPieces().get(i));
+                        }
+                    }
+                    return;
                 }
                 else {
                     tiles.remove(0);
                     tiles.add(tileToJumpTO);
                 }
             }
-            if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
+            if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn()) ) {
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
                 // highlight all the tiles the piece can move to
@@ -114,7 +142,6 @@ public class Checkers {
      * @param tileToMoveTo
      */
     public void movePiece(Tile tileToMoveTo) {
-
         if (getHighlightedTiles().contains(tileToMoveTo)) {
             if (currentTurn.equals("black")) {
                 if(tileToDeleteForJump != null)
@@ -205,6 +232,12 @@ public class Checkers {
 
     }
 
+    public void canMakeLegalMovesNoJumps(PlayerPiece playerPiece) {
+        ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedToNoJumps(playerPiece);
+        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0);
+
+    }
+
     /**
      * Checks the states of the neighbour tiles of a player piece, if the tile
      * is dark brown, has no current player piece on it (is not occupied),
@@ -269,6 +302,25 @@ public class Checkers {
            }
        }
    }
+
+    public ArrayList<Tile> findTilesThatCanBeMovedToNoJumps(PlayerPiece playerPiece) {
+        ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
+        ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
+        for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
+            for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
+                if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y].isDarkBrown()
+                        && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y].getPiece() == null
+                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]))
+                    if (playerPiece.getPlayerColour().equals("black") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
+                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]);
+                    } else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
+                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]);
+                    }
+            }
+        }
+        return tilesThatCanBeMovedTo;
+    }
+
 
 
     /**
