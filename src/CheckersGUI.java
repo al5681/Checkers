@@ -72,6 +72,11 @@ public class CheckersGUI extends Application {
                 if (currTile.getPiece() != null) {
                     Circle circle = new Circle();
                     circle.setRadius(35.0f);
+                    if(currTile.getPiece().getCanMakeJump() && checkers.getGameState() == GameState.MakingJump)
+                    {
+                        circle.setStroke(Color.GOLD);
+                        circle.setStrokeWidth(5.00);
+                    }
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
                         circle.setFill(javafx.scene.paint.Color.BLACK);
                         if (currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == GameState.SelectingPiece) {
@@ -115,7 +120,7 @@ public class CheckersGUI extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Checkers");
         boarderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
-        // // initialise the displays
+        // // initialise the display
         renderBoard();
         renderPieces();
         refreshPlayerTurnDisplay();
@@ -140,9 +145,14 @@ public class CheckersGUI extends Application {
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
                         checkers.movePiece(currTile);
                     }
+                    else if(checkers.getGameState() == GameState.MakingJump)
+                    {
+                        checkers.selectPiece(currTile);
+                    }
                     updateBoardRender();
                     renderPieces(); // render the pieces in their new position
                     refreshPlayerTurnDisplay();
+                    System.out.println(checkers.getGameState());
                 });
             }
         }

@@ -108,7 +108,7 @@ public class CheckersTest {
     public void tilesToMoveToTestBlack() {
         ArrayList<ArrayList<Tile>> legalTiles = new ArrayList<>();
         for (int i = 0; i < checkers.getPlayerBlack().getPlayerPieces().size(); i++) {
-            legalTiles.add(checkers.findTilesThatCanBeMovedTo(checkers.getPlayerBlack().getPlayerPieces().get(i)));
+            legalTiles.add(checkers.validMoves(checkers.getPlayerBlack().getPlayerPieces().get(i)));
         }
         // the first four pieces should have tiles to move to
         for (int i = 0; i < 4; i++) {
@@ -124,7 +124,7 @@ public class CheckersTest {
     public void tilesToMoveToTestWhite() {
         ArrayList<ArrayList<Tile>> legalTiles = new ArrayList<>();
         for (int i = 0; i < checkers.getPlayerWhite().getPlayerPieces().size(); i++) {
-            legalTiles.add(checkers.findTilesThatCanBeMovedTo(checkers.getPlayerWhite().getPlayerPieces().get(i)));
+            legalTiles.add(checkers.validMoves(checkers.getPlayerWhite().getPlayerPieces().get(i)));
         }
         // the first 8 pieces should have no moves to make
         for (int i = 0; i < 8; i++) {

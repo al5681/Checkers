@@ -8,6 +8,7 @@ public class PlayerPiece {
     private int colPos;
     private boolean canMakeLegalMove;
     private boolean selected;
+    private boolean canMakeJump;
 
     /**
      * Creates a piece for the player to use of the right colour
@@ -52,6 +53,18 @@ public class PlayerPiece {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isCanMakeLegalMove() {
+        return canMakeLegalMove;
+    }
+
+    public boolean getCanMakeJump() {
+        return canMakeJump;
+    }
+
+    public void setCanMakeJump(boolean canMakeJump) {
+        this.canMakeJump = canMakeJump;
     }
 
     @Override
