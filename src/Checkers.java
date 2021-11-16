@@ -69,10 +69,18 @@ public class Checkers {
             if(gameState == GameState.MakingJump && playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn()) && currentTurn.equals("white")){
                 tileToDeleteForJump = tiles.get(0);
                 // the row and column to move to depends on the row col of Tile tileOfPiece so change it accordingly!!!
+                Tile tiletoJumpTo;
+                int tileToJumpToCol;
                 int tileToJumpToRow = tiles.get(0).getRow()+1;
-                int tileToJumpToCol = tiles.get(0).getCol()+1;
-                Tile tileToJumpTO = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
-                if(tileToJumpTO.getPiece() != null) {
+                if(tileOfPiece.getCol() < tileToDeleteForJump.getCol()) {
+                    tileToJumpToCol = tiles.get(0).getCol()+1;
+                    tiletoJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                }
+                else {
+                    tileToJumpToCol = tiles.get(0).getCol() - 1;
+                    tiletoJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                }
+                if(tiletoJumpTo.getPiece() != null || !inBounds(tileToJumpToRow,tileToJumpToCol)) {
                     playerPiece.setCanMakeLegalMove(false);
                     gameState = GameState.SelectingPiece;
                     tileToDeleteForJump = null;
@@ -89,39 +97,65 @@ public class Checkers {
                 }
                 else {
                     tiles.remove(0);
-                    tiles.add(tileToJumpTO);
+                    tiles.add(tiletoJumpTo);
                 }
             }
-            else if(gameState == GameState.MakingJump && playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn()) && currentTurn.equals("black")){
+            else if(gameState == GameState.MakingJump && playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn()) && currentTurn.equals("black")) {
                 tileToDeleteForJump = tiles.get(0);
-                Tile tileToJumpTO;
-                int tileToJumpToRow = tiles.get(0).getRow()-1;
-                if(tileOfPiece.getCol() < tileToDeleteForJump.getCol()) {
-                    int tileToJumpToCol = tiles.get(0).getCol()+1;
-                    tileToJumpTO = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                Tile tileToJumpTo;
+                int tileToJumpToCol;
+                int tileToJumpToRow = tiles.get(0).getRow() - 1;
+                if (tileOfPiece.getCol() < tileToDeleteForJump.getCol()) {
+                    tileToJumpToCol = tiles.get(0).getCol() + 1;
+                    if (tileToJumpToCol > 9 || tileToJumpToCol < 0 || tileToJumpToRow > 9 || tileToJumpToRow < 0) {
+                        {
+                            tileToJumpTo = null;
+                        }
+                    }
+                    tileToJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                } else {
+                    tileToJumpToCol = tiles.get(0).getCol() - 1;
+                    if (tileToJumpToCol > 9 || tileToJumpToCol < 0 || tileToJumpToRow > 9 || tileToJumpToRow < 0) {
+                        {
+                            tileToJumpTo = null;
+                        }
+                    } else {
+                        tileToJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                    }
                 }
-                else {
-                    int tileToJumpToCol = tiles.get(0).getCol() - 1;
-                    tileToJumpTO = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                if (tileToJumpTo != null) {
+                    if (tileToJumpTo.getPiece() != null) {
+                        playerPiece.setCanMakeLegalMove(false);
+                        gameState = GameState.SelectingPiece;
+                        tileToDeleteForJump = null;
+                        currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
+                        for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                            if (playerBlack.getPlayerPieces().get(i).equals(playerPiece)) {
+
+                            } else {
+                                canMakeLegalMovesNoJumps(playerBlack.getPlayerPieces().get(i));
+                            }
+                        }
+                        return;
+                    }
+                    else {
+                        tiles.remove(0);
+                        tiles.add(tileToJumpTo);
+                    }
                 }
-                if(tileToJumpTO.getPiece() != null) {
+                else if(tileToJumpTo == null)
+                {
                     playerPiece.setCanMakeLegalMove(false);
                     gameState = GameState.SelectingPiece;
                     tileToDeleteForJump = null;
                     currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
                     for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
-                        if(playerBlack.getPlayerPieces().get(i).equals(playerPiece)){
+                        if (playerBlack.getPlayerPieces().get(i).equals(playerPiece)) {
 
-                        }
-                        else {
+                        } else {
                             canMakeLegalMovesNoJumps(playerBlack.getPlayerPieces().get(i));
                         }
                     }
-                    return;
-                }
-                else {
-                    tiles.remove(0);
-                    tiles.add(tileToJumpTO);
                 }
             }
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn()) ) {
