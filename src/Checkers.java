@@ -111,8 +111,8 @@ public class Checkers {
                         {
                             tileToJumpTo = null;
                         }
-                    }
-                    tileToJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                    } else {
+                    tileToJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol]; }
                 } else {
                     tileToJumpToCol = tiles.get(0).getCol() - 1;
                     if (tileToJumpToCol > 9 || tileToJumpToCol < 0 || tileToJumpToRow > 9 || tileToJumpToRow < 0) {
