@@ -72,6 +72,8 @@ public class Checkers {
                     tile.setHighlighted(true);
                 }
             }
+            // else if playerPiece.getCanMakeLegalJump() && playerPiece.getPlayerColour().equals(getCurrentTurn())
+            // gameState = makingJump
         }
     }
 
@@ -121,6 +123,8 @@ public class Checkers {
         }
     }
 
+    // public void jumpPiece
+
     /**
      * Changes the turn to the other player
      */
@@ -146,7 +150,7 @@ public class Checkers {
      */
     public void setLegalOptionsForTurn(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
-        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0);
+        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0); // can make legal move should be set to false for all if any piece can jump!
     }
 
     /**
