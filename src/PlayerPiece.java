@@ -7,6 +7,7 @@ public class PlayerPiece {
     private int rowPos;
     private int colPos;
     private boolean canMakeLegalMove;
+    private boolean canMakeLegalJump;
     private boolean selected;
 
     /**
@@ -44,6 +45,18 @@ public class PlayerPiece {
 
     public void setCanMakeLegalMove(boolean canMakeLegalMove) {
         this.canMakeLegalMove = canMakeLegalMove;
+    }
+
+    public boolean isCanMakeLegalMove() {
+        return canMakeLegalMove;
+    }
+
+    public boolean getCanMakeLegalJump() {
+        return canMakeLegalJump;
+    }
+
+    public void setCanMakeLegalJump(boolean canMakeLegalJump) {
+        this.canMakeLegalJump = canMakeLegalJump;
     }
 
     public boolean isSelected() {
