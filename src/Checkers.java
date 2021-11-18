@@ -1,7 +1,6 @@
 import javafx.util.Pair;
 
 import java.awt.*;
-import java.sql.Array;
 import java.util.ArrayList;
 
 /**
@@ -142,6 +141,9 @@ public class Checkers {
             for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                 setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
             }
+            // private setLegalMovesToFlaseIfJumpsCanBeMade()
+            // if playerBlack.getPlayerPieces().get(i).canMakeLegalJump
+            // loop through all the pieces and setCanMakeLegalMove to false
         }
     }
 
@@ -156,6 +158,8 @@ public class Checkers {
         ArrayList<Pair<Tile, Tile>> tilesThatCanBeJumpedTo = findTilesThatCanBeJumpedTo(playerPiece);
         playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0); // can make legal move should be set to false for all if any piece can jump!
         playerPiece.setCanMakeLegalJump(tilesThatCanBeJumpedTo.size() != 0);
+        // if tilesThatCanBeJumpedTo.size() > 0:
+        //      for int i = 0; i < p
     }
 
     /**
