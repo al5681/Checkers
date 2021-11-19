@@ -3,5 +3,6 @@
  */
 public enum GameState {
     SelectingPiece,
-    SelectingTileToMoveTo
+    SelectingTileToMoveTo,
+    MakingJump
 }

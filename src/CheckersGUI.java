@@ -92,7 +92,7 @@ public class CheckersGUI extends Application {
                             circle.setStrokeWidth(5.00);
                         }
                     }
-                    if (currTile.getPiece().isSelected() && checkers.getGameState() == GameState.SelectingTileToMoveTo) {
+                    if (currTile.getPiece().isSelected() && (checkers.getGameState() == GameState.SelectingTileToMoveTo || checkers.getGameState() == GameState.MakingJump)) {
                         circle.setStroke(Color.GOLD);
                         circle.setStrokeWidth(5.00);
                     }
@@ -146,6 +146,8 @@ public class CheckersGUI extends Application {
                         checkers.selectPiece(currTile);
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
                         checkers.movePiece(currTile);
+                    } else if(checkers.getGameState() == GameState.MakingJump) {
+                        checkers.makeJump(currTile);
                     }
                     updateBoardRender();
                     renderPieces(); // render the pieces in their new position

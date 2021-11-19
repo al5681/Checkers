@@ -74,8 +74,14 @@ public class Checkers {
                     tile.setHighlighted(true);
                 }
             }
-            // else if playerPiece.getCanMakeLegalJump() && playerPiece.getPlayerColour().equals(getCurrentTurn())
-            // gameState = makingJump
+            else if(playerPiece.getCanMakeLegalJump() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
+                ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(playerPiece);
+                playerPiece.setSelected(true);
+                gameState = GameState.MakingJump;
+                for(int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
+                    tileToDeleteAndJumpToPairs.get(i).getValue().setHighlighted(true);
+                }
+            }
         }
     }
 
@@ -98,7 +104,9 @@ public class Checkers {
                         // update the state of the tile
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
                         // the player piece is no longer selected
-                        playerBlack.getPlayerPieces().get(i).setSelected(false);
+                        if(gameState != gameState.MakingJump) {
+                            playerBlack.getPlayerPieces().get(i).setSelected(false);
+                        }
 
                     }
                 }
@@ -110,7 +118,9 @@ public class Checkers {
                         playerWhite.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerWhite.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerWhite.getPlayerPieces().get(i));
-                        playerWhite.getPlayerPieces().get(i).setSelected(false);
+                        if(gameState != gameState.MakingJump) {
+                            playerWhite.getPlayerPieces().get(i).setSelected(false);
+                        }
 
                     }
                 }
@@ -120,12 +130,58 @@ public class Checkers {
             for (Tile tile : currentlyHighlighted) {
                 tile.setHighlighted(false);
             }
-            gameState = GameState.SelectingPiece; // reset the game state
-            changeCurrentPlayersTurn(); // end the turn
+            if(gameState != gameState.MakingJump) {
+                gameState = GameState.SelectingPiece; // reset the game state
+                changeCurrentPlayersTurn(); // end the turn
+            }
         }
     }
 
-    // public void jumpPiece
+    public void makeJump(Tile tileToJumpTo)
+    {
+        PlayerPiece selctedPiece = getSelectedPiece();
+        Tile tileOfPieceToDelete = null;
+        ArrayList<Pair<Tile,Tile>>  tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(selctedPiece);
+        for(int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
+            if(tileToDeleteAndJumpToPairs.get(i).getValue().equals(tileToJumpTo)) {
+                tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
+                System.out.println(tileOfPieceToDelete);
+            }
+        }
+
+        if(currentTurn.equals("black")) {
+            playerBlack.getPlayerPieces().remove(tileOfPieceToDelete);
+        }
+        else {
+            playerWhite.getPlayerPieces().remove(tileOfPieceToDelete);
+        }
+        checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
+        movePiece(tileToJumpTo);
+        selctedPiece.setSelected(false);
+        gameState = GameState.SelectingPiece; // reset the game state
+        changeCurrentPlayersTurn(); // end the turn
+
+    }
+
+    private PlayerPiece getSelectedPiece()
+    {
+        PlayerPiece selctedPiece = null;
+        if(currentTurn.equals("black")) {
+            for(int i = 0; i< playerBlack.getPlayerPieces().size(); i++) {
+                if(playerBlack.getPlayerPieces().get(i).isSelected()) {
+                    selctedPiece = playerBlack.getPlayerPieces().get(i);
+                }
+            }
+        }
+        else {
+            for(int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                if(playerWhite.getPlayerPieces().get(i).isSelected()) {
+                    selctedPiece = playerWhite.getPlayerPieces().get(i);
+                }
+            }
+        }
+        return selctedPiece;
+    }
 
     /**
      * Changes the turn to the other player
