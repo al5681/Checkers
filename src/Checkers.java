@@ -231,10 +231,8 @@ public class Checkers {
     public void setLegalOptionsForTurn(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
         ArrayList<Pair<Tile, Tile>> tilesThatCanBeJumpedTo = findTilesThatCanBeJumpedTo(playerPiece);
-        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0); // can make legal move should be set to false for all if any piece can jump!
+        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0); 
         playerPiece.setCanMakeLegalJump(tilesThatCanBeJumpedTo.size() != 0);
-        // if tilesThatCanBeJumpedTo.size() > 0:
-        //      for int i = 0; i < p
         if (tilesThatCanBeMovedTo.size() > 0 && tilesThatCanBeJumpedTo.size() != 0) {
             playerPiece.setCanMakeLegalMove(false);
         }
