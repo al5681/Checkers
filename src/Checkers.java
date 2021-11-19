@@ -142,9 +142,9 @@ public class Checkers {
      */
     public void makeJump(Tile tileToJumpTo) {
         if (getHighlightedTiles().contains(tileToJumpTo)) {
-            PlayerPiece selctedPiece = getSelectedPiece();
+            PlayerPiece selectedPiece = getSelectedPiece();
             Tile tileOfPieceToDelete = null;
-            ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(selctedPiece);
+            ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(selectedPiece);
             for (int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
                 if (tileToDeleteAndJumpToPairs.get(i).getValue().equals(tileToJumpTo)) {
                     tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
@@ -158,7 +158,7 @@ public class Checkers {
             checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
             movePiece(tileToJumpTo);
             // TO-DO: CHECK FOR MULTILEG JUMPS HERE
-            selctedPiece.setSelected(false);
+            selectedPiece.setSelected(false);
             gameState = GameState.SelectingPiece; // reset the game state
             changeCurrentPlayersTurn(); // end the turn
         }
