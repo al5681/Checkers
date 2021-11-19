@@ -12,7 +12,7 @@ public class Checkers {
     private CheckersBoard checkersBoard;
     private Player playerBlack = new Player("black");
     private Player playerWhite = new Player("white");
-    private String currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour(); // black goes first
+    private String currentTurn = "black"; // black goes first
     private GameState gameState;
 
     /**
@@ -58,20 +58,17 @@ public class Checkers {
     }
 
     /**
-     * Takes a tile, a if it contains a piece, sets that piece to selected and highlights the tiles it can moves to
+     * Takes a tile, if it contains a piece, sets that piece to selected and highlights the tiles it can move/jump to
      *
      * @param tileOfPiece
      */
     public void selectPiece(Tile tileOfPiece) {
-        System.out.println(playerBlack.getPlayerPieces().size());
-        System.out.println(playerWhite.getPlayerPieces().size());
         if (tileOfPiece.getPiece() != null) {
             PlayerPiece playerPiece = tileOfPiece.getPiece();
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
-                // highlight all the tiles the piece can move to
                 for (Tile tile : tiles) {
                     tile.setHighlighted(true);
                 }
@@ -138,6 +135,11 @@ public class Checkers {
         }
     }
 
+    /**
+     * Takes a tile to jump to, moves the player piece to that tile and deletes the piece of the tiles it has jumped over
+     *
+     * @param tileToJumpTo
+     */
     public void makeJump(Tile tileToJumpTo) {
         if (getHighlightedTiles().contains(tileToJumpTo)) {
             PlayerPiece selctedPiece = getSelectedPiece();
@@ -148,7 +150,6 @@ public class Checkers {
                     tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
                 }
             }
-
             if (currentTurn.equals("black")) {
                 playerWhite.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
             } else {
@@ -163,6 +164,7 @@ public class Checkers {
         }
     }
 
+    // helper method to obtain the piece currently selected
     private PlayerPiece getSelectedPiece() {
         PlayerPiece selctedPiece = null;
         if (currentTurn.equals("black")) {
@@ -199,6 +201,7 @@ public class Checkers {
         setLegalMovesToFalseIfJumpsCanBeMade();
     }
 
+    // helper method to set legal moves to false for all pieces if a jump has to be made
     private void setLegalMovesToFalseIfJumpsCanBeMade() {
         if (currentTurn.equals("black")) {
             for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {

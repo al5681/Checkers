@@ -77,8 +77,7 @@ public class CheckersGUI extends Application {
                         if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == GameState.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        }
-                        else if(currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == GameState.SelectingPiece){
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == GameState.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
@@ -87,7 +86,7 @@ public class CheckersGUI extends Application {
                         if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == GameState.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if(currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == GameState.SelectingPiece){
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == GameState.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
@@ -146,7 +145,7 @@ public class CheckersGUI extends Application {
                         checkers.selectPiece(currTile);
                     } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
                         checkers.movePiece(currTile);
-                    } else if(checkers.getGameState() == GameState.MakingJump) {
+                    } else if (checkers.getGameState() == GameState.MakingJump) {
                         checkers.makeJump(currTile);
                     }
                     updateBoardRender();
