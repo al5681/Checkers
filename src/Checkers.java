@@ -186,17 +186,17 @@ public class Checkers {
      */
     public void changeCurrentPlayersTurn() {
         if (currentTurn.equals("black")) {
-            currentTurn = playerWhite.getPlayerPieces().get(0).getPlayerColour();
+            currentTurn = "white";
             for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
                 setLegalOptionsForTurn(playerWhite.getPlayerPieces().get(i));
             }
         } else {
-            currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
+            currentTurn = "black";
             for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                 setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
             }
         }
-        //setLegalMovesToFalseIfJumpsCanBeMade();
+        setLegalMovesToFalseIfJumpsCanBeMade();
     }
 
     private void setLegalMovesToFalseIfJumpsCanBeMade() {
