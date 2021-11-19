@@ -139,28 +139,27 @@ public class Checkers {
 
     public void makeJump(Tile tileToJumpTo)
     {
-        PlayerPiece selctedPiece = getSelectedPiece();
-        Tile tileOfPieceToDelete = null;
-        ArrayList<Pair<Tile,Tile>>  tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(selctedPiece);
-        for(int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
-            if(tileToDeleteAndJumpToPairs.get(i).getValue().equals(tileToJumpTo)) {
-                tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
-                System.out.println(tileOfPieceToDelete);
+        if (getHighlightedTiles().contains(tileToJumpTo)) {
+            PlayerPiece selctedPiece = getSelectedPiece();
+            Tile tileOfPieceToDelete = null;
+            ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(selctedPiece);
+            for (int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
+                if (tileToDeleteAndJumpToPairs.get(i).getValue().equals(tileToJumpTo)) {
+                    tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
+                }
             }
-        }
 
-        if(currentTurn.equals("black")) {
-            playerBlack.getPlayerPieces().remove(tileOfPieceToDelete);
+            if (currentTurn.equals("black")) {
+                playerBlack.getPlayerPieces().remove(tileOfPieceToDelete);
+            } else {
+                playerWhite.getPlayerPieces().remove(tileOfPieceToDelete);
+            }
+            checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
+            movePiece(tileToJumpTo);
+            selctedPiece.setSelected(false);
+            gameState = GameState.SelectingPiece; // reset the game state
+            changeCurrentPlayersTurn(); // end the turn
         }
-        else {
-            playerWhite.getPlayerPieces().remove(tileOfPieceToDelete);
-        }
-        checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
-        movePiece(tileToJumpTo);
-        selctedPiece.setSelected(false);
-        gameState = GameState.SelectingPiece; // reset the game state
-        changeCurrentPlayersTurn(); // end the turn
-
     }
 
     private PlayerPiece getSelectedPiece()
