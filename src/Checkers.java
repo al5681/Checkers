@@ -156,6 +156,7 @@ public class Checkers {
             }
             checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
             movePiece(tileToJumpTo);
+            // TO-DO: CHECK FOR MULTILEG JUMPS HERE
             selctedPiece.setSelected(false);
             gameState = GameState.SelectingPiece; // reset the game state
             changeCurrentPlayersTurn(); // end the turn
@@ -196,9 +197,28 @@ public class Checkers {
             for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                 setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
             }
-            // private setLegalMovesToFlaseIfJumpsCanBeMade()
-            // if playerBlack.getPlayerPieces().get(i).canMakeLegalJump
-            // loop through all the pieces and setCanMakeLegalMove to false
+        }
+        setLegalMovesToFalseIfJumpsCanBeMade();
+    }
+
+    private void setLegalMovesToFalseIfJumpsCanBeMade(){
+        if (currentTurn.equals("black")) {
+            for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                if(playerBlack.getPlayerPieces().get(i).getCanMakeLegalJump()){
+                    for(int j =0; j < playerBlack.getPlayerPieces().size(); j++) {
+                        playerBlack.getPlayerPieces().get(j).setCanMakeLegalMove(false);
+                    }
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                if(playerWhite.getPlayerPieces().get(i).getCanMakeLegalJump()){
+                    for(int j =0; j < playerWhite.getPlayerPieces().size(); j++) {
+                        playerWhite.getPlayerPieces().get(j).setCanMakeLegalMove(false);
+                    }
+                }
+            }
         }
     }
 
