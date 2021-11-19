@@ -160,6 +160,9 @@ public class Checkers {
         playerPiece.setCanMakeLegalJump(tilesThatCanBeJumpedTo.size() != 0);
         // if tilesThatCanBeJumpedTo.size() > 0:
         //      for int i = 0; i < p
+        if(tilesThatCanBeMovedTo.size() > 0 && tilesThatCanBeJumpedTo.size() != 0) {
+            playerPiece.setCanMakeLegalMove(false);
+        }
     }
 
     /**
