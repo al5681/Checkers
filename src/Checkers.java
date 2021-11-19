@@ -166,21 +166,21 @@ public class Checkers {
 
     // helper method to obtain the piece currently selected
     private PlayerPiece getSelectedPiece() {
-        PlayerPiece selctedPiece = null;
+        PlayerPiece selectedPiece = null;
         if (currentTurn.equals("black")) {
             for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                 if (playerBlack.getPlayerPieces().get(i).isSelected()) {
-                    selctedPiece = playerBlack.getPlayerPieces().get(i);
+                    selectedPiece = playerBlack.getPlayerPieces().get(i);
                 }
             }
         } else {
             for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
                 if (playerWhite.getPlayerPieces().get(i).isSelected()) {
-                    selctedPiece = playerWhite.getPlayerPieces().get(i);
+                    selectedPiece = playerWhite.getPlayerPieces().get(i);
                 }
             }
         }
-        return selctedPiece;
+        return selectedPiece;
     }
 
     /**
