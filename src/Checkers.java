@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -10,7 +12,7 @@ public class Checkers {
     private CheckersBoard checkersBoard;
     private Player playerBlack = new Player("black");
     private Player playerWhite = new Player("white");
-    private String currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour(); // black goes first
+    private String currentTurn = "black"; // black goes first
     private GameState gameState;
 
     /**
@@ -50,26 +52,32 @@ public class Checkers {
         }
         // check the initial black players that can make a move
         for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
-            canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
+            setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
         }
         gameState = GameState.SelectingPiece; // initialise game state
     }
 
     /**
-     * Takes a tile, a if it contains a piece, sets that piece to selected and highlights the tiles it can moves to
+     * Takes a tile, if it contains a piece, sets that piece to selected and highlights the tiles it can move/jump to
      *
      * @param tileOfPiece
      */
     public void selectPiece(Tile tileOfPiece) {
         if (tileOfPiece.getPiece() != null) {
             PlayerPiece playerPiece = tileOfPiece.getPiece();
-            ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
+                ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
                 playerPiece.setSelected(true);
                 gameState = GameState.SelectingTileToMoveTo;
-                // highlight all the tiles the piece can move to
                 for (Tile tile : tiles) {
                     tile.setHighlighted(true);
+                }
+            } else if (playerPiece.getCanMakeLegalJump() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
+                ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(playerPiece);
+                playerPiece.setSelected(true);
+                gameState = GameState.MakingJump;
+                for (int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
+                    tileToDeleteAndJumpToPairs.get(i).getValue().setHighlighted(true);
                 }
             }
         }
@@ -82,7 +90,7 @@ public class Checkers {
      * @param tileToMoveTo
      */
     public void movePiece(Tile tileToMoveTo) {
-        if(getHighlightedTiles().contains(tileToMoveTo)) {
+        if (getHighlightedTiles().contains(tileToMoveTo)) {
             if (currentTurn.equals("black")) {
                 for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                     if (playerBlack.getPlayerPieces().get(i).isSelected()) {
@@ -94,7 +102,9 @@ public class Checkers {
                         // update the state of the tile
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
                         // the player piece is no longer selected
-                        playerBlack.getPlayerPieces().get(i).setSelected(false);
+                        if (gameState != gameState.MakingJump) {
+                            playerBlack.getPlayerPieces().get(i).setSelected(false);
+                        }
 
                     }
                 }
@@ -106,7 +116,9 @@ public class Checkers {
                         playerWhite.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerWhite.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerWhite.getPlayerPieces().get(i));
-                        playerWhite.getPlayerPieces().get(i).setSelected(false);
+                        if (gameState != gameState.MakingJump) {
+                            playerWhite.getPlayerPieces().get(i).setSelected(false);
+                        }
 
                     }
                 }
@@ -116,9 +128,59 @@ public class Checkers {
             for (Tile tile : currentlyHighlighted) {
                 tile.setHighlighted(false);
             }
+            if (gameState != gameState.MakingJump) {
+                gameState = GameState.SelectingPiece; // reset the game state
+                changeCurrentPlayersTurn(); // end the turn
+            }
+        }
+    }
+
+    /**
+     * Takes a tile to jump to, moves the player piece to that tile and deletes the piece of the tiles it has jumped over
+     *
+     * @param tileToJumpTo
+     */
+    public void makeJump(Tile tileToJumpTo) {
+        if (getHighlightedTiles().contains(tileToJumpTo)) {
+            PlayerPiece selctedPiece = getSelectedPiece();
+            Tile tileOfPieceToDelete = null;
+            ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(selctedPiece);
+            for (int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
+                if (tileToDeleteAndJumpToPairs.get(i).getValue().equals(tileToJumpTo)) {
+                    tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
+                }
+            }
+            if (currentTurn.equals("black")) {
+                playerWhite.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
+            } else {
+                playerBlack.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
+            }
+            checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
+            movePiece(tileToJumpTo);
+            // TO-DO: CHECK FOR MULTILEG JUMPS HERE
+            selctedPiece.setSelected(false);
             gameState = GameState.SelectingPiece; // reset the game state
             changeCurrentPlayersTurn(); // end the turn
         }
+    }
+
+    // helper method to obtain the piece currently selected
+    private PlayerPiece getSelectedPiece() {
+        PlayerPiece selctedPiece = null;
+        if (currentTurn.equals("black")) {
+            for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                if (playerBlack.getPlayerPieces().get(i).isSelected()) {
+                    selctedPiece = playerBlack.getPlayerPieces().get(i);
+                }
+            }
+        } else {
+            for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                if (playerWhite.getPlayerPieces().get(i).isSelected()) {
+                    selctedPiece = playerWhite.getPlayerPieces().get(i);
+                }
+            }
+        }
+        return selctedPiece;
     }
 
     /**
@@ -126,28 +188,112 @@ public class Checkers {
      */
     public void changeCurrentPlayersTurn() {
         if (currentTurn.equals("black")) {
-            currentTurn = playerWhite.getPlayerPieces().get(0).getPlayerColour();
+            currentTurn = "white";
             for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
-                canMakeLegalMoves(playerWhite.getPlayerPieces().get(i));
+                setLegalOptionsForTurn(playerWhite.getPlayerPieces().get(i));
             }
         } else {
-            currentTurn = playerBlack.getPlayerPieces().get(0).getPlayerColour();
+            currentTurn = "black";
             for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
-                canMakeLegalMoves(playerBlack.getPlayerPieces().get(i));
+                setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
+            }
+        }
+        setLegalMovesToFalseIfJumpsCanBeMade();
+    }
+
+    // helper method to set legal moves to false for all pieces if a jump has to be made
+    private void setLegalMovesToFalseIfJumpsCanBeMade() {
+        if (currentTurn.equals("black")) {
+            for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                if (playerBlack.getPlayerPieces().get(i).getCanMakeLegalJump()) {
+                    for (int j = 0; j < playerBlack.getPlayerPieces().size(); j++) {
+                        playerBlack.getPlayerPieces().get(j).setCanMakeLegalMove(false);
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                if (playerWhite.getPlayerPieces().get(i).getCanMakeLegalJump()) {
+                    for (int j = 0; j < playerWhite.getPlayerPieces().size(); j++) {
+                        playerWhite.getPlayerPieces().get(j).setCanMakeLegalMove(false);
+                    }
+                }
             }
         }
     }
 
     /**
-     * Takes a player piece and sets its 'canMakeLegalMove' attribute to the right value
+     * Takes a player piece and sets its 'canMakeLegalMove' and 'canMakeLegalJump' attribute to the right value
      * for the current state of the game
      *
      * @param playerPiece
      */
-    public void canMakeLegalMoves(PlayerPiece playerPiece) {
+    public void setLegalOptionsForTurn(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
-        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0);
+        ArrayList<Pair<Tile, Tile>> tilesThatCanBeJumpedTo = findTilesThatCanBeJumpedTo(playerPiece);
+        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0); // can make legal move should be set to false for all if any piece can jump!
+        playerPiece.setCanMakeLegalJump(tilesThatCanBeJumpedTo.size() != 0);
+        // if tilesThatCanBeJumpedTo.size() > 0:
+        //      for int i = 0; i < p
+        if (tilesThatCanBeMovedTo.size() > 0 && tilesThatCanBeJumpedTo.size() != 0) {
+            playerPiece.setCanMakeLegalMove(false);
+        }
     }
+
+    /**
+     * Checks the state of the neighbour tiles of a player piece, if that tile is dark brown,
+     * has a current player piece on it (is occupied), and the dark brown tiles behind that player piece
+     * is not occupied and is not out of bounds, the tile behind that piece is taken as a tile to jump to,
+     * and the tile the piece occupies is taken as the tile of a piece to delete. They are added to a list as a pair
+     *
+     * @param playerPiece
+     */
+    public ArrayList<Pair<Tile, Tile>> findTilesThatCanBeJumpedTo(PlayerPiece playerPiece) {
+        ArrayList<Pair<Tile, Tile>> listOfDeleteTileAndJumpTilePairs = new ArrayList<>();
+        ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
+        for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
+            for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
+                Tile tileToDelete = checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y];
+                // UNIVERSAL CASES FOR BOTH BLACK AND WHITE
+                if (tileToDelete.isDarkBrown() && tileToDelete.getPiece() != null) {
+                    Tile tileToJumpTo;
+                    int tileToJumpToCol;
+                    // SPECIFIC CASES FOR BLACK PIECES
+                    if (playerPiece.getPlayerColour().equals("black") && tileToDelete.getRow() == playerPiece.getRowPos() - 1 && tileToDelete.getPiece().getPlayerColour().equals("white")) {
+                        int tileToJumpToRow = tileToDelete.getRow() - 1;
+                        if (playerPiece.getColPos() < tileToDelete.getCol()) {
+                            tileToJumpToCol = tileToDelete.getCol() + 1;
+                        } else {
+                            tileToJumpToCol = tileToDelete.getCol() - 1;
+                        }
+                        if (inBounds(tileToJumpToRow, tileToJumpToCol)) {
+                            tileToJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                            if (tileToJumpTo.getPiece() == null) {
+                                listOfDeleteTileAndJumpTilePairs.add(new Pair<>(tileToDelete, tileToJumpTo));
+                            }
+                        }
+                    }
+                    // SPECIFIC CASES FOR WHITE PLAYERS
+                    else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1 && tileToDelete.getPiece().getPlayerColour().equals("black")) {
+                        int tileToJumpToRow = tileToDelete.getRow() + 1;
+                        if (playerPiece.getColPos() < tileToDelete.getCol()) {
+                            tileToJumpToCol = tileToDelete.getCol() + 1;
+                        } else {
+                            tileToJumpToCol = tileToDelete.getCol() - 1;
+                        }
+                        if (inBounds(tileToJumpToRow, tileToJumpToCol)) {
+                            tileToJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                            if (tileToJumpTo.getPiece() == null) {
+                                listOfDeleteTileAndJumpTilePairs.add(new Pair<>(tileToDelete, tileToJumpTo));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return listOfDeleteTileAndJumpTilePairs;
+    }
+
 
     /**
      * Checks the states of the neighbour tiles of a player piece, if the tile
@@ -162,13 +308,13 @@ public class Checkers {
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
         for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
             for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
-                if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y].isDarkBrown()
-                        && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y].getPiece() == null
-                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]))
+                if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].isDarkBrown()
+                        && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].getPiece() == null
+                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]))
                     if (playerPiece.getPlayerColour().equals("black") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
-                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]);
+                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
                     } else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
-                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(row).y]);
+                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
                     }
             }
         }
