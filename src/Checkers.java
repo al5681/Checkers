@@ -227,20 +227,39 @@ public class Checkers {
      * for the current state of the game
      *
      * @param playerPiece
+     * @return
      */
     public void setLegalOptionsForTurn(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
         ArrayList<Pair<Tile, Tile>> tilesThatCanBeJumpedTo = findTilesThatCanBeJumpedTo(playerPiece);
-        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0); 
+        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0);
         playerPiece.setCanMakeLegalJump(tilesThatCanBeJumpedTo.size() != 0);
         if (tilesThatCanBeMovedTo.size() > 0 && tilesThatCanBeJumpedTo.size() != 0) {
             playerPiece.setCanMakeLegalMove(false);
         }
     }
 
+    private ArrayList<Tile> getLegalOptionsForTurn(PlayerPiece playerPiece)
+    {
+        ArrayList<Tile> legalTiles = new ArrayList<>();
+        if(playerPiece.getCanMakeLegalMove()) {
+            ArrayList<Tile> moves = findTilesThatCanBeMovedTo(playerPiece);
+            for(int i = 0; i < moves.size(); i++) {
+                legalTiles.add(moves.get(i));
+            }
+        }
+        else if(playerPiece.getCanMakeLegalJump()) {
+            ArrayList<Pair<Tile,Tile>> jumps = findTilesThatCanBeJumpedTo(playerPiece);
+            for(int i = 0; i < jumps.size(); i++) {
+                legalTiles.add(jumps.get(i).getValue());
+            }
+        }
+        return legalTiles;
+    }
+
     /**
      * Checks the state of the neighbour tiles of a player piece, if that tile is dark brown,
-     * has a current player piece on it (is occupied), and the dark brown tiles behind that player piece
+     * has a current player piece on it of the opposing colour, and the dark brown tiles behind that player piece
      * is not occupied and is not out of bounds, the tile behind that piece is taken as a tile to jump to,
      * and the tile the piece occupies is taken as the tile of a piece to delete. They are added to a list as a pair
      *
@@ -292,7 +311,6 @@ public class Checkers {
         return listOfDeleteTileAndJumpTilePairs;
     }
 
-
     /**
      * Checks the states of the neighbour tiles of a player piece, if the tile
      * is dark brown, has no current player piece on it (is not occupied),
@@ -336,6 +354,35 @@ public class Checkers {
         }
         return neighbourCoOrdinates;
     }
+
+    /**
+     * Iterates through the whites players pieces, finds all the tiles a piece can move to,
+     * selects that piece and then simulates either a jump or move being made
+     *
+     * @return possibleMoves, An array list of all the possible outcomes of the moves being made
+     */
+    public ArrayList<Checkers> getAllMoves()
+    {
+        ArrayList<Checkers> possibleMoves = new ArrayList<>();
+        for(int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+            PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
+            ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
+            for(int j = 0; j < legalOptions.size(); j++) {
+                // Checkers checkersCopy = this.copy()
+                // checkersCopy.selectPiece(currPiece)
+                // possibleMoves.append(simulateMove(legalOptions.get(j), checkersCopy)
+            }
+        }
+        return possibleMoves;
+    }
+
+    // public Checkers simulateMove(tile, checkersCopy)
+    //   if (checkersCopy.getGameState() == GameState.SelectingTileToMoveTo) {
+    //                        checkersCopy.movePiece(tile);
+    //                    } else if (checkersCopy.getGameState() == GameState.MakingJump) {
+    //                        checkersCopy.makeJump(tile);
+    //                        }
+    //  return checkersCopy
 
     // helper method to check if a tile index is in bounds
     private boolean inBounds(int row, int col) {

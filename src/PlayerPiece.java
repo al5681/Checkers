@@ -47,10 +47,6 @@ public class PlayerPiece {
         this.canMakeLegalMove = canMakeLegalMove;
     }
 
-    public boolean isCanMakeLegalMove() {
-        return canMakeLegalMove;
-    }
-
     public boolean getCanMakeLegalJump() {
         return canMakeLegalJump;
     }
