@@ -1,10 +1,12 @@
+import java.io.Serializable;
+
 /**
  * Represents a tile on the board,
  * darkBrown indicates it is one of the usable tiles on the board
  * piece indicates if there is currently one of the players pieces
  * on the tile
  */
-public class Tile {
+public class Tile implements Serializable {
 
     private boolean darkBrown;
     private PlayerPiece piece;
@@ -24,6 +26,16 @@ public class Tile {
         this.darkBrown = darkBrown;
         this.row = row;
         this.col = col;
+    }
+
+    public Tile(Tile otherTile)
+    {
+        this.darkBrown = otherTile.darkBrown;
+        this.piece = otherTile.piece;
+        this.row = otherTile.row;
+        this.col = otherTile.col;
+        this.highlighted = otherTile.highlighted;
+
     }
 
     public boolean isDarkBrown() {

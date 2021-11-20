@@ -1,7 +1,9 @@
+import java.io.Serializable;
+
 /**
  * Represents the board for the game
  */
-public class CheckersBoard {
+public class CheckersBoard implements Serializable {
 
 
     private Tile[][] board;
@@ -42,12 +44,13 @@ public class CheckersBoard {
     }
 
     // convenience method for printing the board
-    public void printBoard() {
+    public boolean printBoard() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 System.out.print(board[i][j]);
             }
             System.out.println();
         }
+        return false;
     }
 }

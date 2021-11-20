@@ -1,7 +1,9 @@
+import java.io.Serializable;
+
 /**
  * Represents a Piece a player has
  */
-public class PlayerPiece {
+public class PlayerPiece implements Serializable {
 
     private String playerColour;
     private int rowPos;

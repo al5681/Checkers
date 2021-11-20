@@ -135,24 +135,46 @@ public class CheckersGUI extends Application {
      * Gets button clicks from the players and updates the state of the game accordingly each time
      */
     public void gameLoop() {
-        for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
-            for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
-                int currentI = i;
-                int currentJ = j;
-                buttonsInGrid[i][j].setOnMouseClicked(e -> {
-                    Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
-                    if (checkers.getGameState() == GameState.SelectingPiece) {
-                        checkers.selectPiece(currTile);
-                    } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
-                        checkers.movePiece(currTile);
-                    } else if (checkers.getGameState() == GameState.MakingJump) {
-                        checkers.makeJump(currTile);
-                    }
-                    updateBoardRender();
-                    renderPieces(); // render the pieces in their new position
-                    refreshPlayerTurnDisplay();
-                });
+        if(checkers.getCurrentTurn().equals("black")) {
+            blackMove();
+        }
+        else {
+            whiteMove();
+        }
+        }
+
+        public void whiteMove()
+        {
+            this.checkers = checkers.randomPlayerMove();
+            renderBoard();
+            renderPieces();
+            refreshPlayerTurnDisplay();
+            gameLoop();
+        }
+
+        public void blackMove()
+        {
+            for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
+                for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
+                    int currentI = i;
+                    int currentJ = j;
+                    buttonsInGrid[i][j].setOnMouseClicked(e -> {
+                        if(checkers.getCurrentTurn().equals("black")) {
+                            Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
+                            if (checkers.getGameState() == GameState.SelectingPiece) {
+                                checkers.selectPiece(currTile);
+                            } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
+                                checkers.movePiece(currTile);
+                            } else if (checkers.getGameState() == GameState.MakingJump) {
+                                checkers.makeJump(currTile);
+                            }
+                            updateBoardRender();
+                            renderPieces(); // render the pieces in their new position
+                            refreshPlayerTurnDisplay();
+                            gameLoop();
+                        }
+                    });
+                }
             }
         }
     }
-}

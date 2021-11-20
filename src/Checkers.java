@@ -1,12 +1,14 @@
 import javafx.util.Pair;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Represents the model for the game
  */
-public class Checkers {
+public class Checkers implements Serializable {
 
 
     private CheckersBoard checkersBoard;
@@ -55,6 +57,15 @@ public class Checkers {
             setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
         }
         gameState = GameState.SelectingPiece; // initialise game state
+    }
+
+    public Checkers(Checkers otherCheckers)
+    {
+        this.checkersBoard = otherCheckers.checkersBoard;
+        this.playerBlack = otherCheckers.playerBlack;
+        this.playerWhite = otherCheckers.playerWhite;
+        this.currentTurn = otherCheckers.currentTurn;
+        this.gameState = otherCheckers.gameState;
     }
 
     /**
@@ -368,23 +379,36 @@ public class Checkers {
             PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
             ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
             for(int j = 0; j < legalOptions.size(); j++) {
-                // Checkers checkersCopy = this.copy()
-                // PlayerPiece playerPieceCopy = currPiece.copy()
-                // Tile currTileCopy = legalOptions.get(j).copy()
-                // checkersCopy.selectPiece(playerPieceCopy)
-                // possibleMoves.append(simulateMove(currTileCopy, checkersCopy)
+                Checkers checkersCopy = SerializationUtils.clone(this);
+                int row = playerWhite.getPlayerPieces().get(i).getRowPos();
+                int col = playerWhite.getPlayerPieces().get(i).getColPos();
+                Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
+                Tile playerTile = checkersCopy.getCheckersBoard().getBoard()[row][col];
+                possibleMoves.add(simulateMove(playerTile, tileCopy, checkersCopy));
             }
         }
         return possibleMoves;
     }
 
-    // public Checkers simulateMove(tileCopy, checkersCopy)
-    //   if (checkersCopy.getGameState() == GameState.SelectingTileToMoveTo) {
-    //                        checkersCopy.movePiece(tile);
-    //                    } else if (checkersCopy.getGameState() == GameState.MakingJump) {
-    //                        checkersCopy.makeJump(tile);
-    //                        }
-    //  return checkersCopy
+    public Checkers simulateMove(Tile playerTile, Tile tileCopy, Checkers checkersCopy)
+    {
+        checkersCopy.selectPiece(playerTile);
+        if(checkersCopy.getGameState() == GameState.SelectingTileToMoveTo) {
+            checkersCopy.movePiece(tileCopy);
+        }
+        else if(checkersCopy.getGameState() == GameState.MakingJump) {
+            checkersCopy.makeJump(tileCopy);
+        }
+        return checkersCopy;
+    }
+
+    public Checkers randomPlayerMove()
+    {
+        ArrayList<Checkers> possibleMoves = getAllMoves();
+        int index = (int)(Math.random() * possibleMoves.size());
+        Checkers newCheckers = possibleMoves.get(index);
+        return newCheckers;
+    }
 
     // helper method to check if a tile index is in bounds
     private boolean inBounds(int row, int col) {
