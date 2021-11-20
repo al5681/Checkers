@@ -369,14 +369,16 @@ public class Checkers {
             ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
             for(int j = 0; j < legalOptions.size(); j++) {
                 // Checkers checkersCopy = this.copy()
-                // checkersCopy.selectPiece(currPiece)
-                // possibleMoves.append(simulateMove(legalOptions.get(j), checkersCopy)
+                // PlayerPiece playerPieceCopy = currPiece.copy()
+                // Tile currTileCopy = legalOptions.get(j).copy()
+                // checkersCopy.selectPiece(playerPieceCopy)
+                // possibleMoves.append(simulateMove(currTileCopy, checkersCopy)
             }
         }
         return possibleMoves;
     }
 
-    // public Checkers simulateMove(tile, checkersCopy)
+    // public Checkers simulateMove(tileCopy, checkersCopy)
     //   if (checkersCopy.getGameState() == GameState.SelectingTileToMoveTo) {
     //                        checkersCopy.movePiece(tile);
     //                    } else if (checkersCopy.getGameState() == GameState.MakingJump) {
