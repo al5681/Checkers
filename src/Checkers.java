@@ -420,7 +420,6 @@ public class Checkers implements Serializable {
     {
         ArrayList<Checkers> possibleMoves = getAllMoves();
         if(possibleMoves.size() == 0) {
-            gameState = GameState.GameWon;
             return true;
         }
         return false;

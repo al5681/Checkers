@@ -139,7 +139,7 @@ public class CheckersTest {
     @Test
     public void randomMovesTest()
     {
-        while(checkers.getGameState() != GameState.SelectingPiece.GameWon) {
+        while(!checkers.checkIfGameIsOver()) {
             checkers = checkers.randomPlayerMove();
         }
     }

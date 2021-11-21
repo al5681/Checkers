@@ -123,9 +123,7 @@ public class CheckersGUI extends Application {
      */
     public void gameLoop() {
         if(!checkers.checkIfGameIsOver()) {
-
-                whiteMove();
-
+                randomMove();
         }
         else {
             final Stage dialog = new Stage();
@@ -137,7 +135,7 @@ public class CheckersGUI extends Application {
         }
     }
 
-    public void whiteMove() {
+    public void randomMove() {
             this.checkers = checkers.randomPlayerMove();
             update();
     }

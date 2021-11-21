@@ -7,6 +7,4 @@ public enum GameState implements Serializable  {
     SelectingPiece,
     SelectingTileToMoveTo,
     MakingJump,
-    GameWon,
-    GameDraw
 }
