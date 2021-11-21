@@ -5,11 +5,9 @@ import java.io.Serializable;
  */
 public class CheckersBoard implements Serializable {
 
-
     private Tile[][] board;
     private final int rows = 8;
     private final int cols = 8;
-
 
     /**
      * Creates an 8x8 board, tiles are usable according to the original

@@ -1,6 +1,5 @@
 import javafx.util.Pair;
 import org.apache.commons.lang3.SerializationUtils;
-
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
  * Represents the model for the game
  */
 public class Checkers implements Serializable {
-
 
     private CheckersBoard checkersBoard;
     private Player playerBlack = new Player("black");
@@ -57,15 +55,6 @@ public class Checkers implements Serializable {
             setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
         }
         gameState = GameState.SelectingPiece; // initialise game state
-    }
-
-    public Checkers(Checkers otherCheckers)
-    {
-        this.checkersBoard = otherCheckers.checkersBoard;
-        this.playerBlack = otherCheckers.playerBlack;
-        this.playerWhite = otherCheckers.playerWhite;
-        this.currentTurn = otherCheckers.currentTurn;
-        this.gameState = otherCheckers.gameState;
     }
 
     /**
@@ -250,18 +239,16 @@ public class Checkers implements Serializable {
         }
     }
 
-    private ArrayList<Tile> getLegalOptionsForTurn(PlayerPiece playerPiece)
-    {
+    private ArrayList<Tile> getLegalOptionsForTurn(PlayerPiece playerPiece) {
         ArrayList<Tile> legalTiles = new ArrayList<>();
-        if(playerPiece.getCanMakeLegalMove()) {
+        if (playerPiece.getCanMakeLegalMove()) {
             ArrayList<Tile> moves = findTilesThatCanBeMovedTo(playerPiece);
-            for(int i = 0; i < moves.size(); i++) {
+            for (int i = 0; i < moves.size(); i++) {
                 legalTiles.add(moves.get(i));
             }
-        }
-        else if(playerPiece.getCanMakeLegalJump()) {
-            ArrayList<Pair<Tile,Tile>> jumps = findTilesThatCanBeJumpedTo(playerPiece);
-            for(int i = 0; i < jumps.size(); i++) {
+        } else if (playerPiece.getCanMakeLegalJump()) {
+            ArrayList<Pair<Tile, Tile>> jumps = findTilesThatCanBeJumpedTo(playerPiece);
+            for (int i = 0; i < jumps.size(); i++) {
                 legalTiles.add(jumps.get(i).getValue());
             }
         }
@@ -372,13 +359,12 @@ public class Checkers implements Serializable {
      *
      * @return possibleMoves, An array list of all the possible outcomes of the moves being made
      */
-    public ArrayList<Checkers> getAllMoves()
-    {
+    public ArrayList<Checkers> getAllMoves() {
         ArrayList<Checkers> possibleMoves = new ArrayList<>();
-        for(int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+        for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
             PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
             ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
-            for(int j = 0; j < legalOptions.size(); j++) {
+            for (int j = 0; j < legalOptions.size(); j++) {
                 Checkers checkersCopy = SerializationUtils.clone(this);
                 int row = playerWhite.getPlayerPieces().get(i).getRowPos();
                 int col = playerWhite.getPlayerPieces().get(i).getColPos();
@@ -390,22 +376,19 @@ public class Checkers implements Serializable {
         return possibleMoves;
     }
 
-    public Checkers simulateMove(Tile playerTile, Tile tileCopy, Checkers checkersCopy)
-    {
+    public Checkers simulateMove(Tile playerTile, Tile tileCopy, Checkers checkersCopy) {
         checkersCopy.selectPiece(playerTile);
-        if(checkersCopy.getGameState() == GameState.SelectingTileToMoveTo) {
+        if (checkersCopy.getGameState() == GameState.SelectingTileToMoveTo) {
             checkersCopy.movePiece(tileCopy);
-        }
-        else if(checkersCopy.getGameState() == GameState.MakingJump) {
+        } else if (checkersCopy.getGameState() == GameState.MakingJump) {
             checkersCopy.makeJump(tileCopy);
         }
         return checkersCopy;
     }
 
-    public Checkers randomPlayerMove()
-    {
+    public Checkers randomPlayerMove() {
         ArrayList<Checkers> possibleMoves = getAllMoves();
-        int index = (int)(Math.random() * possibleMoves.size());
+        int index = (int) (Math.random() * possibleMoves.size());
         Checkers newCheckers = possibleMoves.get(index);
         return newCheckers;
     }
