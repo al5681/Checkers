@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 /**
  * Represents the GUI for the game, which displays the current state of the Checkers class
  */
-public class CheckersGUI extends Application {
+public class CheckersGUI2 extends Application {
 
     private Checkers checkers = new Checkers();
     private BorderPane boarderPane = new BorderPane();
@@ -123,9 +123,11 @@ public class CheckersGUI extends Application {
      */
     public void gameLoop() {
         if(!checkers.checkIfGameIsOver()) {
-
+            if (checkers.getCurrentTurn().equals("black")) {
+                blackMove();
+            } else {
                 whiteMove();
-
+            }
         }
         else {
             final Stage dialog = new Stage();
@@ -140,9 +142,33 @@ public class CheckersGUI extends Application {
     public void whiteMove() {
             this.checkers = checkers.randomPlayerMove();
             update();
+
     }
 
-    private void update() {
+    public void blackMove() {
+        for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
+            for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
+                int currentI = i;
+                int currentJ = j;
+                buttonsInGrid[i][j].setOnMouseClicked(e -> {
+                    if (checkers.getCurrentTurn().equals("black")) {
+                        Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
+                        if (checkers.getGameState() == GameState.SelectingPiece) {
+                            checkers.selectPiece(currTile);
+                        } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
+                            checkers.movePiece(currTile);
+                        } else if (checkers.getGameState() == GameState.MakingJump) {
+                            checkers.makeJump(currTile);
+                        }
+                        update();
+                    }
+                });
+            }
+        }
+    }
+
+    private void update()
+    {
         updateBoardRender();
         renderPieces();
         gameLoop();

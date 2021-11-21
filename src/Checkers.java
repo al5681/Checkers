@@ -187,18 +187,18 @@ public class Checkers implements Serializable {
      * Changes the turn to the other player
      */
     public void changeCurrentPlayersTurn() {
-            if (currentTurn.equals("black")) {
-                currentTurn = "white";
-                for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
-                    setLegalOptionsForTurn(playerWhite.getPlayerPieces().get(i));
-                }
-            } else {
-                currentTurn = "black";
-                for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
-                    setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
-                }
+        if (currentTurn.equals("black")) {
+            currentTurn = "white";
+            for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                setLegalOptionsForTurn(playerWhite.getPlayerPieces().get(i));
             }
-            setLegalMovesToFalseIfJumpsCanBeMade();
+        } else {
+            currentTurn = "black";
+            for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
+            }
+        }
+        setLegalMovesToFalseIfJumpsCanBeMade();
 
     }
 
@@ -407,17 +407,16 @@ public class Checkers implements Serializable {
     }
 
     public Checkers randomPlayerMove() {
-        ArrayList<Checkers> possibleMoves = getAllMoves();
-        if(gameOver()) {
-            gameState = GameState.GameWon;
+        if(checkIfGameIsOver()) {
             return this;
         }
+        ArrayList<Checkers> possibleMoves = getAllMoves();
         int index = (int) (Math.random() * possibleMoves.size());
         Checkers newCheckers = possibleMoves.get(index);
         return newCheckers;
     }
 
-    public boolean gameOver()
+    public boolean checkIfGameIsOver()
     {
         ArrayList<Checkers> possibleMoves = getAllMoves();
         if(possibleMoves.size() == 0) {
