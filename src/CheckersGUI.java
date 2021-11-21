@@ -122,22 +122,16 @@ public class CheckersGUI extends Application {
      * Gets button clicks from the players and updates the state of the game accordingly each time
      */
     public void gameLoop() {
-        //System.out.println(checkers.getGameState());
         whiteMove();
     }
 
     public void whiteMove() {
         if (checkers.getGameState() != GameState.SelectingPiece.GameWon) {
+            System.out.println(checkers.getGameState());
             this.checkers = checkers.randomPlayerMove();
             update();
         }
-    }
-
-    private void update() {
-        updateBoardRender();
-        renderPieces();
-        gameLoop();
-        if (checkers.getGameState() == GameState.GameWon) {
+        else {
             final Stage dialog = new Stage();
             VBox dialogVbox = new VBox(20);
             dialogVbox.getChildren().add(new Text(checkers.getCurrentTurn() + " has won!"));
@@ -145,6 +139,12 @@ public class CheckersGUI extends Application {
             dialog.setScene(dialogScene);
             dialog.show();
         }
+    }
+
+    private void update() {
+        updateBoardRender();
+        renderPieces();
+        gameLoop();
     }
 }
 

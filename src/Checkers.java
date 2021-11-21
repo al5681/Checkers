@@ -187,8 +187,6 @@ public class Checkers implements Serializable {
      * Changes the turn to the other player
      */
     public void changeCurrentPlayersTurn() {
-        boolean gameDone = checkForWin();
-        if (!gameDone) {
             if (currentTurn.equals("black")) {
                 currentTurn = "white";
                 for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
@@ -201,7 +199,7 @@ public class Checkers implements Serializable {
                 }
             }
             setLegalMovesToFalseIfJumpsCanBeMade();
-        }
+
     }
 
     // helper method to set legal moves to false for all pieces if a jump has to be made
@@ -364,7 +362,6 @@ public class Checkers implements Serializable {
      * @return possibleMoves, An array list of all the possible outcomes of the moves being made
      */
     public ArrayList<Checkers> getAllMoves() {
-        checkForWin();
         ArrayList<Checkers> possibleMoves = new ArrayList<>();
         if(currentTurn.equals("white")) {
             for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
@@ -410,13 +407,8 @@ public class Checkers implements Serializable {
     }
 
     public Checkers randomPlayerMove() {
-        boolean gameOver = checkForWin();
-        if(gameOver)
-        {
-            return this;
-        }
         ArrayList<Checkers> possibleMoves = getAllMoves();
-        if(possibleMoves.size() == 0) {
+        if(gameOver()) {
             gameState = GameState.GameWon;
             return this;
         }
@@ -425,36 +417,15 @@ public class Checkers implements Serializable {
         return newCheckers;
     }
 
-    public boolean checkForWin() {
-        if (getPlayerWhite().getPlayerPieces().size() == 0 || getPlayerBlack().getPlayerPieces().size() == 0) {
+    public boolean gameOver()
+    {
+        ArrayList<Checkers> possibleMoves = getAllMoves();
+        if(possibleMoves.size() == 0) {
             gameState = GameState.GameWon;
             return true;
         }
-                // game won by black because white has not legal moves
-                ArrayList<ArrayList<Tile>> legalOptionsForBlackPlayerPieces = new ArrayList<>();
-                for (int i = 0; i < getPlayerBlack().getPlayerPieces().size(); i++) {
-                    legalOptionsForBlackPlayerPieces.add(getLegalOptionsForTurn(getPlayerBlack().getPlayerPieces().get(i)));
-                }
-                if (legalOptionsForBlackPlayerPieces.size() == 0) {
-                    gameState = GameState.GameWon;
-                    return true;
-                }
-
-                // game won by white because black has not legal moves
-                ArrayList<ArrayList<Tile>> legalOptionsForWhitePlayerPieces = new ArrayList<>();
-                for (int i = 0; i < getPlayerWhite().getPlayerPieces().size(); i++) {
-                    legalOptionsForWhitePlayerPieces.add(getLegalOptionsForTurn(getPlayerWhite().getPlayerPieces().get(i)));
-                }
-                if (legalOptionsForWhitePlayerPieces.size() == 0) {
-                    gameState = GameState.GameWon;
-                    return true;
-
-            }
-
-
-
-            return false;
-        }
+        return false;
+    }
 
     // helper method to check if a tile index is in bounds
     private boolean inBounds(int row, int col) {
