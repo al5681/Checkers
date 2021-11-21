@@ -72,24 +72,24 @@ public class CheckersGUI2 extends Application {
                     circle.setRadius(35.0f);
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
                         circle.setFill(javafx.scene.paint.Color.BLACK);
-                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == GameState.SelectingPiece) {
+                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == GameState.SelectingPiece) {
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
                     } else {
                         circle.setFill(javafx.scene.paint.Color.WHITE);
-                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == GameState.SelectingPiece) {
+                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == GameState.SelectingPiece) {
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
                     }
-                    if (currTile.getPiece().isSelected() && (checkers.getGameState() == GameState.SelectingTileToMoveTo || checkers.getGameState() == GameState.MakingJump)) {
+                    if (currTile.getPiece().isSelected() && (checkers.getGameState() == PlayerAction.SelectingTileToMoveTo || checkers.getGameState() == PlayerAction.MakingJump)) {
                         circle.setStroke(Color.GOLD);
                         circle.setStrokeWidth(5.00);
                     }
@@ -122,27 +122,19 @@ public class CheckersGUI2 extends Application {
      * Gets button clicks from the players and updates the state of the game accordingly each time
      */
     public void gameLoop() {
-        if(!checkers.checkIfGameIsOver()) {
+        if (!checkers.isGameOver()) {
             if (checkers.getCurrentTurn().equals("black")) {
                 blackMove();
             } else {
                 whiteMove();
             }
         }
-        else {
-            final Stage dialog = new Stage();
-            VBox dialogVbox = new VBox(20);
-            dialogVbox.getChildren().add(new Text("Game over!"));
-            Scene dialogScene = new Scene(dialogVbox, 300, 200);
-            dialog.setScene(dialogScene);
-            dialog.show();
-        }
+
     }
 
     public void whiteMove() {
-            this.checkers = checkers.randomPlayerMove();
-            update();
-
+        this.checkers = checkers.randomPlayerMove();
+        update();
     }
 
     public void blackMove() {
@@ -153,11 +145,11 @@ public class CheckersGUI2 extends Application {
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
                     if (checkers.getCurrentTurn().equals("black")) {
                         Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
-                        if (checkers.getGameState() == GameState.SelectingPiece) {
+                        if (checkers.getGameState() == PlayerAction.SelectingPiece) {
                             checkers.selectPiece(currTile);
-                        } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
+                        } else if (checkers.getGameState() == PlayerAction.SelectingTileToMoveTo) {
                             checkers.movePiece(currTile);
-                        } else if (checkers.getGameState() == GameState.MakingJump) {
+                        } else if (checkers.getGameState() == PlayerAction.MakingJump) {
                             checkers.makeJump(currTile);
                         }
                         update();
@@ -167,8 +159,7 @@ public class CheckersGUI2 extends Application {
         }
     }
 
-    private void update()
-    {
+    private void update() {
         updateBoardRender();
         renderPieces();
         gameLoop();

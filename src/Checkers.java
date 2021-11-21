@@ -13,7 +13,8 @@ public class Checkers implements Serializable {
     private Player playerBlack = new Player("black");
     private Player playerWhite = new Player("white");
     private String currentTurn = "black"; // black goes first
-    private GameState gameState;
+    private PlayerAction playerAction;
+    private boolean gameOver;
 
     /**
      * Creates an instance of the board and loads the pieces in their initial spawns for the players
@@ -54,7 +55,7 @@ public class Checkers implements Serializable {
         for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
             setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
         }
-        gameState = GameState.SelectingPiece; // initialise game state
+        playerAction = PlayerAction.SelectingPiece; // initialise game state
     }
 
     /**
@@ -68,14 +69,14 @@ public class Checkers implements Serializable {
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
                 playerPiece.setSelected(true);
-                gameState = GameState.SelectingTileToMoveTo;
+                playerAction = PlayerAction.SelectingTileToMoveTo;
                 for (Tile tile : tiles) {
                     tile.setHighlighted(true);
                 }
             } else if (playerPiece.getCanMakeLegalJump() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(playerPiece);
                 playerPiece.setSelected(true);
-                gameState = GameState.MakingJump;
+                playerAction = PlayerAction.MakingJump;
                 for (int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
                     tileToDeleteAndJumpToPairs.get(i).getValue().setHighlighted(true);
                 }
@@ -102,7 +103,7 @@ public class Checkers implements Serializable {
                         // update the state of the tile
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
                         // the player piece is no longer selected
-                        if (gameState != gameState.MakingJump) {
+                        if (playerAction != playerAction.MakingJump) {
                             playerBlack.getPlayerPieces().get(i).setSelected(false);
                         }
 
@@ -116,7 +117,7 @@ public class Checkers implements Serializable {
                         playerWhite.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerWhite.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerWhite.getPlayerPieces().get(i));
-                        if (gameState != gameState.MakingJump) {
+                        if (playerAction != playerAction.MakingJump) {
                             playerWhite.getPlayerPieces().get(i).setSelected(false);
                         }
 
@@ -128,8 +129,8 @@ public class Checkers implements Serializable {
             for (Tile tile : currentlyHighlighted) {
                 tile.setHighlighted(false);
             }
-            if (gameState != gameState.MakingJump) {
-                gameState = GameState.SelectingPiece; // reset the game state
+            if (playerAction != playerAction.MakingJump) {
+                playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
         }
@@ -159,7 +160,7 @@ public class Checkers implements Serializable {
             movePiece(tileToJumpTo);
             // TO-DO: CHECK FOR MULTILEG JUMPS HERE
             selectedPiece.setSelected(false);
-            gameState = GameState.SelectingPiece; // reset the game state
+            playerAction = PlayerAction.SelectingPiece; // reset the game state
             changeCurrentPlayersTurn(); // end the turn
         }
     }
@@ -398,9 +399,9 @@ public class Checkers implements Serializable {
 
     public Checkers simulateMove(Tile playerTile, Tile tileCopy, Checkers checkersCopy) {
         checkersCopy.selectPiece(playerTile);
-        if (checkersCopy.getGameState() == GameState.SelectingTileToMoveTo) {
+        if (checkersCopy.getGameState() == PlayerAction.SelectingTileToMoveTo) {
             checkersCopy.movePiece(tileCopy);
-        } else if (checkersCopy.getGameState() == GameState.MakingJump) {
+        } else if (checkersCopy.getGameState() == PlayerAction.MakingJump) {
             checkersCopy.makeJump(tileCopy);
         }
         return checkersCopy;
@@ -420,6 +421,7 @@ public class Checkers implements Serializable {
     {
         ArrayList<Checkers> possibleMoves = getAllMoves();
         if(possibleMoves.size() == 0) {
+            this.gameOver = true;
             return true;
         }
         return false;
@@ -447,8 +449,12 @@ public class Checkers implements Serializable {
         return currentTurn;
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public PlayerAction getGameState() {
+        return playerAction;
     }
 
     /**

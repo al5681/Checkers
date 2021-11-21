@@ -143,4 +143,15 @@ public class CheckersTest {
             checkers = checkers.randomPlayerMove();
         }
     }
+
+    @Test
+    public void randomTestABunch()
+    {
+        for(int i = 0; i < 100; i++) {
+            Checkers newCheckers = new Checkers();
+            while(!newCheckers.isGameOver()) {
+                newCheckers = newCheckers.randomPlayerMove();
+            }
+        }
+    }
 }
