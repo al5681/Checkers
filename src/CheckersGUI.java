@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -121,45 +122,29 @@ public class CheckersGUI extends Application {
      * Gets button clicks from the players and updates the state of the game accordingly each time
      */
     public void gameLoop() {
-        if (checkers.getCurrentTurn().equals("black")) {
-            blackMove();
-        } else {
-            whiteMove();
-        }
+        //System.out.println(checkers.getGameState());
+        whiteMove();
     }
 
     public void whiteMove() {
-        this.checkers = checkers.randomPlayerMove();
-        update();
-    }
-
-    public void blackMove() {
-        for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
-            for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
-                int currentI = i;
-                int currentJ = j;
-                buttonsInGrid[i][j].setOnMouseClicked(e -> {
-                    if (checkers.getCurrentTurn().equals("black")) {
-                        Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
-                        if (checkers.getGameState() == GameState.SelectingPiece) {
-                            checkers.selectPiece(currTile);
-                        } else if (checkers.getGameState() == GameState.SelectingTileToMoveTo) {
-                            checkers.movePiece(currTile);
-                        } else if (checkers.getGameState() == GameState.MakingJump) {
-                            checkers.makeJump(currTile);
-                        }
-                        update();
-                    }
-                });
-            }
+        if (checkers.getGameState() != GameState.SelectingPiece.GameWon) {
+            this.checkers = checkers.randomPlayerMove();
+            update();
         }
     }
 
-    private void update()
-    {
+    private void update() {
         updateBoardRender();
         renderPieces();
         gameLoop();
+        if (checkers.getGameState() == GameState.GameWon) {
+            final Stage dialog = new Stage();
+            VBox dialogVbox = new VBox(20);
+            dialogVbox.getChildren().add(new Text(checkers.getCurrentTurn() + " has won!"));
+            Scene dialogScene = new Scene(dialogVbox, 300, 200);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        }
     }
 }
 

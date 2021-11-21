@@ -135,4 +135,12 @@ public class CheckersTest {
             assertEquals(true, legalTiles.get(i).size() != 0);
         }
     }
+
+    @Test
+    public void randomMovesTest()
+    {
+        while(checkers.getGameState() != GameState.SelectingPiece.GameWon) {
+            checkers = checkers.randomPlayerMove();
+        }
+    }
 }

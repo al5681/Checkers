@@ -187,18 +187,21 @@ public class Checkers implements Serializable {
      * Changes the turn to the other player
      */
     public void changeCurrentPlayersTurn() {
-        if (currentTurn.equals("black")) {
-            currentTurn = "white";
-            for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
-                setLegalOptionsForTurn(playerWhite.getPlayerPieces().get(i));
+        boolean gameDone = checkForWin();
+        if (!gameDone) {
+            if (currentTurn.equals("black")) {
+                currentTurn = "white";
+                for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                    setLegalOptionsForTurn(playerWhite.getPlayerPieces().get(i));
+                }
+            } else {
+                currentTurn = "black";
+                for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                    setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
+                }
             }
-        } else {
-            currentTurn = "black";
-            for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
-                setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
-            }
+            setLegalMovesToFalseIfJumpsCanBeMade();
         }
-        setLegalMovesToFalseIfJumpsCanBeMade();
     }
 
     // helper method to set legal moves to false for all pieces if a jump has to be made
@@ -318,6 +321,7 @@ public class Checkers implements Serializable {
      * @return an array list of the tiles that the player piece can move to
      */
     public ArrayList<Tile> findTilesThatCanBeMovedTo(PlayerPiece playerPiece) {
+
         ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
         for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
@@ -360,19 +364,38 @@ public class Checkers implements Serializable {
      * @return possibleMoves, An array list of all the possible outcomes of the moves being made
      */
     public ArrayList<Checkers> getAllMoves() {
+        checkForWin();
         ArrayList<Checkers> possibleMoves = new ArrayList<>();
-        for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
-            PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
-            ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
-            for (int j = 0; j < legalOptions.size(); j++) {
-                Checkers checkersCopy = SerializationUtils.clone(this);
-                int row = playerWhite.getPlayerPieces().get(i).getRowPos();
-                int col = playerWhite.getPlayerPieces().get(i).getColPos();
-                Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
-                Tile playerTile = checkersCopy.getCheckersBoard().getBoard()[row][col];
-                possibleMoves.add(simulateMove(playerTile, tileCopy, checkersCopy));
+        if(currentTurn.equals("white")) {
+            for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
+                ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
+                for (int j = 0; j < legalOptions.size(); j++) {
+                    Checkers checkersCopy = SerializationUtils.clone(this);
+                    int row = playerWhite.getPlayerPieces().get(i).getRowPos();
+                    int col = playerWhite.getPlayerPieces().get(i).getColPos();
+                    Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
+                    Tile playerTile = checkersCopy.getCheckersBoard().getBoard()[row][col];
+                    possibleMoves.add(simulateMove(playerTile, tileCopy, checkersCopy));
+                }
             }
         }
+        else if(currentTurn.equals("black"))
+        {
+            for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                PlayerPiece currPiece = playerBlack.getPlayerPieces().get(i);
+                ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
+                for (int j = 0; j < legalOptions.size(); j++) {
+                    Checkers checkersCopy = SerializationUtils.clone(this);
+                    int row = playerBlack.getPlayerPieces().get(i).getRowPos();
+                    int col = playerBlack.getPlayerPieces().get(i).getColPos();
+                    Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
+                    Tile playerTile = checkersCopy.getCheckersBoard().getBoard()[row][col];
+                    possibleMoves.add(simulateMove(playerTile, tileCopy, checkersCopy));
+                }
+            }
+        }
+
         return possibleMoves;
     }
 
@@ -387,11 +410,51 @@ public class Checkers implements Serializable {
     }
 
     public Checkers randomPlayerMove() {
+        boolean gameOver = checkForWin();
+        if(gameOver)
+        {
+            return this;
+        }
         ArrayList<Checkers> possibleMoves = getAllMoves();
+        if(possibleMoves.size() == 0) {
+            gameState = GameState.GameWon;
+            return this;
+        }
         int index = (int) (Math.random() * possibleMoves.size());
         Checkers newCheckers = possibleMoves.get(index);
         return newCheckers;
     }
+
+    public boolean checkForWin() {
+        if (getPlayerWhite().getPlayerPieces().size() == 0 || getPlayerBlack().getPlayerPieces().size() == 0) {
+            gameState = GameState.GameWon;
+            return true;
+        }
+                // game won by black because white has not legal moves
+                ArrayList<ArrayList<Tile>> legalOptionsForBlackPlayerPieces = new ArrayList<>();
+                for (int i = 0; i < getPlayerBlack().getPlayerPieces().size(); i++) {
+                    legalOptionsForBlackPlayerPieces.add(getLegalOptionsForTurn(getPlayerBlack().getPlayerPieces().get(i)));
+                }
+                if (legalOptionsForBlackPlayerPieces.size() == 0) {
+                    gameState = GameState.GameWon;
+                    return true;
+                }
+
+                // game won by white because black has not legal moves
+                ArrayList<ArrayList<Tile>> legalOptionsForWhitePlayerPieces = new ArrayList<>();
+                for (int i = 0; i < getPlayerWhite().getPlayerPieces().size(); i++) {
+                    legalOptionsForWhitePlayerPieces.add(getLegalOptionsForTurn(getPlayerWhite().getPlayerPieces().get(i)));
+                }
+                if (legalOptionsForWhitePlayerPieces.size() == 0) {
+                    gameState = GameState.GameWon;
+                    return true;
+
+            }
+
+
+
+            return false;
+        }
 
     // helper method to check if a tile index is in bounds
     private boolean inBounds(int row, int col) {

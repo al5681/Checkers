@@ -6,5 +6,7 @@ import java.io.Serializable;
 public enum GameState implements Serializable  {
     SelectingPiece,
     SelectingTileToMoveTo,
-    MakingJump
+    MakingJump,
+    GameWon,
+    GameDraw
 }
