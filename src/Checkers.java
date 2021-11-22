@@ -416,12 +416,12 @@ public class Checkers implements Serializable {
         return newCheckers;
     }
 
-    // public Checkers callMiniMax() }
+    // public Checkers aiMove() }
     // if(checkIfGameIsOver()) {
     //  return this;
     //  }
     // Checkers checkersCopy = SerializationUtils.clone(this);
-    // Checkers newCheckers = miniMax(checkersCopy)
+    // Checkers newCheckers = miniMax(checkersCopy, 3, true).getValue()
     // return newCheckers
 
     public boolean checkIfGameIsOver() {
