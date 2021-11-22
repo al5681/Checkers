@@ -129,7 +129,6 @@ public class CheckersGUI2 extends Application {
                 whiteMove();
             }
         }
-
     }
 
     public void whiteMove() {

@@ -122,10 +122,9 @@ public class CheckersGUI extends Application {
      * Gets button clicks from the players and updates the state of the game accordingly each time
      */
     public void gameLoop() {
-        if(!checkers.isGameOver()) {
-                randomMove();
-        }
-        else {
+        if (!checkers.isGameOver()) {
+            randomMove();
+        } else {
             final Stage dialog = new Stage();
             VBox dialogVbox = new VBox(20);
             dialogVbox.getChildren().add(new Text("Game over!"));
@@ -136,8 +135,8 @@ public class CheckersGUI extends Application {
     }
 
     public void randomMove() {
-            this.checkers = checkers.randomPlayerMove();
-            update();
+        this.checkers = checkers.randomPlayerMove();
+        update();
     }
 
     private void update() {

@@ -1,5 +1,6 @@
 import javafx.util.Pair;
 import org.apache.commons.lang3.SerializationUtils;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -364,7 +365,7 @@ public class Checkers implements Serializable {
      */
     public ArrayList<Checkers> getAllMoves() {
         ArrayList<Checkers> possibleMoves = new ArrayList<>();
-        if(currentTurn.equals("white")) {
+        if (currentTurn.equals("white")) {
             for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
                 PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
                 ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
@@ -377,9 +378,7 @@ public class Checkers implements Serializable {
                     possibleMoves.add(simulateMove(playerTile, tileCopy, checkersCopy));
                 }
             }
-        }
-        else if(currentTurn.equals("black"))
-        {
+        } else if (currentTurn.equals("black")) {
             for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
                 PlayerPiece currPiece = playerBlack.getPlayerPieces().get(i);
                 ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
@@ -408,7 +407,7 @@ public class Checkers implements Serializable {
     }
 
     public Checkers randomPlayerMove() {
-        if(checkIfGameIsOver()) {
+        if (checkIfGameIsOver()) {
             return this;
         }
         ArrayList<Checkers> possibleMoves = getAllMoves();
@@ -417,10 +416,9 @@ public class Checkers implements Serializable {
         return newCheckers;
     }
 
-    public boolean checkIfGameIsOver()
-    {
+    public boolean checkIfGameIsOver() {
         ArrayList<Checkers> possibleMoves = getAllMoves();
-        if(possibleMoves.size() == 0) {
+        if (possibleMoves.size() == 0) {
             this.gameOver = true;
             return true;
         }
