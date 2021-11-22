@@ -1,13 +1,13 @@
+import java.io.Serializable;
+
 /**
  * Represents the board for the game
  */
-public class CheckersBoard {
-
+public class CheckersBoard implements Serializable {
 
     private Tile[][] board;
     private final int rows = 8;
     private final int cols = 8;
-
 
     /**
      * Creates an 8x8 board, tiles are usable according to the original
@@ -42,12 +42,13 @@ public class CheckersBoard {
     }
 
     // convenience method for printing the board
-    public void printBoard() {
+    public boolean printBoard() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 System.out.print(board[i][j]);
             }
             System.out.println();
         }
+        return false;
     }
 }

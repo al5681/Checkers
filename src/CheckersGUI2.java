@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 /**
  * Represents the GUI for the game, which displays the current state of the Checkers class
  */
-public class CheckersGUI extends Application {
+public class CheckersGUI2 extends Application {
 
     private Checkers checkers = new Checkers();
     private BorderPane boarderPane = new BorderPane();
@@ -123,20 +123,39 @@ public class CheckersGUI extends Application {
      */
     public void gameLoop() {
         if (!checkers.isGameOver()) {
-            randomMove();
-        } else {
-            final Stage dialog = new Stage();
-            VBox dialogVbox = new VBox(20);
-            dialogVbox.getChildren().add(new Text("Game over!"));
-            Scene dialogScene = new Scene(dialogVbox, 300, 200);
-            dialog.setScene(dialogScene);
-            dialog.show();
+            if (checkers.getCurrentTurn().equals("black")) {
+                blackMove();
+            } else {
+                whiteMove();
+            }
         }
     }
 
-    public void randomMove() {
+    public void whiteMove() {
         this.checkers = checkers.randomPlayerMove();
         update();
+    }
+
+    public void blackMove() {
+        for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
+            for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
+                int currentI = i;
+                int currentJ = j;
+                buttonsInGrid[i][j].setOnMouseClicked(e -> {
+                    if (checkers.getCurrentTurn().equals("black")) {
+                        Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
+                        if (checkers.getGameState() == PlayerAction.SelectingPiece) {
+                            checkers.selectPiece(currTile);
+                        } else if (checkers.getGameState() == PlayerAction.SelectingTileToMoveTo) {
+                            checkers.movePiece(currTile);
+                        } else if (checkers.getGameState() == PlayerAction.MakingJump) {
+                            checkers.makeJump(currTile);
+                        }
+                        update();
+                    }
+                });
+            }
+        }
     }
 
     private void update() {

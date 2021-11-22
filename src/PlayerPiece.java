@@ -1,7 +1,9 @@
+import java.io.Serializable;
+
 /**
  * Represents a Piece a player has
  */
-public class PlayerPiece {
+public class PlayerPiece implements Serializable {
 
     private String playerColour;
     private int rowPos;
@@ -45,10 +47,6 @@ public class PlayerPiece {
 
     public void setCanMakeLegalMove(boolean canMakeLegalMove) {
         this.canMakeLegalMove = canMakeLegalMove;
-    }
-
-    public boolean isCanMakeLegalMove() {
-        return canMakeLegalMove;
     }
 
     public boolean getCanMakeLegalJump() {

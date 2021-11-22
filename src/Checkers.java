@@ -1,19 +1,21 @@
 import javafx.util.Pair;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Represents the model for the game
  */
-public class Checkers {
-
+public class Checkers implements Serializable {
 
     private CheckersBoard checkersBoard;
     private Player playerBlack = new Player("black");
     private Player playerWhite = new Player("white");
     private String currentTurn = "black"; // black goes first
-    private GameState gameState;
+    private PlayerAction playerAction;
+    private boolean gameOver;
 
     /**
      * Creates an instance of the board and loads the pieces in their initial spawns for the players
@@ -54,7 +56,7 @@ public class Checkers {
         for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
             setLegalOptionsForTurn(playerBlack.getPlayerPieces().get(i));
         }
-        gameState = GameState.SelectingPiece; // initialise game state
+        playerAction = PlayerAction.SelectingPiece; // initialise game state
     }
 
     /**
@@ -68,14 +70,14 @@ public class Checkers {
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 ArrayList<Tile> tiles = findTilesThatCanBeMovedTo(playerPiece);
                 playerPiece.setSelected(true);
-                gameState = GameState.SelectingTileToMoveTo;
+                playerAction = PlayerAction.SelectingTileToMoveTo;
                 for (Tile tile : tiles) {
                     tile.setHighlighted(true);
                 }
             } else if (playerPiece.getCanMakeLegalJump() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(playerPiece);
                 playerPiece.setSelected(true);
-                gameState = GameState.MakingJump;
+                playerAction = PlayerAction.MakingJump;
                 for (int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
                     tileToDeleteAndJumpToPairs.get(i).getValue().setHighlighted(true);
                 }
@@ -102,7 +104,7 @@ public class Checkers {
                         // update the state of the tile
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
                         // the player piece is no longer selected
-                        if (gameState != gameState.MakingJump) {
+                        if (playerAction != playerAction.MakingJump) {
                             playerBlack.getPlayerPieces().get(i).setSelected(false);
                         }
 
@@ -116,7 +118,7 @@ public class Checkers {
                         playerWhite.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerWhite.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerWhite.getPlayerPieces().get(i));
-                        if (gameState != gameState.MakingJump) {
+                        if (playerAction != playerAction.MakingJump) {
                             playerWhite.getPlayerPieces().get(i).setSelected(false);
                         }
 
@@ -128,8 +130,8 @@ public class Checkers {
             for (Tile tile : currentlyHighlighted) {
                 tile.setHighlighted(false);
             }
-            if (gameState != gameState.MakingJump) {
-                gameState = GameState.SelectingPiece; // reset the game state
+            if (playerAction != playerAction.MakingJump) {
+                playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
         }
@@ -159,7 +161,7 @@ public class Checkers {
             movePiece(tileToJumpTo);
             // TO-DO: CHECK FOR MULTILEG JUMPS HERE
             selectedPiece.setSelected(false);
-            gameState = GameState.SelectingPiece; // reset the game state
+            playerAction = PlayerAction.SelectingPiece; // reset the game state
             changeCurrentPlayersTurn(); // end the turn
         }
     }
@@ -199,6 +201,7 @@ public class Checkers {
             }
         }
         setLegalMovesToFalseIfJumpsCanBeMade();
+
     }
 
     // helper method to set legal moves to false for all pieces if a jump has to be made
@@ -227,20 +230,37 @@ public class Checkers {
      * for the current state of the game
      *
      * @param playerPiece
+     * @return
      */
     public void setLegalOptionsForTurn(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
         ArrayList<Pair<Tile, Tile>> tilesThatCanBeJumpedTo = findTilesThatCanBeJumpedTo(playerPiece);
-        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0); 
+        playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0);
         playerPiece.setCanMakeLegalJump(tilesThatCanBeJumpedTo.size() != 0);
         if (tilesThatCanBeMovedTo.size() > 0 && tilesThatCanBeJumpedTo.size() != 0) {
             playerPiece.setCanMakeLegalMove(false);
         }
     }
 
+    private ArrayList<Tile> getLegalOptionsForTurn(PlayerPiece playerPiece) {
+        ArrayList<Tile> legalTiles = new ArrayList<>();
+        if (playerPiece.getCanMakeLegalMove()) {
+            ArrayList<Tile> moves = findTilesThatCanBeMovedTo(playerPiece);
+            for (int i = 0; i < moves.size(); i++) {
+                legalTiles.add(moves.get(i));
+            }
+        } else if (playerPiece.getCanMakeLegalJump()) {
+            ArrayList<Pair<Tile, Tile>> jumps = findTilesThatCanBeJumpedTo(playerPiece);
+            for (int i = 0; i < jumps.size(); i++) {
+                legalTiles.add(jumps.get(i).getValue());
+            }
+        }
+        return legalTiles;
+    }
+
     /**
      * Checks the state of the neighbour tiles of a player piece, if that tile is dark brown,
-     * has a current player piece on it (is occupied), and the dark brown tiles behind that player piece
+     * has a current player piece on it of the opposing colour, and the dark brown tiles behind that player piece
      * is not occupied and is not out of bounds, the tile behind that piece is taken as a tile to jump to,
      * and the tile the piece occupies is taken as the tile of a piece to delete. They are added to a list as a pair
      *
@@ -292,7 +312,6 @@ public class Checkers {
         return listOfDeleteTileAndJumpTilePairs;
     }
 
-
     /**
      * Checks the states of the neighbour tiles of a player piece, if the tile
      * is dark brown, has no current player piece on it (is not occupied),
@@ -302,6 +321,7 @@ public class Checkers {
      * @return an array list of the tiles that the player piece can move to
      */
     public ArrayList<Tile> findTilesThatCanBeMovedTo(PlayerPiece playerPiece) {
+
         ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
         for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
@@ -337,6 +357,74 @@ public class Checkers {
         return neighbourCoOrdinates;
     }
 
+    /**
+     * Iterates through the whites players pieces, finds all the tiles a piece can move to,
+     * selects that piece and then simulates either a jump or move being made
+     *
+     * @return possibleMoves, An array list of all the possible outcomes of the moves being made
+     */
+    public ArrayList<Checkers> getAllMoves() {
+        ArrayList<Checkers> possibleMoves = new ArrayList<>();
+        if (currentTurn.equals("white")) {
+            for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
+                PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
+                ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
+                for (int j = 0; j < legalOptions.size(); j++) {
+                    Checkers checkersCopy = SerializationUtils.clone(this);
+                    int row = playerWhite.getPlayerPieces().get(i).getRowPos();
+                    int col = playerWhite.getPlayerPieces().get(i).getColPos();
+                    Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
+                    Tile playerTile = checkersCopy.getCheckersBoard().getBoard()[row][col];
+                    possibleMoves.add(simulateMove(playerTile, tileCopy, checkersCopy));
+                }
+            }
+        } else if (currentTurn.equals("black")) {
+            for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
+                PlayerPiece currPiece = playerBlack.getPlayerPieces().get(i);
+                ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
+                for (int j = 0; j < legalOptions.size(); j++) {
+                    Checkers checkersCopy = SerializationUtils.clone(this);
+                    int row = playerBlack.getPlayerPieces().get(i).getRowPos();
+                    int col = playerBlack.getPlayerPieces().get(i).getColPos();
+                    Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
+                    Tile playerTile = checkersCopy.getCheckersBoard().getBoard()[row][col];
+                    possibleMoves.add(simulateMove(playerTile, tileCopy, checkersCopy));
+                }
+            }
+        }
+
+        return possibleMoves;
+    }
+
+    public Checkers simulateMove(Tile playerTile, Tile tileCopy, Checkers checkersCopy) {
+        checkersCopy.selectPiece(playerTile);
+        if (checkersCopy.getGameState() == PlayerAction.SelectingTileToMoveTo) {
+            checkersCopy.movePiece(tileCopy);
+        } else if (checkersCopy.getGameState() == PlayerAction.MakingJump) {
+            checkersCopy.makeJump(tileCopy);
+        }
+        return checkersCopy;
+    }
+
+    public Checkers randomPlayerMove() {
+        if (checkIfGameIsOver()) {
+            return this;
+        }
+        ArrayList<Checkers> possibleMoves = getAllMoves();
+        int index = (int) (Math.random() * possibleMoves.size());
+        Checkers newCheckers = possibleMoves.get(index);
+        return newCheckers;
+    }
+
+    public boolean checkIfGameIsOver() {
+        ArrayList<Checkers> possibleMoves = getAllMoves();
+        if (possibleMoves.size() == 0) {
+            this.gameOver = true;
+            return true;
+        }
+        return false;
+    }
+
     // helper method to check if a tile index is in bounds
     private boolean inBounds(int row, int col) {
         return row >= 0 && row < checkersBoard.getRows() &&
@@ -359,8 +447,12 @@ public class Checkers {
         return currentTurn;
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public PlayerAction getGameState() {
+        return playerAction;
     }
 
     /**
