@@ -363,14 +363,14 @@ public class Checkers implements Serializable {
      *
      * @return possibleMoves, An array list of all the possible outcomes of the moves being made
      */
-    public ArrayList<Checkers> getAllMoves() {
+    public ArrayList<Checkers> getAllMoves(Checkers checkers) {
         ArrayList<Checkers> possibleMoves = new ArrayList<>();
         if (currentTurn.equals("white")) {
             for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
                 PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
                 ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
                 for (int j = 0; j < legalOptions.size(); j++) {
-                    Checkers checkersCopy = SerializationUtils.clone(this);
+                    Checkers checkersCopy = SerializationUtils.clone(checkers);
                     int row = playerWhite.getPlayerPieces().get(i).getRowPos();
                     int col = playerWhite.getPlayerPieces().get(i).getColPos();
                     Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
@@ -383,7 +383,7 @@ public class Checkers implements Serializable {
                 PlayerPiece currPiece = playerBlack.getPlayerPieces().get(i);
                 ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
                 for (int j = 0; j < legalOptions.size(); j++) {
-                    Checkers checkersCopy = SerializationUtils.clone(this);
+                    Checkers checkersCopy = SerializationUtils.clone(checkers);
                     int row = playerBlack.getPlayerPieces().get(i).getRowPos();
                     int col = playerBlack.getPlayerPieces().get(i).getColPos();
                     Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
@@ -410,7 +410,7 @@ public class Checkers implements Serializable {
         if (checkIfGameIsOver()) {
             return this;
         }
-        ArrayList<Checkers> possibleMoves = getAllMoves();
+        ArrayList<Checkers> possibleMoves = getAllMoves(this);
         int index = (int) (Math.random() * possibleMoves.size());
         Checkers newCheckers = possibleMoves.get(index);
         return newCheckers;
@@ -420,11 +420,12 @@ public class Checkers implements Serializable {
     // if(checkIfGameIsOver()) {
     //  return this;
     //  }
-    // Checkers newCheckers = miniMax()
+    // Checkers checkersCopy = SerializationUtils.clone(this);
+    // Checkers newCheckers = miniMax(checkersCopy)
     // return newCheckers
 
     public boolean checkIfGameIsOver() {
-        ArrayList<Checkers> possibleMoves = getAllMoves();
+        ArrayList<Checkers> possibleMoves = getAllMoves(this);
         if (possibleMoves.size() == 0) {
             this.gameOver = true;
             return true;
