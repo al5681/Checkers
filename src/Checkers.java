@@ -416,6 +416,13 @@ public class Checkers implements Serializable {
         return newCheckers;
     }
 
+    // public Checkers callMiniMax() }
+    // if(checkIfGameIsOver()) {
+    //  return this;
+    //  }
+    // Checkers newCheckers = miniMax()
+    // return newCheckers
+
     public boolean checkIfGameIsOver() {
         ArrayList<Checkers> possibleMoves = getAllMoves();
         if (possibleMoves.size() == 0) {
