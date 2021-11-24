@@ -410,7 +410,7 @@ public class Checkers implements Serializable {
         return checkersCopy;
     }
 
-    public Pair<Integer, Checkers> miniMax(Checkers checkers, int depth, boolean maxPlayer) {
+    public Pair<Integer, Checkers> miniMax(Checkers checkers, int depth, boolean maxPlayer, int alpha, int beta) {
         if (depth == 0 || checkers.checkIfGameIsOver()) {
             return new Pair<>(checkers.evaluate(), checkers);
         }
@@ -419,22 +419,32 @@ public class Checkers implements Serializable {
             Checkers bestMove = null;
             ArrayList<Checkers> moves = getAllMoves(checkers);
             for (int i = 0; i < moves.size(); i++) {
-                int evaluation = miniMax(SerializationUtils.clone(moves.get(i)), depth - 1, false).getKey();
+                int evaluation = miniMax(SerializationUtils.clone(moves.get(i)), depth - 1, false, alpha, beta).getKey();
                 maxEval = Math.max(maxEval, evaluation);
+                alpha = Math.max(alpha, evaluation);
                 if (maxEval == evaluation) {
-                    bestMove = SerializationUtils.clone(moves.get(i));
+                    bestMove = moves.get(i);
+                }
+                if(alpha >= beta)
+                {
+                    break;
                 }
             }
             return new Pair<>(maxEval, bestMove);
         } else {
-            int minEval = Integer.MIN_VALUE;
+            int minEval = Integer.MAX_VALUE;
             Checkers bestMove = null;
             ArrayList<Checkers> moves = getAllMoves(checkers);
             for (int i = 0; i < moves.size(); i++) {
-                int evaluation = miniMax(SerializationUtils.clone(moves.get(i)), depth - 1, true).getKey();
+                int evaluation = miniMax(SerializationUtils.clone(moves.get(i)), depth - 1, true, alpha, beta).getKey();
                 minEval = Math.min(minEval, evaluation);
+                beta = Math.min(beta, evaluation);
                 if (minEval == evaluation) {
-                    bestMove = SerializationUtils.clone(moves.get(i));
+                    bestMove = moves.get(i);
+                }
+                if(alpha >= beta)
+                {
+                    break;
                 }
             }
             return new Pair<>(minEval, bestMove);
@@ -446,18 +456,9 @@ public class Checkers implements Serializable {
         if(checkIfGameIsOver()) {
             return this;
         }
-        Checkers checkersCopy = SerializationUtils.clone(this);
-        Checkers newCheckers = miniMax(checkersCopy, 3, true).getValue();
+        Checkers newCheckers = miniMax(SerializationUtils.clone(this), 3, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
         return newCheckers;
     }
-
-    // public Checkers aiMove() }
-    // if(checkIfGameIsOver()) {
-    //  return this;
-    //  }
-    // Checkers checkersCopy = SerializationUtils.clone(this);
-    // Checkers newCheckers = miniMax(checkersCopy, 3, true).getValue()
-    // return newCheckers
 
     public Checkers randomPlayerMove() {
         if (checkIfGameIsOver()) {
