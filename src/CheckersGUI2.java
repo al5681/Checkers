@@ -121,6 +121,7 @@ public class CheckersGUI2 extends Application {
      * Gets button clicks from the players and updates the state of the game accordingly each time
      */
     public void gameLoop() {
+        System.out.println(checkers.evaluate());
         if (!checkers.isGameOver()) {
             if (checkers.getCurrentTurn().equals("black")) {
                 blackMove();

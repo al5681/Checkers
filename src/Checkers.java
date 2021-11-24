@@ -357,6 +357,10 @@ public class Checkers implements Serializable {
         return neighbourCoOrdinates;
     }
 
+    public int evaluate() {
+        return getPlayerWhite().getPlayerPieces().size() - getPlayerBlack().getPlayerPieces().size();
+    }
+
     /**
      * Iterates through the whites players pieces, finds all the tiles a piece can move to,
      * selects that piece and then simulates either a jump or move being made
@@ -404,6 +408,37 @@ public class Checkers implements Serializable {
             checkersCopy.makeJump(tileCopy);
         }
         return checkersCopy;
+    }
+
+    public Pair<Integer, Checkers> miniMax(Checkers checkers, int depth, boolean maxPlayer) {
+        if (depth == 0 || checkers.checkIfGameIsOver()) {
+            return new Pair<>(checkers.evaluate(), checkers);
+        }
+        if (maxPlayer) {
+            int maxEval = Integer.MIN_VALUE;
+            Checkers bestMove = null;
+            ArrayList<Checkers> moves = getAllMoves(checkers);
+            for (int i = 0; i < moves.size(); i++) {
+                int evaluation = miniMax(SerializationUtils.clone(moves.get(i)), depth - 1, false).getKey();
+                maxEval = Math.max(maxEval, evaluation);
+                if (maxEval == evaluation) {
+                    bestMove = SerializationUtils.clone(moves.get(i));
+                }
+            }
+            return new Pair<>(maxEval, bestMove);
+        } else {
+            int minEval = Integer.MIN_VALUE;
+            Checkers bestMove = null;
+            ArrayList<Checkers> moves = getAllMoves(checkers);
+            for (int i = 0; i < moves.size(); i++) {
+                int evaluation = miniMax(SerializationUtils.clone(moves.get(i)), depth - 1, true).getKey();
+                minEval = Math.min(minEval, evaluation);
+                if (minEval == evaluation) {
+                    bestMove = SerializationUtils.clone(moves.get(i));
+                }
+            }
+            return new Pair<>(minEval, bestMove);
+        }
     }
 
     public Checkers randomPlayerMove() {
