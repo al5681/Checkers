@@ -10,7 +10,7 @@ public class CheckersBoard implements Serializable {
     private final int cols = 8;
 
     /**
-     * Creates an 8x8 board, tiles are usable according to the original
+     * Creates a 8x8 board, tiles are usable according to the original
      * board layout (false - true... for odd rows, true-false... for even rows)
      */
     public CheckersBoard() {

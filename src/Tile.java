@@ -2,7 +2,7 @@ import java.io.Serializable;
 
 /**
  * Represents a tile on the board,
- * darkBrown indicates it is one of the usable tiles on the board
+ * darkBrown indicates it is one of the usable tiles on the board,
  * piece indicates if there is currently one of the players pieces
  * on the tile
  */

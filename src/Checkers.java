@@ -188,7 +188,7 @@ public class Checkers implements Serializable {
     /**
      * Changes the turn to the other player
      */
-    public void changeCurrentPlayersTurn() {
+    private void changeCurrentPlayersTurn() {
         if (currentTurn.equals("black")) {
             currentTurn = "white";
             for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
@@ -232,7 +232,7 @@ public class Checkers implements Serializable {
      * @param playerPiece
      * @return
      */
-    public void setLegalOptionsForTurn(PlayerPiece playerPiece) {
+    private void setLegalOptionsForTurn(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = findTilesThatCanBeMovedTo(playerPiece);
         ArrayList<Pair<Tile, Tile>> tilesThatCanBeJumpedTo = findTilesThatCanBeJumpedTo(playerPiece);
         playerPiece.setCanMakeLegalMove(tilesThatCanBeMovedTo.size() != 0);
@@ -242,6 +242,7 @@ public class Checkers implements Serializable {
         }
     }
 
+    // helper method to obtain the legal options a piece has during a turn
     private ArrayList<Tile> getLegalOptionsForTurn(PlayerPiece playerPiece) {
         ArrayList<Tile> legalTiles = new ArrayList<>();
         if (playerPiece.getCanMakeLegalMove()) {
@@ -259,6 +260,33 @@ public class Checkers implements Serializable {
     }
 
     /**
+     * Checks the states of the neighbour tiles of a player piece, if the tile
+     * is dark brown, has no current player piece on it (is not occupied),
+     * and is not behind the player piece, it is added to a list of tiles that piece can move to
+     *
+     * @param playerPiece
+     * @return an array list of the tiles that the player piece can move to
+     */
+    public ArrayList<Tile> findTilesThatCanBeMovedTo(PlayerPiece playerPiece) {
+
+        ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
+        ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
+        for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
+            for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
+                if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].isDarkBrown()
+                        && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].getPiece() == null
+                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]))
+                    if (playerPiece.getPlayerColour().equals("black") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
+                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
+                    } else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
+                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
+                    }
+            }
+        }
+        return tilesThatCanBeMovedTo;
+    }
+
+    /**
      * Checks the state of the neighbour tiles of a player piece, if that tile is dark brown,
      * has a current player piece on it of the opposing colour, and the dark brown tiles behind that player piece
      * is not occupied and is not out of bounds, the tile behind that piece is taken as a tile to jump to,
@@ -266,7 +294,7 @@ public class Checkers implements Serializable {
      *
      * @param playerPiece
      */
-    public ArrayList<Pair<Tile, Tile>> findTilesThatCanBeJumpedTo(PlayerPiece playerPiece) {
+    private ArrayList<Pair<Tile, Tile>> findTilesThatCanBeJumpedTo(PlayerPiece playerPiece) {
         ArrayList<Pair<Tile, Tile>> listOfDeleteTileAndJumpTilePairs = new ArrayList<>();
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
         for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
@@ -313,33 +341,6 @@ public class Checkers implements Serializable {
     }
 
     /**
-     * Checks the states of the neighbour tiles of a player piece, if the tile
-     * is dark brown, has no current player piece on it (is not occupied),
-     * and is not behind the player piece, it is added to a list of tiles that piece can move to
-     *
-     * @param playerPiece
-     * @return an array list of the tiles that the player piece can move to
-     */
-    public ArrayList<Tile> findTilesThatCanBeMovedTo(PlayerPiece playerPiece) {
-
-        ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
-        ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
-        for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
-            for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
-                if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].isDarkBrown()
-                        && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].getPiece() == null
-                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]))
-                    if (playerPiece.getPlayerColour().equals("black") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
-                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
-                    } else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
-                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
-                    }
-            }
-        }
-        return tilesThatCanBeMovedTo;
-    }
-
-    /**
      * Takes a player piece and finds the co-ordinates of its neighbouring tiles
      *
      * @param playerPiece
@@ -357,17 +358,18 @@ public class Checkers implements Serializable {
         return neighbourCoOrdinates;
     }
 
-    public int evaluate() {
+    // returns a score for the state of a Checkers object that can be used by mini max
+    private int evaluate() {
         return getPlayerWhite().getPlayerPieces().size() - getPlayerBlack().getPlayerPieces().size();
     }
 
     /**
-     * Iterates through the whites players pieces, finds all the tiles a piece can move to,
+     * Iterates through the players pieces of the player for the current turn, finds all the tiles a piece can move to (through a jump or regular move),
      * selects that piece and then simulates either a jump or move being made
      *
      * @return possibleMoves, An array list of all the possible outcomes of the moves being made
      */
-    public ArrayList<Checkers> getAllMoves(Checkers checkers) {
+    private ArrayList<Checkers> getAllMoves(Checkers checkers) {
         ArrayList<Checkers> possibleMoves = new ArrayList<>();
         if (currentTurn.equals("white")) {
             for (int i = 0; i < playerWhite.getPlayerPieces().size(); i++) {
@@ -396,12 +398,20 @@ public class Checkers implements Serializable {
                 }
             }
         }
-
         return possibleMoves;
     }
 
-    public Checkers simulateMove(Tile playerTile, Tile tileCopy, Checkers checkersCopy) {
-        checkersCopy.selectPiece(playerTile);
+    /**
+     * Carries out and returns the state of a checkers object for a move that can be made
+     * for a turn
+     *
+     * @param playerTileCopy
+     * @param tileCopy
+     * @param checkersCopy
+     * @return
+     */
+    private Checkers simulateMove(Tile playerTileCopy, Tile tileCopy, Checkers checkersCopy) {
+        checkersCopy.selectPiece(playerTileCopy);
         if (checkersCopy.getGameState() == PlayerAction.SelectingTileToMoveTo) {
             checkersCopy.movePiece(tileCopy);
         } else if (checkersCopy.getGameState() == PlayerAction.MakingJump) {
@@ -410,7 +420,17 @@ public class Checkers implements Serializable {
         return checkersCopy;
     }
 
-    public Pair<Integer, Checkers> miniMax(Checkers checkers, int depth, boolean maxPlayer, int alpha, int beta) {
+    /**
+     * The minimax method with alpha-beta pruning, used to get moves for the AI player
+     *
+     * @param checkers, a checkers object
+     * @param depth,    the depth of the search tree
+     * @param maxPlayer true if the turn of the maximising player, false otherwise
+     * @param alpha
+     * @param beta
+     * @return
+     */
+    private Pair<Integer, Checkers> miniMax(Checkers checkers, int depth, boolean maxPlayer, int alpha, int beta) {
         if (depth == 0 || checkers.checkIfGameIsOver()) {
             return new Pair<>(checkers.evaluate(), checkers);
         }
@@ -425,8 +445,7 @@ public class Checkers implements Serializable {
                 if (maxEval == evaluation) {
                     bestMove = moves.get(i);
                 }
-                if(alpha >= beta)
-                {
+                if (alpha >= beta) {
                     break;
                 }
             }
@@ -442,8 +461,7 @@ public class Checkers implements Serializable {
                 if (minEval == evaluation) {
                     bestMove = moves.get(i);
                 }
-                if(alpha >= beta)
-                {
+                if (alpha >= beta) {
                     break;
                 }
             }
@@ -451,25 +469,24 @@ public class Checkers implements Serializable {
         }
     }
 
-    public Checkers aiMove()
-    {
-        if(checkIfGameIsOver()) {
-            return this;
-        }
-        Checkers newCheckers = miniMax(SerializationUtils.clone(this), 3, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
-        return newCheckers;
-    }
-
-    public Checkers randomPlayerMove() {
+    /**
+     * Checks if the game is over, if not calls minimax to return a new Checkers object in order to make a move
+     * for the AI player
+     */
+    public Checkers aiMove() {
         if (checkIfGameIsOver()) {
             return this;
         }
-        ArrayList<Checkers> possibleMoves = getAllMoves(this);
-        int index = (int) (Math.random() * possibleMoves.size());
-        Checkers newCheckers = possibleMoves.get(index);
+        Checkers newCheckers = miniMax(SerializationUtils.clone(this), 4, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
         return newCheckers;
     }
 
+    /**
+     * Returns true if the game is over, returns false otherwise, does so by calling possibleMoves(), if possibleMoves is empty
+     * the game must be over and true is returned
+     *
+     * @return
+     */
     public boolean checkIfGameIsOver() {
         ArrayList<Checkers> possibleMoves = getAllMoves(this);
         if (possibleMoves.size() == 0) {
