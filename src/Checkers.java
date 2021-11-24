@@ -441,13 +441,13 @@ public class Checkers implements Serializable {
         }
     }
 
-    public Checkers randomPlayerMove() {
-        if (checkIfGameIsOver()) {
+    public Checkers aiMove()
+    {
+        if(checkIfGameIsOver()) {
             return this;
         }
-        ArrayList<Checkers> possibleMoves = getAllMoves(this);
-        int index = (int) (Math.random() * possibleMoves.size());
-        Checkers newCheckers = possibleMoves.get(index);
+        Checkers checkersCopy = SerializationUtils.clone(this);
+        Checkers newCheckers = miniMax(checkersCopy, 3, true).getValue();
         return newCheckers;
     }
 
@@ -458,6 +458,16 @@ public class Checkers implements Serializable {
     // Checkers checkersCopy = SerializationUtils.clone(this);
     // Checkers newCheckers = miniMax(checkersCopy, 3, true).getValue()
     // return newCheckers
+
+    public Checkers randomPlayerMove() {
+        if (checkIfGameIsOver()) {
+            return this;
+        }
+        ArrayList<Checkers> possibleMoves = getAllMoves(this);
+        int index = (int) (Math.random() * possibleMoves.size());
+        Checkers newCheckers = possibleMoves.get(index);
+        return newCheckers;
+    }
 
     public boolean checkIfGameIsOver() {
         ArrayList<Checkers> possibleMoves = getAllMoves(this);

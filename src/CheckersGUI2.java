@@ -132,7 +132,7 @@ public class CheckersGUI2 extends Application {
     }
 
     public void whiteMove() {
-        this.checkers = checkers.randomPlayerMove();
+        this.checkers = checkers.aiMove();
         update();
     }
 
