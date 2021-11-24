@@ -135,7 +135,7 @@ public class CheckersGUI extends Application {
     }
 
     public void randomMove() {
-        this.checkers = checkers.randomPlayerMove();
+        this.checkers = checkers.aiMove();
         update();
     }
 
@@ -145,4 +145,3 @@ public class CheckersGUI extends Application {
         gameLoop();
     }
 }
-
