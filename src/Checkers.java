@@ -162,7 +162,7 @@ public class Checkers implements Serializable {
                 checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
                 movePiece(tileToJumpTo);
             }
-            // MULTI-LEG JUMPS, NOTE: THIS IS SOMETIMES CAUSING A NULL POINTER EXCEPTION, ALTHOUGH IT DOESN'T CRASH THE GAME OR SEEM TO FUNCTION INCORRECTLY
+            // MULTI-LEG JUMPS
             setLegalOptionsForTurn(selectedPiece); // set the legal options the piece can make in its new position
             ArrayList<Pair<Tile, Tile>> multiLegJumps = findTilesThatCanBeJumpedTo(selectedPiece); // find if any other jumps can be made, with this new legal options
             if(multiLegJumps.size() > 0) { // if it can call select piece again so one of the possible jumps can be made
