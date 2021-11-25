@@ -1,3 +1,4 @@
+import com.sun.xml.internal.ws.util.StringUtils;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -5,13 +6,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
  * Represents the GUI for the game, which displays the current state of the Checkers class
  */
-public class CheckersGUI extends Application {
+public class CheckersGUI3 extends Application {
 
     private Checkers checkers = new Checkers();
     private BorderPane boarderPane = new BorderPane();
@@ -101,17 +103,28 @@ public class CheckersGUI extends Application {
         }
     }
 
+    /**
+     * Display the current players turn at the top of the GUI
+     */
+    public void refreshPlayerTurnDisplay() {
+        Text playerTurnText = new Text();
+        playerTurnText.setFont(Font.font("Verdana", 20));
+        playerTurnText.setText("Current players turn: " + StringUtils.capitalize(checkers.getCurrentTurn()));
+        boarderPane.setTop(playerTurnText);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws InterruptedException {
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Checkers");
         boarderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
-        // // initialise the displays
+        // // initialise the display
         renderBoard();
         renderPieces();
+        refreshPlayerTurnDisplay();
         // call the game loop
         gameLoop();
         primaryStage.setScene(new Scene(boarderPane));
@@ -122,31 +135,27 @@ public class CheckersGUI extends Application {
      * Gets button clicks from the players and updates the state of the game accordingly each time
      */
     public void gameLoop() {
-        if (!checkers.isGameOver()) {
-            randomMove();
-        } else {
-            final Stage dialog = new Stage();
-            VBox dialogVbox = new VBox(20);
-            dialogVbox.getChildren().add(new Text("Game over!"));
-            Scene dialogScene = new Scene(dialogVbox, 300, 200);
-            dialog.setScene(dialogScene);
-            dialog.show();
+        for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
+            for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
+                int currentI = i;
+                int currentJ = j;
+                buttonsInGrid[i][j].setOnMouseClicked(e -> {
+                    Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
+                    if (checkers.getGameState() == PlayerAction.SelectingPiece) {
+                        checkers.selectPiece(currTile);
+                    } else if (checkers.getGameState() == PlayerAction.SelectingTileToMoveTo) {
+                        checkers.movePiece(currTile);
+                    }
+                    else if(checkers.getGameState() == PlayerAction.MakingJump)
+                    {
+                        checkers.makeJump(currTile);
+                    }
+                    updateBoardRender();
+                    renderPieces(); // render the pieces in their new position
+                    refreshPlayerTurnDisplay();
+                    System.out.println(checkers.getGameState());
+                });
+            }
         }
-    }
-
-    public void randomMove() {
-        if(checkers.getCurrentTurn().equals("white")) {
-            this.checkers = checkers.aiMove(true);
-        }
-        else {
-            this.checkers = checkers.aiMove(false);
-        }
-        update();
-    }
-
-    private void update() {
-        updateBoardRender();
-        renderPieces();
-        gameLoop();
     }
 }

@@ -135,4 +135,14 @@ public class CheckersTest {
             assertEquals(true, legalTiles.get(i).size() != 0);
         }
     }
+
+    @Test
+    public void randomTestABunch() {
+        for (int i = 0; i < 100; i++) {
+            Checkers newCheckers = new Checkers();
+            while (!newCheckers.isGameOver()) {
+                newCheckers = newCheckers.randomPlayerMove();
+            }
+        }
+    }
 }
