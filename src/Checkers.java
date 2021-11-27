@@ -154,7 +154,7 @@ public class Checkers implements Serializable {
                     tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
                 }
             }
-            if(tileOfPieceToDelete != null) {
+            if (tileOfPieceToDelete != null) {
                 if (currentTurn.equals("black")) {
 
                     playerWhite.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
@@ -167,12 +167,11 @@ public class Checkers implements Serializable {
             // MULTI-LEG JUMPS
             setLegalOptionsForTurn(selectedPiece); // set the legal options the piece can make in its new position
             ArrayList<Pair<Tile, Tile>> multiLegJumps = findTilesThatCanBeJumpedTo(selectedPiece); // find if any other jumps can be made, with this new legal options
-            if(multiLegJumps.size() > 0) { // if it can call select piece again so one of the possible jumps can be made
+            if (multiLegJumps.size() > 0) { // if it can call select piece again so one of the possible jumps can be made
                 int row = selectedPiece.getRowPos();
                 int col = selectedPiece.getColPos();
                 selectPiece(checkersBoard.getBoard()[row][col]);
-            }
-            else { // if no more jumps can be made end the turn
+            } else { // if no more jumps can be made end the turn
                 selectedPiece.setSelected(false);
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
@@ -180,12 +179,10 @@ public class Checkers implements Serializable {
         }
     }
 
-    private void crownPiece()
-    {
-        if(currentTurn.equals("white") && getSelectedPiece().getRowPos() == 7) {
+    private void crownPiece() {
+        if (currentTurn.equals("white") && getSelectedPiece().getRowPos() == 7) {
             getSelectedPiece().setKing(true);
-        }
-        else if(currentTurn.equals("black") && getSelectedPiece().getRowPos() == 0) {
+        } else if (currentTurn.equals("black") && getSelectedPiece().getRowPos() == 0) {
             getSelectedPiece().setKing(true);
         }
     }
@@ -292,19 +289,38 @@ public class Checkers implements Serializable {
      * @return an array list of the tiles that the player piece can move to
      */
     public ArrayList<Tile> findTilesThatCanBeMovedTo(PlayerPiece playerPiece) {
+        if (!playerPiece.isKing()) {
+            ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
+            ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
+            for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
+                for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
+                    if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].isDarkBrown()
+                            && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].getPiece() == null
+                            && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y])) {
+                        if (playerPiece.getPlayerColour().equals("black") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
+                            tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
+                        } else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
+                            tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
+                        }
+                    }
+                }
+            }
+            return tilesThatCanBeMovedTo;
+        } else {
+            return findTilesThatCanBeMovedToKing(playerPiece);
+        }
+    }
 
+    private ArrayList<Tile> findTilesThatCanBeMovedToKing(PlayerPiece playerPiece) {
         ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
         for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
             for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
                 if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].isDarkBrown()
                         && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].getPiece() == null
-                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]))
-                    if (playerPiece.getPlayerColour().equals("black") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
-                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
-                    } else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
-                        tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
-                    }
+                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y])) {
+                    tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
+                }
             }
         }
         return tilesThatCanBeMovedTo;
