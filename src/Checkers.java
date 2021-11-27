@@ -152,17 +152,29 @@ public class Checkers implements Serializable {
                     tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
                 }
             }
-            if (currentTurn.equals("black")) {
-                playerWhite.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
-            } else {
-                playerBlack.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
+            if(tileOfPieceToDelete != null) {
+                if (currentTurn.equals("black")) {
+
+                    playerWhite.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
+                } else {
+                    playerBlack.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
+                }
+                checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
+                movePiece(tileToJumpTo);
             }
-            checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
-            movePiece(tileToJumpTo);
-            // TO-DO: CHECK FOR MULTILEG JUMPS HERE
-            selectedPiece.setSelected(false);
-            playerAction = PlayerAction.SelectingPiece; // reset the game state
-            changeCurrentPlayersTurn(); // end the turn
+            // MULTI-LEG JUMPS
+            setLegalOptionsForTurn(selectedPiece); // set the legal options the piece can make in its new position
+            ArrayList<Pair<Tile, Tile>> multiLegJumps = findTilesThatCanBeJumpedTo(selectedPiece); // find if any other jumps can be made, with this new legal options
+            if(multiLegJumps.size() > 0) { // if it can call select piece again so one of the possible jumps can be made
+                int row = selectedPiece.getRowPos();
+                int col = selectedPiece.getColPos();
+                selectPiece(checkersBoard.getBoard()[row][col]);
+            }
+            else { // if no more jumps can be made end the turn
+                selectedPiece.setSelected(false);
+                playerAction = PlayerAction.SelectingPiece; // reset the game state
+                changeCurrentPlayersTurn(); // end the turn
+            }
         }
     }
 
@@ -412,9 +424,9 @@ public class Checkers implements Serializable {
      */
     private Checkers simulateMove(Tile playerTileCopy, Tile tileCopy, Checkers checkersCopy) {
         checkersCopy.selectPiece(playerTileCopy);
-        if (checkersCopy.getGameState() == PlayerAction.SelectingTileToMoveTo) {
+        if (checkersCopy.getPlayerAction() == PlayerAction.SelectingTileToMoveTo) {
             checkersCopy.movePiece(tileCopy);
-        } else if (checkersCopy.getGameState() == PlayerAction.MakingJump) {
+        } else if (checkersCopy.getPlayerAction() == PlayerAction.MakingJump) {
             checkersCopy.makeJump(tileCopy);
         }
         return checkersCopy;
@@ -473,11 +485,21 @@ public class Checkers implements Serializable {
      * Checks if the game is over, if not calls minimax to return a new Checkers object in order to make a move
      * for the AI player
      */
-    public Checkers aiMove() {
+    public Checkers aiMove(boolean maxPlayer) {
         if (checkIfGameIsOver()) {
             return this;
         }
-        Checkers newCheckers = miniMax(SerializationUtils.clone(this), 4, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
+        Checkers newCheckers = miniMax(SerializationUtils.clone(this), 3, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
+        return newCheckers;
+    }
+
+    public Checkers randomPlayerMove() {
+        if (checkIfGameIsOver()) {
+            return this;
+        }
+        ArrayList<Checkers> possibleMoves = getAllMoves(this);
+        int index = (int) (Math.random() * possibleMoves.size());
+        Checkers newCheckers = possibleMoves.get(index);
         return newCheckers;
     }
 
@@ -522,7 +544,7 @@ public class Checkers implements Serializable {
         return gameOver;
     }
 
-    public PlayerAction getGameState() {
+    public PlayerAction getPlayerAction() {
         return playerAction;
     }
 

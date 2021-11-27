@@ -1,3 +1,4 @@
+import com.sun.xml.internal.ws.util.StringUtils;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -5,12 +6,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
  * Represents the GUI for the game, which displays the current state of the Checkers class
  */
-public class CheckersGUI2 extends Application {
+public class CheckersGUI3 extends Application {
 
     private Checkers checkers = new Checkers();
     private BorderPane boarderPane = new BorderPane();
@@ -100,17 +103,28 @@ public class CheckersGUI2 extends Application {
         }
     }
 
+    /**
+     * Display the current players turn at the top of the GUI
+     */
+    public void refreshPlayerTurnDisplay() {
+        Text playerTurnText = new Text();
+        playerTurnText.setFont(Font.font("Verdana", 20));
+        playerTurnText.setText("Current players turn: " + StringUtils.capitalize(checkers.getCurrentTurn()));
+        boarderPane.setTop(playerTurnText);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws InterruptedException {
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Checkers");
         boarderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
-        // // initialise the displays
+        // // initialise the display
         renderBoard();
         renderPieces();
+        refreshPlayerTurnDisplay();
         // call the game loop
         gameLoop();
         primaryStage.setScene(new Scene(boarderPane));
@@ -121,46 +135,27 @@ public class CheckersGUI2 extends Application {
      * Gets button clicks from the players and updates the state of the game accordingly each time
      */
     public void gameLoop() {
-        if (!checkers.isGameOver()) {
-            if (checkers.getCurrentTurn().equals("black")) {
-                blackMove();
-            } else {
-                whiteMove();
-            }
-        }
-    }
-
-    public void whiteMove() {
-        this.checkers = checkers.aiMove(true);
-        update();
-    }
-
-    public void blackMove() {
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
                 int currentI = i;
                 int currentJ = j;
                 buttonsInGrid[i][j].setOnMouseClicked(e -> {
-                    if (checkers.getCurrentTurn().equals("black")) {
-                        Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
-                        if (checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
-                            checkers.selectPiece(currTile);
-                        } else if (checkers.getPlayerAction() == PlayerAction.SelectingTileToMoveTo) {
-                            checkers.movePiece(currTile);
-                        } else if (checkers.getPlayerAction() == PlayerAction.MakingJump) {
-                            checkers.makeJump(currTile);
-                        }
-                        update();
+                    Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
+                    if (checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
+                        checkers.selectPiece(currTile);
+                    } else if (checkers.getPlayerAction() == PlayerAction.SelectingTileToMoveTo) {
+                        checkers.movePiece(currTile);
                     }
+                    else if(checkers.getPlayerAction() == PlayerAction.MakingJump)
+                    {
+                        checkers.makeJump(currTile);
+                    }
+                    updateBoardRender();
+                    renderPieces(); // render the pieces in their new position
+                    refreshPlayerTurnDisplay();
+                    System.out.println(checkers.getPlayerAction());
                 });
             }
         }
     }
-
-    private void update() {
-        updateBoardRender();
-        renderPieces();
-        gameLoop();
-    }
 }
-
