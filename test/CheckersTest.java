@@ -138,7 +138,7 @@ public class CheckersTest {
 
     @Test
     public void randomTestABunch() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 50; i++) {
             Checkers newCheckers = new Checkers();
             while (!newCheckers.isGameOver()) {
                 newCheckers = newCheckers.randomPlayerMove();

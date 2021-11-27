@@ -72,24 +72,24 @@ public class CheckersGUI extends Application {
                     circle.setRadius(35.0f);
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
                         circle.setFill(javafx.scene.paint.Color.BLACK);
-                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == PlayerAction.SelectingPiece) {
+                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getGameState() == PlayerAction.SelectingPiece) {
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
                     } else {
                         circle.setFill(javafx.scene.paint.Color.WHITE);
-                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == PlayerAction.SelectingPiece) {
+                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getGameState() == PlayerAction.SelectingPiece) {
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
                     }
-                    if (currTile.getPiece().isSelected() && (checkers.getGameState() == PlayerAction.SelectingTileToMoveTo || checkers.getGameState() == PlayerAction.MakingJump)) {
+                    if (currTile.getPiece().isSelected() && (checkers.getPlayerAction() == PlayerAction.SelectingTileToMoveTo || checkers.getPlayerAction() == PlayerAction.MakingJump)) {
                         circle.setStroke(Color.GOLD);
                         circle.setStrokeWidth(5.00);
                     }

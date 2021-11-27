@@ -424,9 +424,9 @@ public class Checkers implements Serializable {
      */
     private Checkers simulateMove(Tile playerTileCopy, Tile tileCopy, Checkers checkersCopy) {
         checkersCopy.selectPiece(playerTileCopy);
-        if (checkersCopy.getGameState() == PlayerAction.SelectingTileToMoveTo) {
+        if (checkersCopy.getPlayerAction() == PlayerAction.SelectingTileToMoveTo) {
             checkersCopy.movePiece(tileCopy);
-        } else if (checkersCopy.getGameState() == PlayerAction.MakingJump) {
+        } else if (checkersCopy.getPlayerAction() == PlayerAction.MakingJump) {
             checkersCopy.makeJump(tileCopy);
         }
         return checkersCopy;
@@ -544,7 +544,7 @@ public class Checkers implements Serializable {
         return gameOver;
     }
 
-    public PlayerAction getGameState() {
+    public PlayerAction getPlayerAction() {
         return playerAction;
     }
 
