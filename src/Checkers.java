@@ -103,6 +103,7 @@ public class Checkers implements Serializable {
                         playerBlack.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         // update the state of the tile
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
+                        crownPiece();
                         // the player piece is no longer selected
                         if (playerAction != playerAction.MakingJump) {
                             playerBlack.getPlayerPieces().get(i).setSelected(false);
@@ -118,6 +119,7 @@ public class Checkers implements Serializable {
                         playerWhite.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerWhite.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerWhite.getPlayerPieces().get(i));
+                        crownPiece();
                         if (playerAction != playerAction.MakingJump) {
                             playerWhite.getPlayerPieces().get(i).setSelected(false);
                         }
@@ -175,6 +177,16 @@ public class Checkers implements Serializable {
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
+        }
+    }
+
+    private void crownPiece()
+    {
+        if(currentTurn.equals("white") && getSelectedPiece().getRowPos() == 7) {
+            getSelectedPiece().setKing(true);
+        }
+        else if(currentTurn.equals("black") && getSelectedPiece().getRowPos() == 0) {
+            getSelectedPiece().setKing(true);
         }
     }
 
