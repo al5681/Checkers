@@ -23,6 +23,7 @@ public class CheckersGUI2 extends Application {
     private BorderPane boarderPane = new BorderPane();
     private GridPane grid = new GridPane();
     private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
+    private boolean hintsOn = true;
 
     public void renderTopOfDisplay() {
         HBox hbox = new HBox();
@@ -39,9 +40,13 @@ public class CheckersGUI2 extends Application {
         {
             if(onOfButtonForHints.getText().equals("On")) {
                 onOfButtonForHints.setText("Off");
+                hintsOn = false;
             } else {
                 onOfButtonForHints.setText("On");
+                hintsOn = true;
             }
+            updateBoardRender();
+            renderPieces();
         });
 
         boarderPane.setTop(hbox);
@@ -78,7 +83,7 @@ public class CheckersGUI2 extends Application {
         for (int i = 0; i < buttonsInGrid.length; i++) {
             for (int j = 0; j < buttonsInGrid.length; j++) {
                 Tile currTile = checkers.getCheckersBoard().getBoard()[i][j];
-                if (checkers.getHighlightedTiles().contains(currTile)) {
+                if (checkers.getHighlightedTiles().contains(currTile) && hintsOn) {
                     buttonsInGrid[i][j].setStyle("-fx-background-color:#009900; -fx-background-radius: 0");
                 } else if (currTile.isDarkBrown()) {
                     buttonsInGrid[i][j].setStyle("-fx-background-color:#96652c; -fx-background-radius: 0");
@@ -109,10 +114,11 @@ public class CheckersGUI2 extends Application {
                             Image im = new Image(kingFile.toURI().toString());
                             circle.setFill(new ImagePattern(im));
                         }
-                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
+                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece
+                        && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
@@ -126,10 +132,12 @@ public class CheckersGUI2 extends Application {
                             Image im = new Image(kingFile.toURI().toString());
                             circle.setFill(new ImagePattern(im));
                         }
-                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
+                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece
+                                && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece
+                                && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
