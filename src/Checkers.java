@@ -16,7 +16,7 @@ public class Checkers implements Serializable {
     private String currentTurn = "black"; // black goes first
     private PlayerAction playerAction;
     private boolean gameOver;
-    private int difficulty;
+    private int difficulty = 4; // initialise to medium difficulty
 
     /**
      * Creates an instance of the board and loads the pieces in their initial spawns for the players
