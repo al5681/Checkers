@@ -155,8 +155,10 @@ public class Checkers implements Serializable {
                 }
             }
             if (tileOfPieceToDelete != null) {
+                if(tileOfPieceToDelete.getPiece().isKing()) {
+                    getSelectedPiece().setKing(true);// regicide
+                }
                 if (currentTurn.equals("black")) {
-
                     playerWhite.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
                 } else {
                     playerBlack.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
