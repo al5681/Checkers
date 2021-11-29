@@ -74,16 +74,11 @@ public class CheckersGUI2 extends Application {
         Text difficultyText = new Text("  Difficulty: ");
         difficultyText.setFont(Font.font("Verdana", 20));
 
-
-        Button changeDifficultyButton = new Button("Change difficulty");
-
         hbox2.getChildren().add(difficultyText);
         hbox2.getChildren().add(comboBox);
         hbox2.getChildren().add(new Text(" "));
-        hbox2.getChildren().add(changeDifficultyButton);
-        hbox2.getChildren().add(new Text(" "));
 
-        changeDifficultyButton.setOnMouseClicked(e -> {
+        comboBox.setOnAction(e -> {
             if (comboBox.getValue().equals("Easy")) {
                 checkers.setDifficulty(3);
             } else if (comboBox.getValue().equals("Medium")) {
