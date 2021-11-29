@@ -1,7 +1,6 @@
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -23,8 +22,6 @@ public class RulesGUI {
         close.setStyle("-fx-background-color:white;-fx-text-fill:black;"
                 + " -fx-border-color: black;-fx-font-size:30");
         borderPane.setBottom(close);
-
-
     }
 
     public void display() {
@@ -38,7 +35,4 @@ public class RulesGUI {
             primaryStage.close();
         });
     }
-
-
-
 }

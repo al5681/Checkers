@@ -86,7 +86,7 @@ public class Checkers implements Serializable {
                 return true;
             }
         }
-            return false;
+        return false;
     }
 
     /**
@@ -140,9 +140,9 @@ public class Checkers implements Serializable {
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
-        return true;
+            return true;
         }
-    return false;
+        return false;
     }
 
     /**
@@ -162,7 +162,7 @@ public class Checkers implements Serializable {
             }
             boolean regicide = false;
             if (tileOfPieceToDelete != null) {
-                if(tileOfPieceToDelete.getPiece().isKing() && !getSelectedPiece().isKing()) {
+                if (tileOfPieceToDelete.getPiece().isKing() && !getSelectedPiece().isKing()) {
                     getSelectedPiece().setKing(true);// regicide
                     regicide = true;
                 }
@@ -174,7 +174,7 @@ public class Checkers implements Serializable {
                 checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
                 movePiece(tileToJumpTo);
             }
-            if(getSelectedPiece().isKing() && regicide) { // the turn must end if regicide has occurred
+            if (getSelectedPiece().isKing() && regicide) { // the turn must end if regicide has occurred
                 selectedPiece.setSelected(false);
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
@@ -192,9 +192,9 @@ public class Checkers implements Serializable {
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
-        return true;
+            return true;
         }
-    return false;
+        return false;
     }
 
     private void crownPiece() {
@@ -584,10 +584,10 @@ public class Checkers implements Serializable {
         if (checkIfGameIsOver()) {
             return this;
         }
-        Checkers newCheckers = miniMax(SerializationUtils.clone(this), difficulty, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
+        Checkers newCheckers = miniMax(SerializationUtils.clone(this), difficulty, maxPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
         return newCheckers;
     }
-    
+
     /**
      * Returns true if the game is over, returns false otherwise, does so by calling possibleMoves(), if possibleMoves is empty
      * the game must be over and true is returned
