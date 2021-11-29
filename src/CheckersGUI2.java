@@ -183,4 +183,3 @@ public class CheckersGUI2 extends Application {
         gameLoop();
     }
 }
-
