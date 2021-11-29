@@ -569,17 +569,7 @@ public class Checkers implements Serializable {
         Checkers newCheckers = miniMax(SerializationUtils.clone(this), 3, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
         return newCheckers;
     }
-
-    public Checkers randomPlayerMove() {
-        if (checkIfGameIsOver()) {
-            return this;
-        }
-        ArrayList<Checkers> possibleMoves = getAllMoves(this);
-        int index = (int) (Math.random() * possibleMoves.size());
-        Checkers newCheckers = possibleMoves.get(index);
-        return newCheckers;
-    }
-
+    
     /**
      * Returns true if the game is over, returns false otherwise, does so by calling possibleMoves(), if possibleMoves is empty
      * the game must be over and true is returned
