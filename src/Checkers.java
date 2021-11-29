@@ -65,7 +65,7 @@ public class Checkers implements Serializable {
      *
      * @param tileOfPiece
      */
-    public void selectPiece(Tile tileOfPiece) {
+    public boolean selectPiece(Tile tileOfPiece) {
         if (tileOfPiece.getPiece() != null) {
             PlayerPiece playerPiece = tileOfPiece.getPiece();
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
@@ -75,6 +75,7 @@ public class Checkers implements Serializable {
                 for (Tile tile : tiles) {
                     tile.setHighlighted(true);
                 }
+                return true;
             } else if (playerPiece.getCanMakeLegalJump() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(playerPiece);
                 playerPiece.setSelected(true);
@@ -82,8 +83,10 @@ public class Checkers implements Serializable {
                 for (int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
                     tileToDeleteAndJumpToPairs.get(i).getValue().setHighlighted(true);
                 }
+                return true;
             }
         }
+            return false;
     }
 
     /**
@@ -92,7 +95,7 @@ public class Checkers implements Serializable {
      *
      * @param tileToMoveTo
      */
-    public void movePiece(Tile tileToMoveTo) {
+    public boolean movePiece(Tile tileToMoveTo) {
         if (getHighlightedTiles().contains(tileToMoveTo)) {
             if (currentTurn.equals("black")) {
                 for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
@@ -137,7 +140,9 @@ public class Checkers implements Serializable {
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
+        return true;
         }
+    return false;
     }
 
     /**
@@ -145,7 +150,7 @@ public class Checkers implements Serializable {
      *
      * @param tileToJumpTo
      */
-    public void makeJump(Tile tileToJumpTo) {
+    public boolean makeJump(Tile tileToJumpTo) {
         if (getHighlightedTiles().contains(tileToJumpTo)) {
             PlayerPiece selectedPiece = getSelectedPiece();
             Tile tileOfPieceToDelete = null;
@@ -173,7 +178,7 @@ public class Checkers implements Serializable {
                 selectedPiece.setSelected(false);
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
-                return;
+                return true;
             }
             // MULTI-LEG JUMPS
             setLegalOptionsForTurn(selectedPiece); // set the legal options the piece can make in its new position
@@ -187,7 +192,9 @@ public class Checkers implements Serializable {
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
+        return true;
         }
+    return false;
     }
 
     private void crownPiece() {
