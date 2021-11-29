@@ -166,6 +166,12 @@ public class Checkers implements Serializable {
                 checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
                 movePiece(tileToJumpTo);
             }
+            if(getSelectedPiece().isKing()) { // the turn must end if regicide has occurred
+                selectedPiece.setSelected(false);
+                playerAction = PlayerAction.SelectingPiece; // reset the game state
+                changeCurrentPlayersTurn(); // end the turn
+                return;
+            }
             // MULTI-LEG JUMPS
             setLegalOptionsForTurn(selectedPiece); // set the legal options the piece can make in its new position
             ArrayList<Pair<Tile, Tile>> multiLegJumps = findTilesThatCanBeJumpedTo(selectedPiece); // find if any other jumps can be made, with this new legal options
