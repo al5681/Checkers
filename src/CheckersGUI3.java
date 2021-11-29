@@ -3,12 +3,17 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 /**
  * Represents the GUI for the game, which displays the current state of the Checkers class
@@ -73,7 +78,15 @@ public class CheckersGUI3 extends Application {
                     Circle circle = new Circle();
                     circle.setRadius(35.0f);
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
-                        circle.setFill(javafx.scene.paint.Color.BLACK);
+                        if(!currTile.getPiece().isKing()) {
+                            circle.setFill(javafx.scene.paint.Color.BLACK);
+                        }
+                        else {
+                            String kingPath = "assests/CrownBlack.png";
+                            File kingFile = new File(kingPath);
+                            Image im = new Image(kingFile.toURI().toString());
+                            circle.setFill(new ImagePattern(im));
+                        }
                         if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
@@ -82,7 +95,15 @@ public class CheckersGUI3 extends Application {
                             circle.setStrokeWidth(5.00);
                         }
                     } else {
-                        circle.setFill(javafx.scene.paint.Color.WHITE);
+                        if(!currTile.getPiece().isKing()) {
+                            circle.setFill(Color.WHITE);
+                        }
+                        else {
+                            String kingPath = "assests/CrownWhite.png";
+                            File kingFile = new File(kingPath);
+                            Image im = new Image(kingFile.toURI().toString());
+                            circle.setFill(new ImagePattern(im));
+                        }
                         if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);

@@ -103,6 +103,7 @@ public class Checkers implements Serializable {
                         playerBlack.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         // update the state of the tile
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
+                        crownPiece();
                         // the player piece is no longer selected
                         if (playerAction != playerAction.MakingJump) {
                             playerBlack.getPlayerPieces().get(i).setSelected(false);
@@ -118,6 +119,7 @@ public class Checkers implements Serializable {
                         playerWhite.getPlayerPieces().get(i).setRowPos(tileToMoveTo.getRow());
                         playerWhite.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerWhite.getPlayerPieces().get(i));
+                        crownPiece();
                         if (playerAction != playerAction.MakingJump) {
                             playerWhite.getPlayerPieces().get(i).setSelected(false);
                         }
@@ -152,9 +154,11 @@ public class Checkers implements Serializable {
                     tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
                 }
             }
-            if(tileOfPieceToDelete != null) {
+            if (tileOfPieceToDelete != null) {
+                if(tileOfPieceToDelete.getPiece().isKing()) {
+                    getSelectedPiece().setKing(true);// regicide
+                }
                 if (currentTurn.equals("black")) {
-
                     playerWhite.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
                 } else {
                     playerBlack.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
@@ -165,16 +169,23 @@ public class Checkers implements Serializable {
             // MULTI-LEG JUMPS
             setLegalOptionsForTurn(selectedPiece); // set the legal options the piece can make in its new position
             ArrayList<Pair<Tile, Tile>> multiLegJumps = findTilesThatCanBeJumpedTo(selectedPiece); // find if any other jumps can be made, with this new legal options
-            if(multiLegJumps.size() > 0) { // if it can call select piece again so one of the possible jumps can be made
+            if (multiLegJumps.size() > 0) { // if it can call select piece again so one of the possible jumps can be made
                 int row = selectedPiece.getRowPos();
                 int col = selectedPiece.getColPos();
                 selectPiece(checkersBoard.getBoard()[row][col]);
-            }
-            else { // if no more jumps can be made end the turn
+            } else { // if no more jumps can be made end the turn
                 selectedPiece.setSelected(false);
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
+        }
+    }
+
+    private void crownPiece() {
+        if (currentTurn.equals("white") && getSelectedPiece().getRowPos() == 7) {
+            getSelectedPiece().setKing(true);
+        } else if (currentTurn.equals("black") && getSelectedPiece().getRowPos() == 0) {
+            getSelectedPiece().setKing(true);
         }
     }
 
@@ -280,19 +291,19 @@ public class Checkers implements Serializable {
      * @return an array list of the tiles that the player piece can move to
      */
     public ArrayList<Tile> findTilesThatCanBeMovedTo(PlayerPiece playerPiece) {
-
         ArrayList<Tile> tilesThatCanBeMovedTo = new ArrayList<>();
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
         for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
             for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
                 if (checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].isDarkBrown()
                         && checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y].getPiece() == null
-                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]))
-                    if (playerPiece.getPlayerColour().equals("black") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
+                        && !tilesThatCanBeMovedTo.contains(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y])) {
+                    if ((playerPiece.getPlayerColour().equals("black") || playerPiece.isKing()) && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() - 1) {
                         tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
-                    } else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
+                    } else if ((playerPiece.getPlayerColour().equals("white") || playerPiece.isKing()) && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1) {
                         tilesThatCanBeMovedTo.add(checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y]);
                     }
+                }
             }
         }
         return tilesThatCanBeMovedTo;
@@ -307,17 +318,67 @@ public class Checkers implements Serializable {
      * @param playerPiece
      */
     private ArrayList<Pair<Tile, Tile>> findTilesThatCanBeJumpedTo(PlayerPiece playerPiece) {
+        if (playerPiece.isKing() && playerPiece.getPlayerColour().equals("black")) {
+            return findTilesThatCanBeJumpedToKings(playerPiece, "black", "white");
+        } else if (playerPiece.isKing() && playerPiece.getPlayerColour().equals("white")) {
+            return findTilesThatCanBeJumpedToKings(playerPiece, "white", "black");
+        } else {
+            ArrayList<Pair<Tile, Tile>> listOfDeleteTileAndJumpTilePairs = new ArrayList<>();
+            ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
+            for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
+                for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
+                    Tile tileToDelete = checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y];
+                    // UNIVERSAL CASES FOR BOTH BLACK AND WHITE
+                    if (tileToDelete.isDarkBrown() && tileToDelete.getPiece() != null) {
+                        Tile tileToJumpTo;
+                        int tileToJumpToCol;
+                        // SPECIFIC CASES FOR BLACK PIECES
+                        if (playerPiece.getPlayerColour().equals("black") && tileToDelete.getRow() == playerPiece.getRowPos() - 1 && tileToDelete.getPiece().getPlayerColour().equals("white")) {
+                            int tileToJumpToRow = tileToDelete.getRow() - 1;
+                            if (playerPiece.getColPos() < tileToDelete.getCol()) {
+                                tileToJumpToCol = tileToDelete.getCol() + 1;
+                            } else {
+                                tileToJumpToCol = tileToDelete.getCol() - 1;
+                            }
+                            if (inBounds(tileToJumpToRow, tileToJumpToCol)) {
+                                tileToJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                                if (tileToJumpTo.getPiece() == null) {
+                                    listOfDeleteTileAndJumpTilePairs.add(new Pair<>(tileToDelete, tileToJumpTo));
+                                }
+                            }
+                        }
+                        // SPECIFIC CASES FOR WHITE PLAYERS
+                        else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1 && tileToDelete.getPiece().getPlayerColour().equals("black")) {
+                            int tileToJumpToRow = tileToDelete.getRow() + 1;
+                            if (playerPiece.getColPos() < tileToDelete.getCol()) {
+                                tileToJumpToCol = tileToDelete.getCol() + 1;
+                            } else {
+                                tileToJumpToCol = tileToDelete.getCol() - 1;
+                            }
+                            if (inBounds(tileToJumpToRow, tileToJumpToCol)) {
+                                tileToJumpTo = checkersBoard.getBoard()[tileToJumpToRow][tileToJumpToCol];
+                                if (tileToJumpTo.getPiece() == null) {
+                                    listOfDeleteTileAndJumpTilePairs.add(new Pair<>(tileToDelete, tileToJumpTo));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return listOfDeleteTileAndJumpTilePairs;
+        }
+    }
+
+    private ArrayList<Pair<Tile, Tile>> findTilesThatCanBeJumpedToKings(PlayerPiece playerPiece, String kingColour, String enemyColour) {
         ArrayList<Pair<Tile, Tile>> listOfDeleteTileAndJumpTilePairs = new ArrayList<>();
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
         for (int row = 0; row < neighbourCoOrdinates.size(); row++) {
             for (int col = 0; col < neighbourCoOrdinates.size(); col++) {
                 Tile tileToDelete = checkersBoard.getBoard()[neighbourCoOrdinates.get(row).x][neighbourCoOrdinates.get(col).y];
-                // UNIVERSAL CASES FOR BOTH BLACK AND WHITE
                 if (tileToDelete.isDarkBrown() && tileToDelete.getPiece() != null) {
                     Tile tileToJumpTo;
                     int tileToJumpToCol;
-                    // SPECIFIC CASES FOR BLACK PIECES
-                    if (playerPiece.getPlayerColour().equals("black") && tileToDelete.getRow() == playerPiece.getRowPos() - 1 && tileToDelete.getPiece().getPlayerColour().equals("white")) {
+                    if (playerPiece.getPlayerColour().equals(kingColour) && tileToDelete.getRow() == playerPiece.getRowPos() - 1 && tileToDelete.getPiece().getPlayerColour().equals(enemyColour)) {
                         int tileToJumpToRow = tileToDelete.getRow() - 1;
                         if (playerPiece.getColPos() < tileToDelete.getCol()) {
                             tileToJumpToCol = tileToDelete.getCol() + 1;
@@ -330,9 +391,7 @@ public class Checkers implements Serializable {
                                 listOfDeleteTileAndJumpTilePairs.add(new Pair<>(tileToDelete, tileToJumpTo));
                             }
                         }
-                    }
-                    // SPECIFIC CASES FOR WHITE PLAYERS
-                    else if (playerPiece.getPlayerColour().equals("white") && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1 && tileToDelete.getPiece().getPlayerColour().equals("black")) {
+                    } else if (playerPiece.getPlayerColour().equals(kingColour) && neighbourCoOrdinates.get(row).x == playerPiece.getRowPos() + 1 && tileToDelete.getPiece().getPlayerColour().equals(enemyColour)) {
                         int tileToJumpToRow = tileToDelete.getRow() + 1;
                         if (playerPiece.getColPos() < tileToDelete.getCol()) {
                             tileToJumpToCol = tileToDelete.getCol() + 1;
@@ -372,8 +431,28 @@ public class Checkers implements Serializable {
 
     // returns a score for the state of a Checkers object that can be used by mini max
     private int evaluate() {
-        return getPlayerWhite().getPlayerPieces().size() - getPlayerBlack().getPlayerPieces().size();
+        int evaluation = 0;
+        for (int i = 0; i < checkersBoard.getRows(); i++) {
+            for (int j = 0; j < checkersBoard.getCols(); j++) {
+                if (checkersBoard.getBoard()[i][j].getPiece() != null) {
+                    PlayerPiece currPiece = checkersBoard.getBoard()[i][j].getPiece();
+                    if (currPiece.getPlayerColour().equals("white")) {
+                        evaluation += 10;
+                        if (currPiece.isKing()) {
+                            evaluation += 20;
+                        }
+                    } else if (currPiece.getPlayerColour().equals("black")) {
+                        evaluation -= 10;
+                        if (currPiece.isKing()) {
+                            evaluation -= 20;
+                        }
+                    }
+                }
+            }
+        }
+        return evaluation;
     }
+
 
     /**
      * Iterates through the players pieces of the player for the current turn, finds all the tiles a piece can move to (through a jump or regular move),
@@ -492,17 +571,7 @@ public class Checkers implements Serializable {
         Checkers newCheckers = miniMax(SerializationUtils.clone(this), 3, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
         return newCheckers;
     }
-
-    public Checkers randomPlayerMove() {
-        if (checkIfGameIsOver()) {
-            return this;
-        }
-        ArrayList<Checkers> possibleMoves = getAllMoves(this);
-        int index = (int) (Math.random() * possibleMoves.size());
-        Checkers newCheckers = possibleMoves.get(index);
-        return newCheckers;
-    }
-
+    
     /**
      * Returns true if the game is over, returns false otherwise, does so by calling possibleMoves(), if possibleMoves is empty
      * the game must be over and true is returned

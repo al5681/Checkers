@@ -11,6 +11,7 @@ public class PlayerPiece implements Serializable {
     private boolean canMakeLegalMove;
     private boolean canMakeLegalJump;
     private boolean selected;
+    private boolean isKing;
 
     /**
      * Creates a piece for the player to use of the right colour
@@ -63,6 +64,14 @@ public class PlayerPiece implements Serializable {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isKing() {
+        return isKing;
+    }
+
+    public void setKing(boolean king) {
+        isKing = king;
     }
 
     @Override
