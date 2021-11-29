@@ -28,16 +28,6 @@ public class Tile implements Serializable {
         this.col = col;
     }
 
-    public Tile(Tile otherTile)
-    {
-        this.darkBrown = otherTile.darkBrown;
-        this.piece = otherTile.piece;
-        this.row = otherTile.row;
-        this.col = otherTile.col;
-        this.highlighted = otherTile.highlighted;
-
-    }
-
     public boolean isDarkBrown() {
         return darkBrown;
     }

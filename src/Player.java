@@ -24,16 +24,4 @@ public class Player implements Serializable {
         return playerPieces;
     }
 
-    public int getNoOfKings()
-    {
-        int kingCount = 0;
-        for(int i = 0; i < playerPieces.size(); i++)
-        {
-            if(playerPieces.get(i).isKing()){
-                kingCount++;
-            }
-        }
-        return kingCount;
-    }
-
 }

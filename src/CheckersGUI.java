@@ -13,23 +13,22 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.io.File;
 
 /**
  * Represents the GUI for the game, which displays the current state of the Checkers class
  */
-public class CheckersGUI2 extends Application {
+public class CheckersGUI extends Application {
 
     private Checkers checkers = new Checkers();
     private BorderPane borderPane = new BorderPane();
+    BorderPane topOfGUI = new BorderPane();
     private GridPane grid = new GridPane();
     private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
     private boolean hintsOn = true;
 
     public void renderTopOfDisplay() {
         BorderPane localBorderPane = new BorderPane();
-        BorderPane leftBorderPane = new BorderPane();
         HBox hbox = new HBox();
 
         Text hintsText = new Text("Hints: ");
@@ -66,7 +65,7 @@ public class CheckersGUI2 extends Application {
                 FXCollections.observableArrayList(
                         "Easy", // depth = 3
                         "Medium", // depth = 4
-                        "Hard" // depth = 5
+                        "Hard" // depth = 6
                 );
         ComboBox comboBox = new ComboBox(difficultyOptions);
         comboBox.getSelectionModel().select(1); // default difficult is medium
@@ -76,7 +75,7 @@ public class CheckersGUI2 extends Application {
 
         hbox2.getChildren().add(difficultyText);
         hbox2.getChildren().add(comboBox);
-        hbox2.getChildren().add(new Text(" "));
+        hbox2.getChildren().add(new Text("      "));
 
         comboBox.setOnAction(e -> {
             if (comboBox.getValue().equals("Easy")) {
@@ -84,17 +83,18 @@ public class CheckersGUI2 extends Application {
             } else if (comboBox.getValue().equals("Medium")) {
                 checkers.setDifficulty(4);
             } else {
-                checkers.setDifficulty(5);
+                checkers.setDifficulty(6);
             }
-
         });
 
 
         localBorderPane.setLeft(hbox);
         localBorderPane.setCenter(hbox2);
         localBorderPane.setRight(rulesButton);
-        leftBorderPane.setLeft(localBorderPane);
-        borderPane.setTop(leftBorderPane);
+
+        topOfGUI.setLeft(localBorderPane);
+
+        borderPane.setTop(topOfGUI);
     }
 
     /**
@@ -242,11 +242,26 @@ public class CheckersGUI2 extends Application {
                     if (checkers.getCurrentTurn().equals("black")) {
                         Tile currTile = checkers.getCheckersBoard().getBoard()[currentI][currentJ];
                         if (checkers.getPlayerAction() == PlayerAction.SelectingPiece) {
-                            checkers.selectPiece(currTile);
+                            if (!checkers.selectPiece(currTile)) {
+                                topOfGUI.setCenter(new Text("Invalid move! You must select a piece."));
+                            } else {
+                                topOfGUI.setCenter(new Text(""));
+                                checkers.selectPiece(currTile);
+                            }
                         } else if (checkers.getPlayerAction() == PlayerAction.SelectingTileToMoveTo) {
-                            checkers.movePiece(currTile);
+                            if (!checkers.movePiece(currTile)) {
+                                topOfGUI.setCenter(new Text("Invalid move! You must select a tile to move to."));
+                            } else {
+                                topOfGUI.setCenter(new Text(""));
+                                checkers.movePiece(currTile);
+                            }
                         } else if (checkers.getPlayerAction() == PlayerAction.MakingJump) {
-                            checkers.makeJump(currTile);
+                            if (!checkers.makeJump(currTile)) {
+                                topOfGUI.setCenter(new Text("Invalid move! You must make a jump."));
+                            } else {
+                                topOfGUI.setCenter(new Text(""));
+                                checkers.makeJump(currTile);
+                            }
                         }
                         update();
                     }

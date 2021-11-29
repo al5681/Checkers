@@ -65,7 +65,7 @@ public class Checkers implements Serializable {
      *
      * @param tileOfPiece
      */
-    public void selectPiece(Tile tileOfPiece) {
+    public boolean selectPiece(Tile tileOfPiece) {
         if (tileOfPiece.getPiece() != null) {
             PlayerPiece playerPiece = tileOfPiece.getPiece();
             if (playerPiece.getCanMakeLegalMove() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
@@ -75,6 +75,7 @@ public class Checkers implements Serializable {
                 for (Tile tile : tiles) {
                     tile.setHighlighted(true);
                 }
+                return true;
             } else if (playerPiece.getCanMakeLegalJump() && playerPiece.getPlayerColour().equals(getCurrentTurn())) {
                 ArrayList<Pair<Tile, Tile>> tileToDeleteAndJumpToPairs = findTilesThatCanBeJumpedTo(playerPiece);
                 playerPiece.setSelected(true);
@@ -82,8 +83,10 @@ public class Checkers implements Serializable {
                 for (int i = 0; i < tileToDeleteAndJumpToPairs.size(); i++) {
                     tileToDeleteAndJumpToPairs.get(i).getValue().setHighlighted(true);
                 }
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -92,7 +95,7 @@ public class Checkers implements Serializable {
      *
      * @param tileToMoveTo
      */
-    public void movePiece(Tile tileToMoveTo) {
+    public boolean movePiece(Tile tileToMoveTo) {
         if (getHighlightedTiles().contains(tileToMoveTo)) {
             if (currentTurn.equals("black")) {
                 for (int i = 0; i < playerBlack.getPlayerPieces().size(); i++) {
@@ -137,7 +140,9 @@ public class Checkers implements Serializable {
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
+            return true;
         }
+        return false;
     }
 
     /**
@@ -145,7 +150,7 @@ public class Checkers implements Serializable {
      *
      * @param tileToJumpTo
      */
-    public void makeJump(Tile tileToJumpTo) {
+    public boolean makeJump(Tile tileToJumpTo) {
         if (getHighlightedTiles().contains(tileToJumpTo)) {
             PlayerPiece selectedPiece = getSelectedPiece();
             Tile tileOfPieceToDelete = null;
@@ -157,7 +162,7 @@ public class Checkers implements Serializable {
             }
             boolean regicide = false;
             if (tileOfPieceToDelete != null) {
-                if(tileOfPieceToDelete.getPiece().isKing() && !getSelectedPiece().isKing()) {
+                if (tileOfPieceToDelete.getPiece().isKing() && !getSelectedPiece().isKing()) {
                     getSelectedPiece().setKing(true);// regicide
                     regicide = true;
                 }
@@ -169,11 +174,11 @@ public class Checkers implements Serializable {
                 checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
                 movePiece(tileToJumpTo);
             }
-            if(getSelectedPiece().isKing() && regicide) { // the turn must end if regicide has occurred
+            if (getSelectedPiece().isKing() && regicide) { // the turn must end if regicide has occurred
                 selectedPiece.setSelected(false);
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
-                return;
+                return true;
             }
             // MULTI-LEG JUMPS
             setLegalOptionsForTurn(selectedPiece); // set the legal options the piece can make in its new position
@@ -187,7 +192,9 @@ public class Checkers implements Serializable {
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
             }
+            return true;
         }
+        return false;
     }
 
     private void crownPiece() {
@@ -577,10 +584,10 @@ public class Checkers implements Serializable {
         if (checkIfGameIsOver()) {
             return this;
         }
-        Checkers newCheckers = miniMax(SerializationUtils.clone(this), difficulty, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
+        Checkers newCheckers = miniMax(SerializationUtils.clone(this), difficulty, maxPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
         return newCheckers;
     }
-    
+
     /**
      * Returns true if the game is over, returns false otherwise, does so by calling possibleMoves(), if possibleMoves is empty
      * the game must be over and true is returned
