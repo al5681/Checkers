@@ -1,4 +1,3 @@
-import com.sun.xml.internal.ws.util.StringUtils;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -20,12 +19,13 @@ import java.io.File;
 public class CheckersGUI2 extends Application {
 
     private Checkers checkers = new Checkers();
-    private BorderPane boarderPane = new BorderPane();
+    private BorderPane borderPane = new BorderPane();
     private GridPane grid = new GridPane();
     private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
     private boolean hintsOn = true;
 
     public void renderTopOfDisplay() {
+        BorderPane localBorderPane = new BorderPane();
         HBox hbox = new HBox();
 
         Text hintsText = new Text("Hints: ");
@@ -49,7 +49,16 @@ public class CheckersGUI2 extends Application {
             renderPieces();
         });
 
-        boarderPane.setTop(hbox);
+        Button rulesButton = new Button("Read rules!");
+
+        rulesButton.setOnMouseClicked(f -> {
+            RulesGUI rulesGUI = new RulesGUI();
+            rulesGUI.display();
+        });
+
+        localBorderPane.setLeft(hbox);
+        localBorderPane.setRight(rulesButton);
+        borderPane.setTop(localBorderPane);
     }
 
     /**
@@ -73,7 +82,7 @@ public class CheckersGUI2 extends Application {
                 buttonsInGrid[i][j] = currButton;
             }
         }
-        boarderPane.setCenter(grid);
+        borderPane.setCenter(grid);
     }
 
     /**
@@ -161,14 +170,14 @@ public class CheckersGUI2 extends Application {
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
         primaryStage.setTitle("Checkers");
-        boarderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
+        borderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
         // // initialise the displays
         renderBoard();
         renderPieces();
         renderTopOfDisplay();
         // call the game loop
         gameLoop();
-        primaryStage.setScene(new Scene(boarderPane));
+        primaryStage.setScene(new Scene(borderPane));
         primaryStage.show();
     }
 
