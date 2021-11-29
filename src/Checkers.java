@@ -154,9 +154,11 @@ public class Checkers implements Serializable {
                     tileOfPieceToDelete = tileToDeleteAndJumpToPairs.get(i).getKey();
                 }
             }
+            boolean regicide = false;
             if (tileOfPieceToDelete != null) {
-                if(tileOfPieceToDelete.getPiece().isKing()) {
+                if(tileOfPieceToDelete.getPiece().isKing() && !getSelectedPiece().isKing()) {
                     getSelectedPiece().setKing(true);// regicide
+                    regicide = true;
                 }
                 if (currentTurn.equals("black")) {
                     playerWhite.getPlayerPieces().remove(tileOfPieceToDelete.getPiece());
@@ -166,7 +168,7 @@ public class Checkers implements Serializable {
                 checkersBoard.getBoard()[tileOfPieceToDelete.getRow()][tileOfPieceToDelete.getCol()].setPiece(null);
                 movePiece(tileToJumpTo);
             }
-            if(getSelectedPiece().isKing()) { // the turn must end if regicide has occurred
+            if(getSelectedPiece().isKing() && regicide) { // the turn must end if regicide has occurred
                 selectedPiece.setSelected(false);
                 playerAction = PlayerAction.SelectingPiece; // reset the game state
                 changeCurrentPlayersTurn(); // end the turn
