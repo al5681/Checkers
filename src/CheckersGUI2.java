@@ -1,7 +1,10 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -26,6 +29,7 @@ public class CheckersGUI2 extends Application {
 
     public void renderTopOfDisplay() {
         BorderPane localBorderPane = new BorderPane();
+        BorderPane leftBorderPane = new BorderPane();
         HBox hbox = new HBox();
 
         Text hintsText = new Text("Hints: ");
@@ -38,7 +42,7 @@ public class CheckersGUI2 extends Application {
 
         onOfButtonForHints.setOnMouseClicked(e ->
         {
-            if(onOfButtonForHints.getText().equals("On")) {
+            if (onOfButtonForHints.getText().equals("On")) {
                 onOfButtonForHints.setText("Off");
                 hintsOn = false;
             } else {
@@ -56,9 +60,41 @@ public class CheckersGUI2 extends Application {
             rulesGUI.display();
         });
 
+        HBox hbox2 = new HBox();
+
+        ObservableList<String> difficultyOptions =
+                FXCollections.observableArrayList(
+                        "Easy", // depth = 3
+                        "Medium", // depth = 4
+                        "Hard" // depth = 5
+                );
+        ComboBox comboBox = new ComboBox(difficultyOptions);
+        comboBox.getSelectionModel().select(1); // default difficult is medium
+
+        Text difficultyText = new Text("  Difficulty: ");
+        difficultyText.setFont(Font.font("Verdana", 20));
+
+        hbox2.getChildren().add(difficultyText);
+        hbox2.getChildren().add(comboBox);
+        hbox2.getChildren().add(new Text(" "));
+
+        comboBox.setOnAction(e -> {
+            if (comboBox.getValue().equals("Easy")) {
+                checkers.setDifficulty(3);
+            } else if (comboBox.getValue().equals("Medium")) {
+                checkers.setDifficulty(4);
+            } else {
+                checkers.setDifficulty(5);
+            }
+
+        });
+
+
         localBorderPane.setLeft(hbox);
+        localBorderPane.setCenter(hbox2);
         localBorderPane.setRight(rulesButton);
-        borderPane.setTop(localBorderPane);
+        leftBorderPane.setLeft(localBorderPane);
+        borderPane.setTop(leftBorderPane);
     }
 
     /**
@@ -114,17 +150,16 @@ public class CheckersGUI2 extends Application {
                     Circle circle = new Circle();
                     circle.setRadius(35.0f);
                     if (currTile.getPiece().getPlayerColour().equals("black")) {
-                        if(!currTile.getPiece().isKing()) {
+                        if (!currTile.getPiece().isKing()) {
                             circle.setFill(javafx.scene.paint.Color.BLACK);
-                        }
-                        else {
+                        } else {
                             String kingPath = "assests/CrownBlack.png";
                             File kingFile = new File(kingPath);
                             Image im = new Image(kingFile.toURI().toString());
                             circle.setFill(new ImagePattern(im));
                         }
                         if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece
-                        && hintsOn) {
+                                && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece && hintsOn) {
@@ -132,10 +167,9 @@ public class CheckersGUI2 extends Application {
                             circle.setStrokeWidth(5.00);
                         }
                     } else {
-                        if(!currTile.getPiece().isKing()) {
+                        if (!currTile.getPiece().isKing()) {
                             circle.setFill(Color.WHITE);
-                        }
-                        else {
+                        } else {
                             String kingPath = "assests/CrownWhite.png";
                             File kingFile = new File(kingPath);
                             Image im = new Image(kingFile.toURI().toString());
@@ -168,7 +202,7 @@ public class CheckersGUI2 extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws InterruptedException {
+    public void start(Stage primaryStage) {
         primaryStage.setTitle("Checkers");
         borderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
         // // initialise the displays
