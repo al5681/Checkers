@@ -1,7 +1,10 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -56,7 +59,43 @@ public class CheckersGUI2 extends Application {
             rulesGUI.display();
         });
 
+        HBox hbox2 = new HBox();
+
+        ObservableList<String> difficultyOptions =
+                FXCollections.observableArrayList(
+                        "Easy", // depth = 3
+                        "Medium", // depth = 4
+                        "Hard" // depth = 5
+                );
+        ComboBox comboBox = new ComboBox(difficultyOptions);
+        comboBox.getSelectionModel().select(1); // default difficult is medium
+
+        Text difficultyText = new Text("        Difficulty: ");
+        difficultyText.setFont(Font.font("Verdana", 20));
+
+        Text space = new Text(" ");
+
+        Button changeDifficultyButton = new Button("Change difficulty");
+
+        hbox2.getChildren().add(difficultyText);
+        hbox2.getChildren().add(comboBox);
+        hbox2.getChildren().add(space);
+        hbox2.getChildren().add(changeDifficultyButton);
+
+        changeDifficultyButton.setOnMouseClicked(e-> {
+           if(comboBox.getValue().equals("Easy")) {
+               checkers.setDifficulty(3);
+           } else if(comboBox.getValue().equals("Medium")) {
+               checkers.setDifficulty(4);
+           } else {
+               checkers.setDifficulty(5);
+           }
+
+        });
+
+
         localBorderPane.setLeft(hbox);
+        localBorderPane.setCenter(hbox2);
         localBorderPane.setRight(rulesButton);
         borderPane.setTop(localBorderPane);
     }
@@ -170,6 +209,7 @@ public class CheckersGUI2 extends Application {
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
         primaryStage.setTitle("Checkers");
+        checkers.setDifficulty(4);
         borderPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(0), Insets.EMPTY)));
         // // initialise the displays
         renderBoard();

@@ -16,6 +16,7 @@ public class Checkers implements Serializable {
     private String currentTurn = "black"; // black goes first
     private PlayerAction playerAction;
     private boolean gameOver;
+    private int difficulty;
 
     /**
      * Creates an instance of the board and loads the pieces in their initial spawns for the players
@@ -576,7 +577,7 @@ public class Checkers implements Serializable {
         if (checkIfGameIsOver()) {
             return this;
         }
-        Checkers newCheckers = miniMax(SerializationUtils.clone(this), 3, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
+        Checkers newCheckers = miniMax(SerializationUtils.clone(this), difficulty, true, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
         return newCheckers;
     }
     
@@ -623,6 +624,14 @@ public class Checkers implements Serializable {
 
     public PlayerAction getPlayerAction() {
         return playerAction;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 
     /**
