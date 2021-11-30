@@ -13,6 +13,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 import java.io.File;
 
 /**
@@ -27,6 +28,10 @@ public class CheckersGUI extends Application {
     private Button[][] buttonsInGrid = new Button[checkers.getCheckersBoard().getRows()][checkers.getCheckersBoard().getCols()];
     private boolean hintsOn = true;
 
+    /**
+     * Creates the top part of the GUI, which includes the button to turn hints on and off,
+     * the drop-down list to select difficulty, a button to display the rules, and a status message
+     */
     public void renderTopOfDisplay() {
         BorderPane localBorderPane = new BorderPane();
         HBox hbox = new HBox();
@@ -158,11 +163,14 @@ public class CheckersGUI extends Application {
                             Image im = new Image(kingFile.toURI().toString());
                             circle.setFill(new ImagePattern(im));
                         }
-                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece
+                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove()
+                                && checkers.getCurrentTurn().equals("black")
+                                && checkers.getPlayerAction() == PlayerAction.SelectingPiece
                                 && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black") && checkers.getPlayerAction() == PlayerAction.SelectingPiece && hintsOn) {
+                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("black")
+                                && checkers.getPlayerAction() == PlayerAction.SelectingPiece && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
@@ -175,17 +183,22 @@ public class CheckersGUI extends Application {
                             Image im = new Image(kingFile.toURI().toString());
                             circle.setFill(new ImagePattern(im));
                         }
-                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece
+                        if (!currTile.getPiece().getCanMakeLegalJump() && currTile.getPiece().getCanMakeLegalMove()
+                                && checkers.getCurrentTurn().equals("white")
+                                && checkers.getPlayerAction() == PlayerAction.SelectingPiece
                                 && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
-                        } else if (currTile.getPiece().getCanMakeLegalJump() && checkers.getCurrentTurn().equals("white") && checkers.getPlayerAction() == PlayerAction.SelectingPiece
+                        } else if (currTile.getPiece().getCanMakeLegalJump()
+                                && checkers.getCurrentTurn().equals("white")
+                                && checkers.getPlayerAction() == PlayerAction.SelectingPiece
                                 && hintsOn) {
                             circle.setStroke(Color.GOLD);
                             circle.setStrokeWidth(5.00);
                         }
                     }
-                    if (currTile.getPiece().isSelected() && (checkers.getPlayerAction() == PlayerAction.SelectingTileToMoveTo || checkers.getPlayerAction() == PlayerAction.MakingJump)) {
+                    if (currTile.getPiece().isSelected() && (checkers.getPlayerAction() == PlayerAction.SelectingTileToMoveTo
+                            || checkers.getPlayerAction() == PlayerAction.MakingJump)) {
                         circle.setStroke(Color.GOLD);
                         circle.setStrokeWidth(5.00);
                     }
@@ -201,6 +214,11 @@ public class CheckersGUI extends Application {
         launch(args);
     }
 
+    /**
+     * Launches the GUI
+     *
+     * @param primaryStage
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Checkers");
@@ -228,11 +246,19 @@ public class CheckersGUI extends Application {
         }
     }
 
+    /**
+     * The AI players move, which calls the Minimax algorithm,
+     * and sets the state of the checkers game to what is returned
+     */
     public void whiteMove() {
         this.checkers = checkers.aiMove(true);
         update();
     }
 
+    /**
+     * The human players move which gets mouse clicks from the user and updates the
+     * state accordingly, if they make an invalid move a status message is displayed in the GUI
+     */
     public void blackMove() {
         for (int i = 0; i < checkers.getCheckersBoard().getRows(); i++) {
             for (int j = 0; j < checkers.getCheckersBoard().getCols(); j++) {
@@ -270,6 +296,9 @@ public class CheckersGUI extends Application {
         }
     }
 
+    /**
+     * Updates the GUI render
+     */
     private void update() {
         updateBoardRender();
         renderPieces();

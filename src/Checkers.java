@@ -1,4 +1,5 @@
 import javafx.util.Pair;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -110,6 +111,7 @@ public class Checkers implements Serializable {
                         playerBlack.getPlayerPieces().get(i).setColPos(tileToMoveTo.getCol());
                         // update the state of the tile
                         checkersBoard.getBoard()[tileToMoveTo.getRow()][tileToMoveTo.getCol()].setPiece(playerBlack.getPlayerPieces().get(i));
+                        // check if the piece has reached its respective end of the board and can be crowned
                         crownPiece();
                         // the player piece is no longer selected
                         if (playerAction != playerAction.MakingJump) {
@@ -165,8 +167,8 @@ public class Checkers implements Serializable {
             }
             boolean regicide = false;
             if (tileOfPieceToDelete != null) {
-                if (tileOfPieceToDelete.getPiece().isKing() && !getSelectedPiece().isKing()) {
-                    getSelectedPiece().setKing(true);// regicide
+                if (tileOfPieceToDelete.getPiece().isKing() && !getSelectedPiece().isKing()) { // if a king is being jumped over
+                    getSelectedPiece().setKing(true); // regicide
                     regicide = true;
                 }
                 if (currentTurn.equals("black")) {
@@ -200,6 +202,7 @@ public class Checkers implements Serializable {
         return false;
     }
 
+    // checks if a piece has reach its respective end of the board, and if it has, crown the piece
     private void crownPiece() {
         if (currentTurn.equals("white") && getSelectedPiece().getRowPos() == 7) {
             getSelectedPiece().setKing(true);
@@ -331,7 +334,7 @@ public class Checkers implements Serializable {
     /**
      * Checks the state of the neighbour tiles of a player piece, if that tile is dark brown,
      * has a current player piece on it of the opposing colour, and the dark brown tiles behind that player piece
-     * is not occupied and is not out of bounds, the tile behind that piece is taken as a tile to jump to,
+     * are not occupied and is not out of bounds, the tile behind that piece is taken as a tile to jump to,
      * and the tile the piece occupies is taken as the tile of a piece to delete. They are added to a list as a pair
      *
      * @param playerPiece
@@ -388,6 +391,7 @@ public class Checkers implements Serializable {
         }
     }
 
+    // The same method as above but for kings, that takes into account kings can jump in both directions
     private ArrayList<Pair<Tile, Tile>> findTilesThatCanBeJumpedToKings(PlayerPiece playerPiece, String kingColour, String enemyColour) {
         ArrayList<Pair<Tile, Tile>> listOfDeleteTileAndJumpTilePairs = new ArrayList<>();
         ArrayList<Point> neighbourCoOrdinates = getNeighbours(playerPiece);
@@ -448,7 +452,13 @@ public class Checkers implements Serializable {
         return neighbourCoOrdinates;
     }
 
-    // returns a score for the state of a Checkers object that can be used by mini max
+    /**
+     * Returns a score for the state of a Checkers object that can be used by Minimax,
+     * the score is depdent on the number of pieces and number of crowned pieces for both
+     * players
+     *
+     * @return an integer representing a score for a Checkers object
+     */
     private int evaluate() {
         int evaluation = 0;
         for (int i = 0; i < checkersBoard.getRows(); i++) {
@@ -636,10 +646,6 @@ public class Checkers implements Serializable {
         return playerAction;
     }
 
-    public int getDifficulty() {
-        return difficulty;
-    }
-
     public void setDifficulty(int difficulty) {
         this.difficulty = difficulty;
     }
@@ -663,6 +669,11 @@ public class Checkers implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * Helper method to create deep copies/clones in Java,
+     * I did not write this method I found it here: https://stackoverflow.com/questions/64036/how-do-you-make-a-deep-copy-of-an-object
+     * it's the answer from user "Unmitigated"
+     */
     public static <T extends Serializable> T deepClone(T t) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              ObjectOutputStream oos = new ObjectOutputStream(baos);) {

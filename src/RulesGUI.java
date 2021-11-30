@@ -7,6 +7,10 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
+/**
+ * A display for the rules of the game that can be accessed from the main GUI
+ * by clicked on the "Read rules" button
+ */
 public class RulesGUI {
 
     private Stage primaryStage;
