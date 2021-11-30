@@ -13,10 +13,10 @@ public class RulesGUI {
     private BorderPane borderPane = new BorderPane();
     WebView viewWeb = new WebView();
     WebEngine webEngine = viewWeb.getEngine();
-    Button close = new Button("Go back");
+    Button close = new Button("Close");
 
     public void setUp() {
-        File f = new File("Rules/checkersrules.htm");
+        File f = new File("Rules/CheckersGameRules.htm");
         webEngine.load(f.toURI().toString());
         borderPane.setCenter(viewWeb);
         close.setStyle("-fx-background-color:white;-fx-text-fill:black;"

@@ -1,8 +1,11 @@
 import javafx.util.Pair;
-import org.apache.commons.lang3.SerializationUtils;
-
-import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -483,7 +486,7 @@ public class Checkers implements Serializable {
                 PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
                 ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
                 for (int j = 0; j < legalOptions.size(); j++) {
-                    Checkers checkersCopy = SerializationUtils.clone(checkers);
+                    Checkers checkersCopy = deepClone(checkers);
                     int row = playerWhite.getPlayerPieces().get(i).getRowPos();
                     int col = playerWhite.getPlayerPieces().get(i).getColPos();
                     Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
@@ -496,7 +499,7 @@ public class Checkers implements Serializable {
                 PlayerPiece currPiece = playerBlack.getPlayerPieces().get(i);
                 ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
                 for (int j = 0; j < legalOptions.size(); j++) {
-                    Checkers checkersCopy = SerializationUtils.clone(checkers);
+                    Checkers checkersCopy = deepClone(checkers);
                     int row = playerBlack.getPlayerPieces().get(i).getRowPos();
                     int col = playerBlack.getPlayerPieces().get(i).getColPos();
                     Tile tileCopy = checkersCopy.getCheckersBoard().getBoard()[legalOptions.get(j).getRow()][legalOptions.get(j).getCol()];
@@ -546,7 +549,7 @@ public class Checkers implements Serializable {
             Checkers bestMove = null;
             ArrayList<Checkers> moves = getAllMoves(checkers);
             for (int i = 0; i < moves.size(); i++) {
-                int evaluation = miniMax(SerializationUtils.clone(moves.get(i)), depth - 1, false, alpha, beta).getKey();
+                int evaluation = miniMax(deepClone(moves.get(i)), depth - 1, false, alpha, beta).getKey();
                 maxEval = Math.max(maxEval, evaluation);
                 alpha = Math.max(alpha, evaluation);
                 if (maxEval == evaluation) {
@@ -562,7 +565,7 @@ public class Checkers implements Serializable {
             Checkers bestMove = null;
             ArrayList<Checkers> moves = getAllMoves(checkers);
             for (int i = 0; i < moves.size(); i++) {
-                int evaluation = miniMax(SerializationUtils.clone(moves.get(i)), depth - 1, true, alpha, beta).getKey();
+                int evaluation = miniMax(deepClone(moves.get(i)), depth - 1, true, alpha, beta).getKey();
                 minEval = Math.min(minEval, evaluation);
                 beta = Math.min(beta, evaluation);
                 if (minEval == evaluation) {
@@ -584,7 +587,7 @@ public class Checkers implements Serializable {
         if (checkIfGameIsOver()) {
             return this;
         }
-        Checkers newCheckers = miniMax(SerializationUtils.clone(this), difficulty, maxPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
+        Checkers newCheckers = miniMax(deepClone(this), difficulty, maxPlayer, Integer.MIN_VALUE, Integer.MAX_VALUE).getValue();
         return newCheckers;
     }
 
@@ -657,5 +660,19 @@ public class Checkers implements Serializable {
             }
         }
         return highlightedTiles;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Serializable> T deepClone(T t) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             ObjectOutputStream oos = new ObjectOutputStream(baos);) {
+            oos.writeObject(t);
+            byte[] bytes = baos.toByteArray();
+            try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
+                return (T) ois.readObject();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
