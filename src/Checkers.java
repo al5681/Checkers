@@ -486,7 +486,6 @@ public class Checkers implements Serializable {
                 PlayerPiece currPiece = playerWhite.getPlayerPieces().get(i);
                 ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
                 for (int j = 0; j < legalOptions.size(); j++) {
-                    //Checkers checkersCopy = SerializationUtils.clone(checkers);
                     Checkers checkersCopy = deepClone(checkers);
                     int row = playerWhite.getPlayerPieces().get(i).getRowPos();
                     int col = playerWhite.getPlayerPieces().get(i).getColPos();
@@ -500,7 +499,6 @@ public class Checkers implements Serializable {
                 PlayerPiece currPiece = playerBlack.getPlayerPieces().get(i);
                 ArrayList<Tile> legalOptions = getLegalOptionsForTurn(currPiece);
                 for (int j = 0; j < legalOptions.size(); j++) {
-                    //Checkers checkersCopy = SerializationUtils.clone(checkers);
                     Checkers checkersCopy = deepClone(checkers);
                     int row = playerBlack.getPlayerPieces().get(i).getRowPos();
                     int col = playerBlack.getPlayerPieces().get(i).getColPos();
@@ -663,8 +661,6 @@ public class Checkers implements Serializable {
         }
         return highlightedTiles;
     }
-
-
 
     @SuppressWarnings("unchecked")
     public static <T extends Serializable> T deepClone(T t) {
